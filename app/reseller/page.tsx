@@ -831,6 +831,7 @@ export default function ResellerPage() {
                 })()}
               </div>
             </div>
+            </div>
           </div>
         </section>
 
