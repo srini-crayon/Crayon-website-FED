@@ -284,6 +284,7 @@ export default function ISVPage() {
       openModal("auth", { mode: "login", role: "isv" })
     }
   }
+
   return (
     <div className="min-h-screen" style={{ scrollBehavior: "smooth" }}>
       {/* Content wrapper */}
@@ -341,58 +342,41 @@ export default function ISVPage() {
                 fontFamily: "Poppins",
                 fontWeight: 500,
                 fontStyle: "normal",
-                fontSize: "52px",
-                lineHeight: "54px",
+                fontSize: "42px",
+                lineHeight: "48px",
                 textAlign: "center",
                 color: "var(--Interface-Color-Primary-900, #091917)",
-                marginTop: "100px",
+                width: "920px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "160px",
                 marginBottom: "18px",
                 willChange: "opacity, transform, filter",
               }}
             >
-              Do you have an<br />
-              Innovative AI Solution?
+              Scale Your AI Solution with Tangram AI’s ISV Partner Program
             </h1>
-
-            {/* Subtitle */}
-            <p
-              className="text-center fade-in-section"
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: 600,
-                fontStyle: "normal",
-                fontSize: "14px",
-                lineHeight: "24px",
-                textAlign: "center",
-                color: "var(--Interface-Color-Primary-900, #091917)",
-                marginBottom: "6px",
-                willChange: "opacity, transform",
-              }}
-            >
-              Build and Scale AI Agents That Reach Global Customers
-            </p>
 
             {/* Description */}
             <p
-              className="mx-auto max-w-2xl text-center fade-in-section"
+              className="mx-auto max-w-[780px] text-center fade-in-section"
               style={{
                 fontFamily: "Poppins",
                 fontWeight: 400,
                 fontStyle: "normal",
-                fontSize: "14px",
-                lineHeight: "24px",
+                fontSize: "16px",
+                lineHeight: "26px",
                 textAlign: "center",
                 color: "var(--Interface-Color-Primary-900, #091917)",
                 marginBottom: "46px",
                 willChange: "opacity, transform",
               }}
             >
-              Independent Software Vendor (ISV) Accelerator gives you access to 1000+ new customers to grow your business
-              through one of the world's largest commercial marketplaces.
+              Launch, monetize, and grow your <span style={{ fontWeight: 600 }}>enterprise-ready AI</span> and <span style={{ fontWeight: 600 }}>GenAI solutions</span> through Tangram AI’s <span style={{ fontWeight: 600 }}>ISV marketplace</span>, with built-in co-selling, go-to-market support, and seamless enterprise integration.
             </p>
 
             {/* Buttons */}
-            <div className="flex justify-center scale-in">
+            <div className="flex justify-center items-center gap-4 scale-in">
               <button
                 onClick={() => !isAuthenticated && openModal("auth", { mode: "login", role: "isv" })}
                 disabled={isAuthenticated}
@@ -438,96 +422,45 @@ export default function ISVPage() {
                 </span>
               </button>
             </div>
+            <div className="mt-6 text-center scale-in">
+              <a
+                href="#video-walkthrough"
+                className="inline-flex items-center justify-center text-[#111111] font-medium no-underline hover:text-[#0b0b0b]"
+                style={{
+                  fontFamily: "Poppins",
+                  fontSize: "14px",
+                  lineHeight: "22px",
+                  letterSpacing: "0.2px",
+                  gap: "8px",
+                }}
+              >
+                <Play className="w-4 h-4" aria-hidden="true" fill="currentColor" stroke="currentColor" />
+                How It Works
+              </a>
+            </div>
 
-            {/* Logo Scroll Section */}
-            <div className="mt-24 md:mt-32 w-full overflow-hidden fade-in-section">
-              <div className="overflow-hidden relative" style={{ transform: "translateZ(0)", willChange: "transform" }}>
-                <div
-                  className="flex items-center animate-scroll-tags"
-                  style={{
-                    width: "fit-content",
-                    animationDuration: "90s",
-                    gap: "4px",
-                  }}
+            {/* Static Logo Row */}
+            <div className="mt-16 md:mt-24 fade-in-section">
+              <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-6">
+                <span
+                  className="text-sm text-[#6b7280]"
+                  style={{ fontFamily: "Poppins", letterSpacing: "0.1px" }}
                 >
-                  {/* Logo array - Container.png, Container-1.png through Container-8.png */}
-                  {(() => {
-                    const logos = [
-                      { name: "Container", index: "" },
-                      { name: "Container-1", index: "-1" },
-                      { name: "Container-2", index: "-2" },
-                      { name: "Container-3", index: "-3" },
-                      { name: "Container-4", index: "-4" },
-                      { name: "Container-5", index: "-5" },
-                      { name: "Container-6", index: "-6" },
-                      { name: "Container-7", index: "-7" },
-                      { name: "Container-8", index: "-8" },
-                    ];
-
-                    // Duplicate logos 4 times for seamless scrolling
-                    const duplicatedLogos = [...logos, ...logos, ...logos, ...logos];
-
-                    return duplicatedLogos.map((logo, idx) => {
-                      const grayLogo = `/img/Logo/gray/Container${logo.index}.png`;
-                      const colorLogo = `/img/Logo/Container${logo.index}.png`;
-
-                      return (
-                        <div
-                          key={`logo-${idx}`}
-                          className="flex items-center justify-center shrink-0 group relative"
-                          style={{
-                            height: "64px",
-                            minWidth: "150px",
-                            padding: "0 20px",
-                          }}
-                        >
-                          {/* Grayscale logo (default) */}
-                          <img
-                            src={grayLogo}
-                            alt={logo.name}
-                            className="object-contain transition-opacity duration-300 group-hover:opacity-0"
-                            style={{
-                              height: "64px",
-                              width: "auto",
-                              maxWidth: "200px",
-                              filter: "grayscale(100%)",
-                            }}
-                            onError={(e) => {
-                              // Hide if image doesn't exist
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                          {/* Color logo (on hover) */}
-                          <img
-                            src={colorLogo}
-                            alt={`${logo.name} color`}
-                            className="object-contain absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                            style={{
-                              height: "64px",
-                              width: "auto",
-                              maxWidth: "200px",
-                              margin: "0 auto",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                            onError={(e) => {
-                              // Hide if image doesn't exist
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        </div>
-                      );
-                    });
-                  })()}
+                  Trusted by leading teams
+                </span>
+                <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-14">
+                  <img src="/redington-logo.png" alt="Redington" className="h-8 w-auto object-contain" />
+                  <Image src={veehiveLogo} alt="Veehive" className="h-8 w-auto object-contain" />
+                  <img src="/Mozak_logo.png" alt="Mozark" className="h-8 w-auto object-contain" />
                 </div>
               </div>
             </div>
+
           </div>
         </section>
 
         {/* Build the Future Together Section */}
-        <section className="w-full px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-16 md:pb-20 lg:pb-24 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
+        <section id="how-it-works" className="w-full px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-16 md:pb-20 lg:pb-24 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
           <div className="max-w-[1209px] mx-auto">
             {/* Heading and Description */}
             <div className="flex flex-col gap-3 items-center text-center mb-16 md:mb-18">
@@ -779,7 +712,7 @@ export default function ISVPage() {
         </section>
 
         {/* ISV Testimonials - Static Row Layout */}
-        <section className="w-full px-4 md:px-8 lg:px-12 pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-20 lg:pb-24 fade-in-section" style={{ backgroundColor: "#F9FAFB", transform: "translateZ(0)", willChange: "transform" }}>
+        <section id="video-walkthrough" className="w-full px-4 md:px-8 lg:px-12 pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-20 lg:pb-24 fade-in-section" style={{ backgroundColor: "#F9FAFB", transform: "translateZ(0)", willChange: "transform" }}>
           <div className="max-w-[1200px] mx-auto">
             <div className="text-left mb-12 space-y-2">
               <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]">From Build to Scale</h2>
@@ -861,7 +794,7 @@ export default function ISVPage() {
                         />
                       </div>
                       <p className="text-[#111] text-base leading-relaxed mb-4">
-                        Tangram AI helped us take our AI solution from concept to market faster than we imagined. With their marketplace and co-selling support, launching to enterprises and scaling globally became effortless.
+                        Tangram AI helped us evolve our AI solution into an <span style={{ fontWeight: 600 }}>enterprise-ready, scalable product</span>. With access to the <span style={{ fontWeight: 600 }}>ISV marketplace and co-sell support</span>, we shortened time-to-market <span style={{ fontWeight: 600 }}>by ~30–40%</span> and enabled adoption across <span style={{ fontWeight: 600 }}>multiple enterprise use cases</span>.
                       </p>
                     </div>
                   </div>
