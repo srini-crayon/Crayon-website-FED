@@ -798,17 +798,12 @@ export default function ResellerPage() {
                         className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
                         unoptimized
                       />
-                      <p
-                        className="text-xs md:text-sm"
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          lineHeight: "140%",
-                          color: "#111827",
-                        }}
+                      <h3
+                        className="text-xs md:text-sm font-semibold text-[#111827]"
+                        style={{ fontFamily: "Poppins" }}
                       >
                         Rev-Share Model on Closed Deals
-                      </p>
+                      </h3>
                     </div>
                   </div>
 
@@ -854,17 +849,12 @@ export default function ResellerPage() {
                         className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
                         unoptimized
                       />
-                      <p
-                        className="text-xs md:text-sm"
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          lineHeight: "140%",
-                          color: "#111827",
-                        }}
+                      <h3
+                        className="text-xs md:text-sm font-semibold text-[#111827]"
+                        style={{ fontFamily: "Poppins" }}
                       >
                         Access to a Enterprise - level Demo Account
-                      </p>
+                      </h3>
                     </div>
                   </div>
 
@@ -910,17 +900,12 @@ export default function ResellerPage() {
                         className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
                         unoptimized
                       />
-                      <p
-                        className="text-xs md:text-sm"
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          lineHeight: "140%",
-                          color: "#111827",
-                        }}
+                      <h3
+                        className="text-xs md:text-sm font-semibold text-[#111827]"
+                        style={{ fontFamily: "Poppins" }}
                       >
                         Dedicated Support and Co-Selling
-                      </p>
+                      </h3>
                     </div>
                   </div>
                 </div>
