@@ -20,15 +20,15 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "Tangram.ai - AI Agent Store",
-  description: "Explore AI-powered agents built to automate workflows",
+  title: "Crayon Data - B2B AI Solutions for Enterprises",
+  description: "Explore AI-powered solutions that deliver enterprise-grade outcomes",
   generator: "v0.app",
   icons: {
     icon: [
-      { url: '/img/Crayon Logo.png', type: 'image/png' },
+      { url: '/favicon.png', type: 'image/png' },
     ],
-    shortcut: '/img/Crayon Logo.png',
-    apple: '/img/Crayon Logo.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
 }
 

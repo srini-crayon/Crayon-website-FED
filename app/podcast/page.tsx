@@ -1,14 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { Database, Flame, Keyboard, MessageSquareText, Mic, Zap } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "../../components/ui/carousel";
 import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
 
@@ -23,70 +21,6 @@ export default function PodcastPage() {
     }
     return episodeBadgeOptions[hash % episodeBadgeOptions.length];
   };
-
-  const heroIcons = [
-    {
-      Component: MessageSquareText,
-      size: 42,
-      strokeWidth: 2.2,
-      style: { top: "24px", right: "24px", color: "#0B1BFF" },
-    },
-    {
-      Component: Zap,
-      size: 44,
-      strokeWidth: 2.4,
-      style: {
-        left: "120px",
-        top: "50%",
-        transform: "translateY(-50%) rotate(-12deg)",
-        color: "#0B1BFF",
-      },
-    },
-    {
-      Component: Mic,
-      size: 40,
-      strokeWidth: 2.2,
-      style: {
-        right: "120px",
-        top: "50%",
-        transform: "translateY(-50%) rotate(8deg)",
-        color: "#0B1BFF",
-      },
-    },
-    {
-      Component: Flame,
-      size: 40,
-      strokeWidth: 2.2,
-      style: {
-        left: "80px",
-        bottom: "18%",
-        transform: "rotate(-10deg)",
-        color: "#0B1BFF",
-      },
-    },
-    {
-      Component: Database,
-      size: 38,
-      strokeWidth: 2.1,
-      style: {
-        right: "90px",
-        bottom: "16%",
-        transform: "rotate(6deg)",
-        color: "#0B1BFF",
-      },
-    },
-    {
-      Component: Keyboard,
-      size: 40,
-      strokeWidth: 2.2,
-      style: {
-        left: "50%",
-        top: "12%",
-        transform: "translateX(-50%) rotate(4deg)",
-        color: "#0B1BFF",
-      },
-    },
-  ] as const;
 
   const hosts = [
     {
@@ -119,7 +53,7 @@ export default function PodcastPage() {
 
   const episodeCards = [
     {
-      type: "press",
+      type: "slaves",
       title: "Building the enterprise of tomorrow",
       speaker: "DR. CJ Meadows",
       gradient:
@@ -128,7 +62,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 50%",
     },
     {
-      type: "press",
+      type: "lighthouse",
       title: "Using creativity to empower technology",
       speaker: "Rishad Tobaccowala",
       gradient:
@@ -137,7 +71,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 40%",
     },
     {
-      type: "interview",
+      type: "bigdata",
       title: "A social entrepreneur’s playbook",
       speaker: "Lucia Gallardo",
       gradient:
@@ -146,7 +80,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 25%",
     },
     {
-      type: "interview",
+      type: "journeys",
       title: "The future of AI in financial services",
       speaker: "Sarah Chen",
       gradient:
@@ -155,7 +89,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 35%",
     },
     {
-      type: "press",
+      type: "slaves",
       title: "Navigating digital transformation in banking",
       speaker: "Michael Rodriguez",
       gradient:
@@ -164,7 +98,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 45%",
     },
     {
-      type: "interview",
+      type: "lighthouse",
       title: "Data privacy in the age of personalization",
       speaker: "Dr. Priya Sharma",
       gradient:
@@ -173,7 +107,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 30%",
     },
     {
-      type: "press",
+      type: "bigdata",
       title: "Leading with empathy in tech",
       speaker: "James Patterson",
       gradient:
@@ -182,7 +116,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 38%",
     },
     {
-      type: "interview",
+      type: "journeys",
       title: "Customer experience in the digital era",
       speaker: "Emma Thompson",
       gradient:
@@ -191,7 +125,7 @@ export default function PodcastPage() {
       portraitPosition: "50% 42%",
     },
     {
-      type: "press",
+      type: "slaves",
       title: "Building sustainable tech ecosystems",
       speaker: "David Kim",
       gradient:
@@ -199,14 +133,66 @@ export default function PodcastPage() {
       portraitSrc: "/img/meet-the-host.png",
       portraitPosition: "50% 28%",
     },
+    {
+      type: "lighthouse",
+      title: "Designing resilient AI products",
+      speaker: "Anita Verma",
+      gradient:
+        "radial-gradient(85% 95% at 55% 85%, rgba(34, 197, 235, 0.9) 0%, rgba(34, 197, 235, 0) 60%), linear-gradient(135deg, #0EA5E9 0%, #0B4F6C 100%)",
+      portraitSrc: "/img/episode-portrait-press.png",
+      portraitPosition: "50% 36%",
+    },
+    {
+      type: "bigdata",
+      title: "Scaling data ops without chaos",
+      speaker: "Marco Liu",
+      gradient:
+        "radial-gradient(85% 95% at 55% 85%, rgba(74, 222, 128, 0.9) 0%, rgba(74, 222, 128, 0) 60%), linear-gradient(135deg, #16A34A 0%, #065F46 100%)",
+      portraitSrc: "/img/episode-portrait-2.png",
+      portraitPosition: "50% 44%",
+    },
+    {
+      type: "journeys",
+      title: "From analyst to AI founder",
+      speaker: "Neha Kapoor",
+      gradient:
+        "radial-gradient(85% 95% at 55% 85%, rgba(251, 191, 36, 0.9) 0%, rgba(251, 191, 36, 0) 60%), linear-gradient(135deg, #D97706 0%, #854D0E 100%)",
+      portraitSrc: "/img/meet-the-host.png",
+      portraitPosition: "50% 30%",
+    },
+    {
+      type: "slaves",
+      title: "Governance that speeds delivery",
+      speaker: "Omar Phillips",
+      gradient:
+        "radial-gradient(85% 95% at 55% 85%, rgba(96, 165, 250, 0.9) 0%, rgba(96, 165, 250, 0) 60%), linear-gradient(135deg, #1D4ED8 0%, #0B1B46 100%)",
+      portraitSrc: "/img/episode-portrait-press.png",
+      portraitPosition: "50% 40%",
+    },
   ] as const;
 
-  const [episodeFilter, setEpisodeFilter] = useState<"all" | "press" | "interview">("all");
+  const [episodeFilter, setEpisodeFilter] = useState<"slaves" | "lighthouse" | "bigdata" | "journeys">("slaves");
 
   const filteredEpisodeCards = useMemo(() => {
-    if (episodeFilter === "all") return episodeCards;
     return episodeCards.filter((c) => c.type === episodeFilter);
   }, [episodeFilter, episodeCards]);
+
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+  const [activeHostIndex, setActiveHostIndex] = useState(0);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => {
+      setActiveHostIndex(carouselApi.selectedScrollSnap());
+    };
+    carouselApi.on("select", onSelect);
+    carouselApi.on("reInit", onSelect);
+    onSelect();
+    return () => {
+      carouselApi.off("select", onSelect);
+      carouselApi.off("reInit", onSelect);
+    };
+  }, [carouselApi]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -215,6 +201,7 @@ export default function PodcastPage() {
         style={{
           background:
             "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 88%), radial-gradient(120% 100% at 50% 0%, #F3FF85 0%, #D9FF00 45%, #C7F000 100%)",
+          paddingTop: "44px",
         }}
       >
         <div
@@ -233,68 +220,73 @@ export default function PodcastPage() {
             className="relative flex items-center justify-center"
             style={{
               minHeight: "calc(100vh - 160px)",
-              paddingTop: "40px",
+              paddingTop: "0px",
               paddingBottom: "40px",
             }}
           >
-            {/* Decorative icons */}
-            {heroIcons.map(({ Component, size, strokeWidth, style }, idx) => (
-              <Component
-                key={idx}
-                aria-hidden="true"
-                className="hidden md:block"
-                style={{ position: "absolute", ...style }}
-                size={size}
-                strokeWidth={strokeWidth}
-              />
-            ))}
-
-            {/* Center stack */}
-            <div style={{ textAlign: "center" }}>
-              <h1
-                style={{
-                  fontFamily: "Poppins, sans-serif",
-                  fontWeight: 800,
-                  letterSpacing: "-0.02em",
-                  color: "#0B1BFF",
-                  margin: 0,
-                  fontSize: "clamp(56px, 8vw, 120px)",
-                  lineHeight: 0.9,
-                  textTransform: "lowercase",
-                }}
-              >
-                the
-                <br />
-                hype
-                <br />
-                cycle
-              </h1>
-
+            <div
+              className="flex flex-col md:flex-row items-center justify-between gap-10 w-full"
+              style={{ maxWidth: "1200px", margin: "0 auto" }}
+            >
               <div
                 style={{
-                  marginTop: "14px",
-                  fontFamily: "Poppins, sans-serif",
-                  fontWeight: 800,
-                  letterSpacing: "0.08em",
-                  color: "#0B1BFF",
-                  fontSize: "clamp(14px, 2vw, 18px)",
+                  textAlign: "left",
+                  maxWidth: "760px",
+                  width: "100%",
                 }}
               >
-                PODCAST
+                <div
+                  style={{
+                    marginTop: "14px",
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 800,
+                    letterSpacing: "0.08em",
+                    color: "#0B1BFF",
+                    fontSize: "clamp(14px, 2vw, 18px)",
+                  }}
+                >
+                  PODCAST
+                </div>
+
+                <h1
+                  style={{
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    color: "#0B1BFF",
+                    margin: 0,
+                    fontSize: "clamp(56px, 8vw, 120px)",
+                    lineHeight: 0.9,
+                    textTransform: "none",
+                  }}
+                >
+                  The Hype Cycle
+                </h1>
+
+                <div
+                  style={{
+                    marginTop: "22px",
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.28em",
+                    textTransform: "uppercase",
+                    color: "rgba(11, 27, 255, 0.85)",
+                    fontSize: "clamp(12px, 1.6vw, 16px)",
+                  }}
+                >
+                  Riding the Waves of Trends
+                </div>
               </div>
 
-              <div
-                style={{
-                  marginTop: "22px",
-                  fontFamily: "Poppins, sans-serif",
-                  fontWeight: 500,
-                  letterSpacing: "0.28em",
-                  textTransform: "uppercase",
-                  color: "rgba(11, 27, 255, 0.85)",
-                  fontSize: "clamp(12px, 1.6vw, 16px)",
-                }}
-              >
-                Riding the Waves of Trends
+              <div style={{ flexShrink: 0, width: "100%", maxWidth: "680px" }}>
+                <Image
+                  src="/img/podcast-hero-illustration.png"
+                  alt="Podcast host illustration"
+                  width={800}
+                  height={600}
+                  style={{ width: "100%", height: "auto" }}
+                  priority
+                />
               </div>
             </div>
           </div>
@@ -426,7 +418,7 @@ export default function PodcastPage() {
       </section>
 
       {/* Meet the Host */}
-      <section className="bg-white py-16 md:py-24">
+      <section className="bg-white pt-4 pb-16 md:pt-8 md:pb-24">
         <div
           style={{
             width: "100%",
@@ -436,15 +428,8 @@ export default function PodcastPage() {
           }}
         >
           <h2
-            className="text-center fade-in-blur text-3xl md:text-4xl font-semibold text-[#161d26]"
-            style={{
-              textAlign: "center",
-              fontFamily: "Poppins, sans-serif",
-              maxWidth: "780px",
-              width: "100%",
-              margin: "0 auto 28px",
-              willChange: "opacity, transform, filter",
-            }}
+            className="text-center text-3xl md:text-4xl font-semibold text-[#161d26]"
+            style={{ fontFamily: "Poppins, sans-serif", margin: 0, marginBottom: "8px" }}
           >
             Meet our Host&apos;s
           </h2>
@@ -452,6 +437,7 @@ export default function PodcastPage() {
           <Carousel
             className="mx-auto w-full max-w-5xl"
             opts={{ loop: true, align: "center" }}
+            setApi={setCarouselApi}
           >
             <CarouselContent>
               {hosts.map((host) => (
@@ -510,10 +496,23 @@ export default function PodcastPage() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-
-            <CarouselPrevious className="left-2 md:-left-10" />
-            <CarouselNext className="right-2 md:-right-10" />
           </Carousel>
+
+          <div className="mt-6 flex items-center justify-center gap-3">
+            {hosts.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => carouselApi?.scrollTo(idx)}
+                aria-label={`Go to host ${idx + 1}`}
+                aria-pressed={activeHostIndex === idx}
+                className="h-2.5 w-2.5 rounded-full transition-colors"
+                style={{
+                  backgroundColor: activeHostIndex === idx ? "rgba(55, 65, 81, 0.55)" : "rgba(55, 65, 81, 0.2)",
+                }}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -529,27 +528,17 @@ export default function PodcastPage() {
         >
           <div className="text-center">
             <h2
+              className="text-center text-3xl md:text-4xl font-semibold text-[#161d26]"
               style={{
                 fontFamily: "Poppins, sans-serif",
-                fontSize: "clamp(28px, 3.2vw, 48px)",
-                lineHeight: "1.1",
-                fontWeight: 300,
-                color: "#111827",
                 margin: 0,
               }}
             >
               Watch the Latest Episodes
             </h2>
             <p
-              style={{
-                marginTop: "14px",
-                marginBottom: 0,
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "16px",
-                lineHeight: "28px",
-                fontWeight: 400,
-                color: "rgba(17, 24, 39, 0.72)",
-              }}
+              className="text-sm md:text-base text-[#4b5563] max-w-[720px] mx-auto text-center"
+              style={{ marginTop: "8px", marginBottom: 0, fontFamily: "Poppins, sans-serif" }}
             >
               All three seasons now live on Crayon Data’s YouTube channel!
             </p>
@@ -560,27 +549,33 @@ export default function PodcastPage() {
             <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4 flex items-center justify-center">
               <Tabs
                 value={episodeFilter}
-                onValueChange={(v) => setEpisodeFilter(v as "all" | "press" | "interview")}
+                onValueChange={(v) => setEpisodeFilter(v as "slaves" | "lighthouse" | "bigdata" | "journeys")}
                 className="items-center gap-3"
               >
                 <TabsList className="bg-transparent h-auto rounded-none p-0 gap-8">
                   <TabsTrigger
-                    value="all"
+                    value="slaves"
                     className="flex-none bg-transparent px-0 py-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
-                    All
+                    Slaves to the Algo
                   </TabsTrigger>
                   <TabsTrigger
-                    value="press"
+                    value="lighthouse"
                     className="flex-none bg-transparent px-0 py-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
-                    Press
+                    Lighthouse
                   </TabsTrigger>
                   <TabsTrigger
-                    value="interview"
+                    value="bigdata"
                     className="flex-none bg-transparent px-0 py-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
-                    Interview
+                    Big Data Made Simple
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="journeys"
+                    className="flex-none bg-transparent px-0 py-2 rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                  >
+                    Personal Journeys
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
