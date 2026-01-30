@@ -696,34 +696,28 @@ export default function ResellerPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
-                      title: "Recurring Revenue",
-                      description: "Build predictable, subscription-based income from enterprise AI customers.",
-                      iconSrc: "/percentage-round.png",
+                      title: "Recurring Partner Revenue",
+                      description: "Build predictable, subscription-based income streams from long-term enterprise AI deployments.",
                     },
                     {
-                      title: "High Partner Margins",
-                      description: "Access partner-only pricing and strong commercial incentives.",
-                      iconSrc: "/coins.png",
+                      title: "Attractive Reseller Margins",
+                      description: "Benefit from reseller-only pricing and competitive commercial incentives that protect profitability.",
                     },
                     {
-                      title: "Faster Sales Cycles",
-                      description: "Close deals quicker with proven, enterprise-ready AI solutions.",
-                      icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />,
+                      title: "Faster Deal Closure",
+                      description: "Shorten sales cycles with production-ready AI agents, proven use cases, and live demos.",
                     },
                     {
-                      title: "Co-Selling Advantage",
-                      description: "Win larger opportunities through joint selling and deal support.",
-                      iconSrc: "/headset-help.png",
+                      title: "Co-Selling & Deal Support",
+                      description: "Win larger opportunities with joint selling, pre-sales assistance, and enterprise deal execution support.",
                     },
                     {
-                      title: "Enterprise-Grade AI",
-                      description: "Offer secure, scalable, and compliant AI solutions.",
-                      iconSrc: "/fingerprint-circled-lock.png",
+                      title: "Enterprise-Grade AI Portfolio",
+                      description: "Offer secure, scalable, and compliant AI solutions trusted by enterprise customers.",
                     },
                     {
-                      title: "Multi-Industry Reach",
-                      description: "Sell AI use cases across BFSI, Retail, Travel, Telecom, Healthcare, and SaaS.",
-                      icon: <Globe className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />,
+                      title: "Multi-Industry Revenue Opportunities",
+                      description: "Sell AI solutions across BFSI, Retail, Travel, Telecom, Healthcare, and SaaS industries.",
                     },
                   ].map((item, idx) => (
                     <div
@@ -758,20 +752,6 @@ export default function ResellerPage() {
                           zIndex: 1,
                         }}
                       >
-                        <div className="flex items-center justify-center mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6 text-[#111827]">
-                          {item.iconSrc ? (
-                            <Image
-                              src={item.iconSrc}
-                              alt={item.title}
-                              width={24}
-                              height={24}
-                              className="object-contain w-5 h-5 md:w-6 md:h-6"
-                              unoptimized
-                            />
-                          ) : (
-                            item.icon
-                          )}
-                        </div>
                         <h3
                           className="text-xs md:text-sm font-semibold text-[#111827]"
                           style={{ fontFamily: "Poppins" }}
