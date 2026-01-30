@@ -678,7 +678,7 @@ export default function ResellerPage() {
                     fontFamily: "Poppins",
                   }}
                 >
-                  Why Resellers Choose Tangram AI
+                  Our Tangram AI Reseller Benefits
                 </h2>
                 <p
                   className="fade-in-section text-sm md:text-base text-[#4b5563] max-w-[720px]"
@@ -687,7 +687,7 @@ export default function ResellerPage() {
                     lineHeight: "150%",
                   }}
                 >
-                  Turn AI demand into recurring revenue with pre-built, enterprise-ready agents. Get co-selling and marketing support, faster deal cycles, preferential pricing, and dedicated partner success so you can launch, scale, and expand every account with confidence.
+                  The Tangram AI Reseller Program is designed to help partners scale revenue faster by reselling enterprise-ready AI solutions without the cost or complexity of building AI products in-house. As a Tangram AI reseller, you gain access to a proven AI portfolio, strong commercial incentives, and full sales support to win and grow enterprise accounts.
                 </p>
               </div>
 
