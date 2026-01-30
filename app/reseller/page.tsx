@@ -743,10 +743,12 @@ export default function ResellerPage() {
                         Recurring Revenue
                       </h3>
                       <p
-                        className="text-xs md:text-sm text-[#4b5563] mt-1"
+                        className="text-xs md:text-sm"
                         style={{
-                          fontFamily: "Poppins",
-                          lineHeight: "150%",
+                          fontFamily: "Poppins, sans-serif",
+                          fontWeight: 500,
+                          lineHeight: "140%",
+                          color: "#111827",
                         }}
                       >
                         Build predictable, subscription-based income from enterprise AI deals.
