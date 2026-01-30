@@ -436,15 +436,14 @@ export default function PodcastPage() {
           }}
         >
           <h2
-            className="text-center"
+            className="text-center fade-in-blur text-3xl md:text-4xl font-semibold text-[#161d26]"
             style={{
+              textAlign: "center",
               fontFamily: "Poppins, sans-serif",
-              fontSize: "clamp(28px, 3.2vw, 48px)",
-              lineHeight: "1.1",
-              fontWeight: 300,
-              color: "#111827",
-              margin: 0,
-              marginBottom: "28px",
+              maxWidth: "780px",
+              width: "100%",
+              margin: "0 auto 28px",
+              willChange: "opacity, transform, filter",
             }}
           >
             Meet our Host&apos;s
