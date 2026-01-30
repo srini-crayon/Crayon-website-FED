@@ -673,20 +673,9 @@ export default function ResellerPage() {
               {/* Left side - Text content */}
               <div className="flex-1 md:w-1/2">
                 <h2
-                  className="mb-6 fade-in-blur"
+                  className="mb-6 text-3xl md:text-4xl font-semibold text-[#161d26] fade-in-blur"
                   style={{
                     fontFamily: "Poppins",
-                    fontWeight: 600,
-                    fontStyle: "normal",
-                    fontSize: "32px",
-                    lineHeight: "100%",
-                    letterSpacing: "0px",
-                    verticalAlign: "middle",
-                    background: "linear-gradient(90deg, #02341A 0%, #006E84 100%)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    color: "transparent",
                   }}
                 >
                   Why Resellers Choose Tangram AI
