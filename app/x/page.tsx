@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import Script from "next/script"
 import avatarLogo from "../../assets/image-096a6d53-9b07-4328-b61e-220a17f56711.png"
 import tweetMock from "../../assets/image-2d43e253-a02a-4b38-bce1-6b5a47a00ceb.png"
 import tweetMockAlt from "../../assets/image-eaaf1285-a2e7-4e23-9790-76989c330f0e.png"
@@ -31,6 +32,13 @@ export default function XPage() {
             priority
           />
         </div>
+
+        {/* Embedded Twitter feed */}
+        <section className="flex justify-center mb-10">
+          <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
+          <div className="elfsight-app-bcc6e0ac-14ab-48a8-b58b-6c75d359b3b2" data-elfsight-app-lazy />
+        </section>
+
         <div className="flex flex-col lg:flex-row gap-8 justify-start items-start mt-10">
           <article
             className="w-[360px] flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white lg:sticky lg:top-20 lg:self-start"
