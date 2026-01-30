@@ -681,15 +681,10 @@ export default function ResellerPage() {
                   Why Resellers Choose Tangram AI
                 </h2>
                 <p
-                  className="fade-in-section"
+                  className="fade-in-section text-sm md:text-base text-[#4b5563] max-w-[720px]"
                   style={{
                     fontFamily: "Poppins",
-                    fontWeight: 400,
-                    fontStyle: "normal",
-                    fontSize: "18px",
                     lineHeight: "150%",
-                    letterSpacing: "0px",
-                    color: "#374151",
                   }}
                 >
                   Turn AI demand into recurring revenue with pre-built, enterprise-ready agents. Get co-selling and marketing support, faster deal cycles, preferential pricing, and dedicated partner success so you can launch, scale, and expand every account with confidence.
