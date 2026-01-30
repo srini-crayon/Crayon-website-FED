@@ -468,42 +468,7 @@ export default function ResellerPage() {
             </div>
 
             <div className="relative">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
-                  <div className="mb-4 text-[#0f766e]">
-                    <Target className="w-6 h-6" aria-hidden="true" />
-                  </div>
-                  <h3
-                    className="fade-in-blur transition-all duration-300 mb-3"
-                    style={{
-                      color: "#181818",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(15px, 3.5vw, 18px)",
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                      willChange: "opacity, transform, filter",
-                    }}
-                  >
-                    Consulting Firms &amp; SIs
-                  </h3>
-                  <p
-                    className="fade-in-section"
-                    style={{
-                      color: "#1f2937",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(14px, 3.5vw, 16px)",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                    }}
-                  >
-                    Add enterprise AI to transformation programs and increase deal value.
-                  </p>
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <div className="rounded-[4px] border border-gray-200 bg-white p-6">
                   <div className="mb-4 text-[#2563eb]">
                     <Globe className="w-6 h-6" aria-hidden="true" />
@@ -521,7 +486,7 @@ export default function ResellerPage() {
                       willChange: "opacity, transform, filter",
                     }}
                   >
-                    IT Resellers &amp; MSPs
+                    Reach Enterprises
                   </h3>
                   <p
                     className="fade-in-section"
@@ -535,49 +500,13 @@ export default function ResellerPage() {
                       letterSpacing: "-0.4px",
                     }}
                   >
-                    Expand portfolios with AI automation that drives retention.
+                    Get your <span style={{ fontWeight: 500 }}>AI solutions</span> in front of enterprises actively looking for production-ready AI.
                   </p>
                 </div>
 
                 <div className="rounded-[4px] border border-gray-200 bg-white p-6">
-                  <div className="mb-4 text-[#f97316]">
+                  <div className="mb-4 text-[#f59e0b]">
                     <TrendingUp className="w-6 h-6" aria-hidden="true" />
-                  </div>
-                  <h3
-                    className="fade-in-blur transition-all duration-300 mb-3"
-                    style={{
-                      color: "#181818",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(15px, 3.5vw, 18px)",
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                      whiteSpace: "nowrap",
-                      willChange: "opacity, transform, filter",
-                    }}
-                  >
-                    Digital &amp; Tech Agencies
-                  </h3>
-                  <p
-                    className="fade-in-section"
-                    style={{
-                      color: "#4b5563",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(14px, 3.5vw, 16px)",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                    }}
-                  >
-                    Deliver AI-powered CX, personalization, and analytics.
-                  </p>
-                </div>
-
-                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
-                  <div className="mb-4 text-[#7c3aed]">
-                    <Plus className="w-6 h-6" aria-hidden="true" />
                   </div>
                   <h3
                     className="fade-in-blur transition-all duration-300 mb-3"
@@ -592,7 +521,7 @@ export default function ResellerPage() {
                       willChange: "opacity, transform, filter",
                     }}
                   >
-                    ISVs &amp; SaaS Vendors
+                    Sell Faster
                   </h3>
                   <p
                     className="fade-in-section"
@@ -606,7 +535,42 @@ export default function ResellerPage() {
                       letterSpacing: "-0.4px",
                     }}
                   >
-                    ISVs &amp; SaaS Vendors – Resell or bundle AI agents to enhance product value and differentiation.
+                    Go to market with <span style={{ fontWeight: 500 }}>co-sell support</span> that helps shorten enterprise sales cycles.
+                  </p>
+                </div>
+
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#22c55e]">
+                    <Target className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="fade-in-blur transition-all duration-300 mb-3"
+                    style={{
+                      color: "#181818",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(16px, 4vw, 20px)",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                      willChange: "opacity, transform, filter",
+                    }}
+                  >
+                    Scale Confidently
+                  </h3>
+                  <p
+                    className="fade-in-section"
+                    style={{
+                      color: "#4b5563",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                    }}
+                  >
+                    Deploy and scale with <span style={{ fontWeight: 500, color: "#111111" }}>enterprise-grade security, integration, compliance</span> built in.
                   </p>
                 </div>
               </div>
