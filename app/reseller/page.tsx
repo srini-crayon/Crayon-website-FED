@@ -737,7 +737,7 @@ export default function ResellerPage() {
                         unoptimized
                       />
                       <h3
-                        className="text-sm md:text-base font-semibold text-[#111827]"
+                        className="text-xs md:text-sm font-semibold text-[#111827]"
                         style={{ fontFamily: "Poppins" }}
                       >
                         Recurring Revenue
