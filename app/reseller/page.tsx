@@ -678,7 +678,7 @@ export default function ResellerPage() {
                     fontFamily: "Poppins",
                   }}
                 >
-                  Our Tangram AI Reseller Benefits
+                  Our Reseller Benefits
                 </h2>
                 <p
                   className="fade-in-section text-sm md:text-base text-[#4b5563] max-w-[720px]"
