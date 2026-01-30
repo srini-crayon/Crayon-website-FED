@@ -20,17 +20,6 @@ export default function XPage() {
       }}
     >
       <div className="w-full max-w-5xl mx-auto">
-        <div className="flex justify-center mb-6 -mt-6">
-          <Image
-            src={xLogo}
-            alt="X logo"
-            width={260}
-            height={156}
-            className="h-auto w-[260px] opacity-70"
-            priority
-          />
-        </div>
-
         {/* Embedded Twitter feed */}
         <section className="flex justify-center mb-10">
           <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
