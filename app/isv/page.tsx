@@ -134,8 +134,8 @@ export default function ISVPage() {
     { section: "General", q: "Who is this program for?", a: "ISVs and AI teams building agent-based or AI-powered solutions." },
     { section: "General", q: "What solutions are supported?", a: "Enterprise and industry-specific AI agents and applications." },
     { section: "General", q: "Do I need existing customers?", a: "No. Early-stage and established ISVs are welcome." },
-    { section: "General", q: "How does the marketplace work?", a: "Approved solutions are listed for customer discovery and deployment." },
-    { section: "General", q: "Why Tangram.ai vs other marketplaces?", a: "Active co-selling, GTM alignment, and hands-on partner support." },
+    { section: "General", q: "How does the store work?", a: "Approved solutions are listed for customer discovery and deployment." },
+    { section: "General", q: "Why Tangram.ai vs other stores?", a: "Active co-selling, GTM alignment, and hands-on partner support." },
     // Go-To-Market & Sales
     { section: "Go-To-Market & Sales", q: "How does co-selling work?", a: "Tangram.ai collaborates on qualified deals to accelerate sales." },
     { section: "Go-To-Market & Sales", q: "Can I still sell independently?", a: "Yes. You keep full sales and marketing freedom." },
@@ -372,7 +372,7 @@ export default function ISVPage() {
                 willChange: "opacity, transform",
               }}
             >
-              Launch, monetize, and grow your <span style={{ fontWeight: 600 }}>enterprise-ready AI</span> and <span style={{ fontWeight: 600 }}>GenAI solutions</span> through Tangram AI’s <span style={{ fontWeight: 600 }}>ISV marketplace</span>, with built-in co-selling, go-to-market support, and seamless enterprise integration.
+              Launch, monetize, and grow your <span style={{ fontWeight: 600 }}>enterprise-ready AI</span> and <span style={{ fontWeight: 600 }}>GenAI solutions</span> through Tangram AI’s <span style={{ fontWeight: 600 }}>ISV store</span>, with built-in co-selling, go-to-market support, and seamless enterprise integration.
             </p>
 
             {/* Buttons */}
@@ -425,7 +425,7 @@ export default function ISVPage() {
             {/* How It Works link removed per request */}
 
             {/* Static Logo Row */}
-            <div className="mt-16 md:mt-24 fade-in-section">
+            <div className="mt-24 md:mt-32 fade-in-section">
               <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-6">
                 <span
                   className="text-sm text-[#6b7280]"
@@ -445,9 +445,9 @@ export default function ISVPage() {
         </section>
 
         {/* Why ISVs Choose Tangram Section */}
-        <section className="w-full px-8 md:px-12 lg:px-16 pt-12 md:pt-16 lg:pt-20 pb-12 md:pb-16 lg:pb-20 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
+        <section className="w-full px-8 md:px-12 lg:px-16 pt-10 md:pt-14 lg:pt-18 pb-12 md:pb-16 lg:pb-20 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
           <div className="max-w-[1200px] mx-auto flex flex-col gap-10 md:gap-12">
-            <div className="text-center flex flex-col gap-3 items-center">
+            <div className="text-center flex flex-col gap-3 items-center -mt-4">
               <h2
                 className="fade-in-blur text-3xl md:text-4xl font-semibold text-[#161d26]"
                 style={{
@@ -601,7 +601,7 @@ export default function ISVPage() {
                     willChange: "opacity, transform",
                   }}
                 >
-                  See how Tangram AI helps ISVs onboard, build, launch, and scale enterprise-ready AI solutions through our marketplace, co-sell support, and deployment capabilities.
+                See how Tangram AI helps ISVs onboard, build, launch, and scale enterprise-ready AI solutions through our store, co-sell support, and deployment capabilities.
                 </p>
                 <div className="w-full max-w-[720px] mt-2">
                   <img
@@ -704,7 +704,7 @@ export default function ISVPage() {
                         />
                       </div>
                       <p className="text-[#111] text-base leading-relaxed mb-4">
-                        Tangram AI helped us evolve our AI solution into an <span style={{ fontWeight: 600 }}>enterprise-ready, scalable product</span>. With access to the <span style={{ fontWeight: 600 }}>ISV marketplace and co-sell support</span>, we shortened time-to-market <span style={{ fontWeight: 600 }}>by ~30–40%</span> and enabled adoption across <span style={{ fontWeight: 600 }}>multiple enterprise use cases</span>.
+                        Tangram AI helped us evolve our AI solution into an <span style={{ fontWeight: 600 }}>enterprise-ready, scalable product</span>. With access to the <span style={{ fontWeight: 600 }}>ISV store and co-sell support</span>, we shortened time-to-market <span style={{ fontWeight: 600 }}>by ~30–40%</span> and enabled adoption across <span style={{ fontWeight: 600 }}>multiple enterprise use cases</span>.
                       </p>
                     </div>
                   </div>

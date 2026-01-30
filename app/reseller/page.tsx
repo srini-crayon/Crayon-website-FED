@@ -7,17 +7,18 @@ import Image from "next/image"
 import { useModal } from "../../hooks/use-modal"
 import { useAuthStore } from "../../lib/store/auth.store"
 import { useRouter } from "next/navigation"
-import { Target, Globe, TrendingUp, Percent, DollarSign, Monitor, Headphones, ChevronLeft, ChevronRight, Plus, X } from "lucide-react"
+import { Target, Globe, TrendingUp, Play, Plus, X } from "lucide-react"
+import veehiveLogo from "../../assets/image-470636c9-6efb-42e4-8eb7-65103b1c7a7d.png"
+import veehivePortrait from "../../assets/image-9fe0672b-99a3-4e00-8069-a8377de93483.png"
+import leftCardPortrait from "../../assets/image-95aa0dfb-52a9-414a-9056-bf42ddc01c6d.png"
+import rightCardPortrait from "../../assets/image-e8bc3a81-91bd-425f-9ff9-c98c08858e28.png"
 
 export default function ResellerPage() {
   const { openModal } = useModal()
   const { user, isAuthenticated } = useAuthStore()
   const router = useRouter()
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null)
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [progress, setProgress] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(true)
-  const totalTestimonials = 3
+  const [faqFilter, setFaqFilter] = useState<string>("General")
 
   // Hover states for feature cards
   const [hoveredCard1, setHoveredCard1] = useState(false)
@@ -27,91 +28,6 @@ export default function ResellerPage() {
   // Mouse position state for radial hover effect (in pixels relative to hero section)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const heroSectionRef = useRef<HTMLElement>(null)
-
-  // Get the actual testimonial index (0-2) for display purposes
-  const actualTestimonialIndex = currentTestimonial >= totalTestimonials
-    ? currentTestimonial - totalTestimonials
-    : currentTestimonial
-
-  // Reset progress when testimonial actually changes
-  useEffect(() => {
-    setProgress(0)
-  }, [actualTestimonialIndex])
-
-  // Auto-scroll functionality with progress timer
-  useEffect(() => {
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          return 0
-        }
-        return prev + 2 // Increment by 2% every 100ms (5 seconds total)
-      })
-    }, 100) // Update every 100ms for smooth animation
-
-    const slideInterval = setInterval(() => {
-      setIsTransitioning(true)
-      setCurrentTestimonial((prev) => {
-        const next = prev + 1
-        // If we've reached the duplicate set, jump back to the start seamlessly
-        if (next >= totalTestimonials) {
-          setTimeout(() => {
-            setIsTransitioning(false)
-            setCurrentTestimonial(0)
-            setTimeout(() => {
-              setIsTransitioning(true)
-            }, 10)
-          }, 600)
-          return totalTestimonials
-        }
-        return next
-      })
-    }, 5000) // Change slide every 5 seconds
-
-    return () => {
-      clearInterval(progressInterval)
-      clearInterval(slideInterval)
-    }
-  }, [totalTestimonials])
-
-  const goToPrevious = () => {
-    setIsTransitioning(true)
-    setProgress(0) // Reset progress when manually navigating
-    setCurrentTestimonial((prev) => {
-      if (prev === 0) {
-        // Jump to the end of duplicate set for seamless loop
-        setTimeout(() => {
-          setIsTransitioning(false)
-          setCurrentTestimonial(totalTestimonials)
-          setTimeout(() => {
-            setIsTransitioning(true)
-          }, 10)
-        }, 600)
-        return totalTestimonials * 2
-      }
-      return prev - 1
-    })
-  }
-
-  const goToNext = () => {
-    setIsTransitioning(true)
-    setProgress(0) // Reset progress when manually navigating
-    setCurrentTestimonial((prev) => {
-      const next = prev + 1
-      // If we've reached the duplicate set, jump back to the start seamlessly
-      if (next >= totalTestimonials * 2) {
-        setTimeout(() => {
-          setIsTransitioning(false)
-          setCurrentTestimonial(0)
-          setTimeout(() => {
-            setIsTransitioning(true)
-          }, 10)
-        }, 600)
-        return totalTestimonials * 2
-      }
-      return next
-    })
-  }
 
   // Rotate gradient animation for button
   useEffect(() => {
@@ -229,6 +145,59 @@ export default function ResellerPage() {
     }
   }
 
+  const faqEntries = [
+    // General
+    { section: "General", q: "What is the Tangram AI Reseller Program?", a: "It enables partners to resell, co-sell, and deliver enterprise-ready AI agents and solutions using Tangram AI’s platform, pre-built agents, and enterprise capabilities to accelerate adoption and create recurring revenue." },
+    { section: "General", q: "Who should join the Tangram AI Reseller Program?", a: "Ideal for system integrators, IT service providers, AI consultancies, digital transformation firms, managed service providers, and enterprise software resellers serving B2B or enterprise customers." },
+    { section: "General", q: "Is the Tangram AI Reseller Program global?", a: "Yes. Tangram AI supports reseller partnerships across multiple regions, subject to commercial, regulatory, and compliance considerations." },
+    { section: "General", q: "How long does it take to become a Tangram AI reseller?", a: "Partner approval and onboarding typically take 1–2 weeks, depending on business alignment, documentation, and onboarding readiness." },
+    { section: "General", q: "Is there a cost to join the Tangram AI Reseller Program?", a: "There is no upfront fee to apply. Commercial terms are defined as part of the reseller agreement." },
+
+    // Business
+    { section: "Business", q: "How do resellers generate revenue with Tangram AI?", a: "Through software license resale, subscription-based recurring revenue, implementation and integration services, custom AI agent development, and managed or support services." },
+    { section: "Business", q: "Does Tangram AI support co-selling?", a: "Yes. Partners can lead the relationship while Tangram AI provides solution expertise, demos, and enterprise support." },
+    { section: "Business", q: "Do resellers own the customer relationship?", a: "Yes. In reseller-led engagements, partners own the customer relationship while Tangram AI supports delivery, escalation, and platform success." },
+    { section: "Business", q: "Is deal registration available?", a: "Yes. Tangram AI offers deal registration to protect partner opportunities and prevent channel conflict." },
+    { section: "Business", q: "Can resellers white-label Tangram AI solutions?", a: "White-label options may be available depending on the engagement model and agreement terms." },
+
+    // Value
+    { section: "Value", q: "What business value does Tangram AI provide to resellers?", a: "Helps partners reduce AI solution build time, increase average deal size, deliver enterprise-grade AI without heavy R&D, create predictable recurring revenue, and differentiate with production-ready agents." },
+    { section: "Value", q: "How does Tangram AI help partners win enterprise deals?", a: "Provides pre-built AI agents, demo environments, solution architectures, enterprise documentation, and co-selling support to close deals faster." },
+    { section: "Value", q: "What makes Tangram AI different from other AI platforms?", a: "Tangram AI focuses on enterprise-ready AI agents with built-in governance, scalability, and integration capabilities for real-world business use cases." },
+    { section: "Value", q: "Can Tangram AI help partners enter new industries?", a: "Yes. Solutions are industry-agnostic and can be tailored for banking, retail, healthcare, telecom, travel, logistics, and other verticals." },
+
+    // Commercial
+    { section: "Commercial", q: "How is pricing structured for Tangram AI resellers?", a: "Pricing is based on partner tier, deal size, region, and engagement model. Resellers receive preferential pricing versus direct enterprise customers." },
+    { section: "Commercial", q: "Does Tangram AI support subscription-based pricing?", a: "Yes. Subscription and usage-based pricing models are supported to enable recurring revenue." },
+    { section: "Commercial", q: "Can resellers define their own customer pricing?", a: "In most cases, resellers can set end-customer pricing while following agreed commercial guidelines." },
+    { section: "Commercial", q: "Are there different reseller tiers?", a: "Yes. Tangram AI offers tiered reseller levels based on performance, capability, and engagement, with increasing benefits and incentives." },
+    { section: "Commercial", q: "Are enterprise contracts supported?", a: "Yes. Tangram AI supports enterprise-grade contracts, including multi-year agreements and volume-based pricing." },
+
+    // Technical
+    { section: "Technical", q: "Do resellers need deep AI or machine learning expertise?", a: "No. Tangram AI abstracts AI complexity through pre-built agents and workflows; technical partners can extend or customize when needed." },
+    { section: "Technical", q: "How are Tangram AI solutions deployed?", a: "Tangram AI supports secure cloud-based deployments and enterprise integration models based on customer requirements." },
+    { section: "Technical", q: "Can Tangram AI integrate with existing enterprise systems?", a: "Yes. Tangram AI integrates with CRMs, ERPs, data platforms, internal APIs, and other enterprise systems." },
+    { section: "Technical", q: "Is customization supported?", a: "Yes. AI agents can be configured, extended, and customized to match specific customer workflows and business needs." },
+    { section: "Technical", q: "Who handles implementation and maintenance?", a: "Implementation can be handled by the reseller, Tangram AI, or through a joint delivery model." },
+
+    // Enterprise
+    { section: "Enterprise", q: "Is Tangram AI suitable for large enterprises?", a: "Yes. Tangram AI is designed for enterprise-scale deployments with governance, security, and scalability." },
+    { section: "Enterprise", q: "How does Tangram AI address data security?", a: "Tangram AI follows enterprise-grade security practices including access controls, data isolation, and secure deployment architectures." },
+    { section: "Enterprise", q: "Can Tangram AI be used in regulated industries?", a: "Yes. Tangram AI supports deployments in regulated industries, subject to customer compliance requirements." },
+    { section: "Enterprise", q: "Does Tangram AI support multi-tenant environments?", a: "Yes. Tangram AI supports multi-tenant and multi-account architectures for enterprises and partners." },
+    { section: "Enterprise", q: "Is auditability supported?", a: "Yes. Tangram AI provides logging and monitoring to meet enterprise audit and governance needs." },
+
+    // Support
+    { section: "Support", q: "What support does Tangram AI provide to resellers?", a: "Resellers receive onboarding support, technical documentation, partner enablement, and escalation channels based on partner tier." },
+    { section: "Support", q: "Is training available for reseller teams?", a: "Yes. Tangram AI provides product training, sales enablement, and technical onboarding resources." },
+    { section: "Support", q: "Are SLAs available?", a: "Yes. Enterprise-grade SLAs are available depending on the customer agreement and deployment model." },
+
+    // Legal
+    { section: "Legal", q: "What agreements are required to become a reseller?", a: "Resellers must sign a Tangram AI reseller or partner agreement defining commercial, legal, and operational terms." },
+    { section: "Legal", q: "Who owns the intellectual property?", a: "Tangram AI retains ownership of its platform and core IP, while partners retain ownership of their proprietary services and extensions." },
+    { section: "Legal", q: "How is compliance managed?", a: "Compliance responsibilities are defined contractually and aligned with customer, regional, and regulatory requirements." },
+  ]
+
   return (
     <div className="min-h-screen" style={{ scrollBehavior: "smooth" }}>
       {/* Content wrapper */}
@@ -286,34 +255,21 @@ export default function ResellerPage() {
                 fontFamily: "Poppins",
                 fontWeight: 500,
                 fontStyle: "normal",
-                fontSize: "52px",
-                lineHeight: "54px",
+                fontSize: "42px",
+                lineHeight: "48px",
                 textAlign: "center",
                 color: "var(--Interface-Color-Primary-900, #091917)",
-                marginTop: "100px",
+                width: "100%",
+                maxWidth: "1280px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "160px",
                 marginBottom: "18px",
               }}
             >
-              Drive new revenue with<br />
-              AI offerings from 1000+ ISVs
+              Drive New Revenue with 1,000+ AI Agents<br />
+              Across a Growin ISV Ecosystem
             </h1>
-
-            {/* Subtitle */}
-            <p
-              className="text-center fade-in-section"
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: 600,
-                fontStyle: "normal",
-                fontSize: "14px",
-                lineHeight: "24px",
-                textAlign: "center",
-                color: "var(--Interface-Color-Primary-900, #091917)",
-                marginBottom: "6px",
-              }}
-            >
-              Join Tangram.ai Enterprise Agents Reseller Program Accelerator
-            </p>
 
             {/* Description */}
             <p
@@ -322,14 +278,18 @@ export default function ResellerPage() {
                 fontFamily: "Poppins",
                 fontWeight: 400,
                 fontStyle: "normal",
-                fontSize: "14px",
-                lineHeight: "24px",
+                fontSize: "16px",
+                lineHeight: "26px",
                 textAlign: "center",
                 color: "var(--Interface-Color-Primary-900, #091917)",
+                maxWidth: "780px",
+                marginLeft: "auto",
+                marginRight: "auto",
                 marginBottom: "46px",
+                willChange: "opacity, transform",
               }}
             >
-              Start referring or integrating agents from Tangram.ai store with your clients today to unlock new revenue opportunities, accelerate growth, and deliver intelligent AI solutions at scale.
+              Refer, resell, co-sell, or bundle enterprise-ready AI agents from the Tangram AI Store to expand your offerings, grow your pipeline, close larger enterprise deals, and build predictable recurring revenue.
             </p>
 
             {/* Buttons */}
@@ -339,12 +299,13 @@ export default function ResellerPage() {
                 disabled={isAuthenticated}
                 className="border-gradient relative text-white rounded-[4px] px-[28px] transition-all"
                 style={{
+                  willChange: "transform",
                   display: "flex",
                   height: "48px",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Poppins",
                   fontWeight: 500,
                   fontSize: "14px",
                   lineHeight: "normal",
@@ -379,87 +340,19 @@ export default function ResellerPage() {
               </button>
             </div>
 
-            {/* Logo Scroll Section */}
-            <div className="mt-24 md:mt-32 w-full overflow-hidden fade-in-section">
-              <div className="overflow-hidden relative" style={{ transform: "translateZ(0)", willChange: "transform" }}>
-                <div
-                  className="flex items-center animate-scroll-tags"
-                  style={{
-                    width: "fit-content",
-                    animationDuration: "90s",
-                    gap: "4px",
-                  }}
+            {/* Trusted by row */}
+            <div className="mt-24 md:mt-32 fade-in-section">
+              <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-6">
+                <span
+                  className="text-sm text-[#6b7280]"
+                  style={{ fontFamily: "Poppins", letterSpacing: "0.1px" }}
                 >
-                  {/* Logo array - Container.png, Container-1.png through Container-8.png */}
-                  {(() => {
-                    const logos = [
-                      { name: "Container", index: "" },
-                      { name: "Container-1", index: "-1" },
-                      { name: "Container-2", index: "-2" },
-                      { name: "Container-3", index: "-3" },
-                      { name: "Container-4", index: "-4" },
-                      { name: "Container-5", index: "-5" },
-                      { name: "Container-6", index: "-6" },
-                      { name: "Container-7", index: "-7" },
-                      { name: "Container-8", index: "-8" },
-                    ];
-
-                    // Duplicate logos 4 times for seamless scrolling
-                    const duplicatedLogos = [...logos, ...logos, ...logos, ...logos];
-
-                    return duplicatedLogos.map((logo, idx) => {
-                      const grayLogo = `/img/Logo/gray/Container${logo.index}.png`;
-                      const colorLogo = `/img/Logo/Container${logo.index}.png`;
-
-                      return (
-                        <div
-                          key={`logo-${idx}`}
-                          className="flex items-center justify-center shrink-0 group relative"
-                          style={{
-                            height: "64px",
-                            minWidth: "150px",
-                            padding: "0 20px",
-                          }}
-                        >
-                          {/* Grayscale logo (default) */}
-                          <img
-                            src={grayLogo}
-                            alt={logo.name}
-                            className="object-contain transition-opacity duration-300 group-hover:opacity-0"
-                            style={{
-                              height: "64px",
-                              width: "auto",
-                              maxWidth: "200px",
-                              filter: "grayscale(100%)",
-                            }}
-                            onError={(e) => {
-                              // Hide if image doesn't exist
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                          {/* Color logo (on hover) */}
-                          <img
-                            src={colorLogo}
-                            alt={`${logo.name} color`}
-                            className="object-contain absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                            style={{
-                              height: "64px",
-                              width: "auto",
-                              maxWidth: "200px",
-                              margin: "0 auto",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                            onError={(e) => {
-                              // Hide if image doesn't exist
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        </div>
-                      );
-                    });
-                  })()}
+                  Trusted by leading teams
+                </span>
+                <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-14">
+                  <img src="/redington-logo.png" alt="Redington" className="h-8 w-auto object-contain" />
+                  <Image src={veehiveLogo} alt="Veehive" className="h-8 w-auto object-contain" />
+                  <img src="/Mozak_logo.png" alt="Mozark" className="h-8 w-auto object-contain" />
                 </div>
               </div>
             </div>
@@ -987,833 +880,184 @@ export default function ResellerPage() {
           </div>
         </section>
 
-        {/* Reseller's Testimonials Section */}
-        <section className="w-full px-8 md:px-12 lg:px-16 pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-20 lg:pb-24" style={{ backgroundColor: "#F9FAFB", transform: "translateZ(0)", contain: "layout style paint" }}>
-          <div className="max-w-[1130px] mx-auto">
-            {/* Heading */}
-            <h2
-              className="text-center mb-16 fade-in-blur"
-              style={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 600,
-                fontStyle: "normal",
-                fontSize: "32px",
-                lineHeight: "normal",
-                textAlign: "center",
-                background: "linear-gradient(90deg, #7e0034 0%, #d9045b 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Reseller's Testimonials
-            </h2>
-
-            {/* Scrollable Testimonials Container */}
-            <div className="relative overflow-hidden fade-in-section">
-              <div
-                className="flex"
-                style={{
-                  transform: `translateX(-${currentTestimonial * 100}%)`,
-                  transition: isTransitioning ? "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)" : "transform 0s",
-                  willChange: "transform",
-                }}
-              >
-                {/* First Set of Testimonials */}
-                {/* Testimonial Card 1 */}
-                <div className="flex flex-col md:flex-row gap-8 md:gap-[72px] items-center min-w-full">
-                  {/* Logo */}
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "481.33px",
-                      height: "148.77px",
-                      maxWidth: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src="/Mozak_logo.png"
-                      alt="Mozark Logo"
-                      width={482}
-                      height={149}
-                      className="object-contain rounded-[8px]"
-                      unoptimized
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col gap-2 flex-1 w-full md:w-[584px]">
-                    {/* Company Name */}
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "24px",
-                        lineHeight: "1.5",
-                        letterSpacing: "-0.4px",
-                        color: "#181818",
-                      }}
-                    >
-                      Mozark
-                    </h3>
-
-                    {/* Testimonial Text and Author */}
-                    <div className="flex flex-col gap-4">
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "1.7",
-                          letterSpacing: "-0.4px",
-                          color: "#34414e",
-                        }}
-                      >
-                        Partnering with Tangram.ai has accelerated outcomes beyond expectations. Within months, the collaboration has become core to every growth motion we run. Our shared customer obsession drives perfect alignment across every deal — leading to faster closes, higher conversions, and expanded opportunities that power scalable, efficient growth.
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "normal",
-                          color: "#091917",
-                        }}
-                      >
-                        - Chandrasekar Ramamoorthy, CTO
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Testimonial Card 2 */}
-                <div className="flex flex-col md:flex-row gap-8 md:gap-[72px] items-center min-w-full">
-                  {/* Logo */}
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "481.33px",
-                      height: "148.77px",
-                      maxWidth: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src="/Mozak_logo.png"
-                      alt="Mozark Logo"
-                      width={482}
-                      height={149}
-                      className="object-contain rounded-[8px]"
-                      unoptimized
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col gap-2 flex-1 w-full md:w-[584px]">
-                    {/* Company Name */}
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "24px",
-                        lineHeight: "1.5",
-                        letterSpacing: "-0.4px",
-                        color: "#181818",
-                      }}
-                    >
-                      Mozark
-                    </h3>
-
-                    {/* Testimonial Text and Author */}
-                    <div className="flex flex-col gap-4">
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "1.7",
-                          letterSpacing: "-0.4px",
-                          color: "#34414e",
-                        }}
-                      >
-                        Partnering with Tangram.ai has accelerated outcomes beyond expectations. Within months, the collaboration has become core to every growth motion we run. Our shared customer obsession drives perfect alignment across every deal — leading to faster closes, higher conversions, and expanded opportunities that power scalable, efficient growth.
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "normal",
-                          color: "#091917",
-                        }}
-                      >
-                        - Chandrasekar Ramamoorthy, CTO
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Testimonial Card 3 */}
-                <div className="flex flex-col md:flex-row gap-8 md:gap-[72px] items-center min-w-full">
-                  {/* Logo */}
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "481.33px",
-                      height: "148.77px",
-                      maxWidth: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src="/Mozak_logo.png"
-                      alt="Mozark Logo"
-                      width={482}
-                      height={149}
-                      className="object-contain rounded-[8px]"
-                      unoptimized
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col gap-2 flex-1 w-full md:w-[584px]">
-                    {/* Company Name */}
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "24px",
-                        lineHeight: "1.5",
-                        letterSpacing: "-0.4px",
-                        color: "#181818",
-                      }}
-                    >
-                      Mozark
-                    </h3>
-
-                    {/* Testimonial Text and Author */}
-                    <div className="flex flex-col gap-4">
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "1.7",
-                          letterSpacing: "-0.4px",
-                          color: "#34414e",
-                        }}
-                      >
-                        Partnering with Tangram.ai has accelerated outcomes beyond expectations. Within months, the collaboration has become core to every growth motion we run. Our shared customer obsession drives perfect alignment across every deal — leading to faster closes, higher conversions, and expanded opportunities that power scalable, efficient growth.
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "normal",
-                          color: "#091917",
-                        }}
-                      >
-                        - Chandrasekar Ramamoorthy, CTO
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Duplicate Set for Seamless Loop */}
-                {/* Testimonial Card 1 (Duplicate) */}
-                <div className="flex flex-col md:flex-row gap-8 md:gap-[72px] items-center min-w-full">
-                  {/* Logo */}
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "481.33px",
-                      height: "148.77px",
-                      maxWidth: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src="/Mozak_logo.png"
-                      alt="Mozark Logo"
-                      width={482}
-                      height={149}
-                      className="object-contain rounded-[8px]"
-                      unoptimized
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col gap-2 flex-1 w-full md:w-[584px]">
-                    {/* Company Name */}
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "24px",
-                        lineHeight: "1.5",
-                        letterSpacing: "-0.4px",
-                        color: "#181818",
-                      }}
-                    >
-                      Mozark
-                    </h3>
-
-                    {/* Testimonial Text and Author */}
-                    <div className="flex flex-col gap-4">
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "1.7",
-                          letterSpacing: "-0.4px",
-                          color: "#34414e",
-                        }}
-                      >
-                        Partnering with Tangram.ai has accelerated outcomes beyond expectations. Within months, the collaboration has become core to every growth motion we run. Our shared customer obsession drives perfect alignment across every deal — leading to faster closes, higher conversions, and expanded opportunities that power scalable, efficient growth.
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "normal",
-                          color: "#091917",
-                        }}
-                      >
-                        - Chandrasekar Ramamoorthy, CTO
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Testimonial Card 2 (Duplicate) */}
-                <div className="flex flex-col md:flex-row gap-8 md:gap-[72px] items-center min-w-full">
-                  {/* Logo */}
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "481.33px",
-                      height: "148.77px",
-                      maxWidth: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src="/Mozak_logo.png"
-                      alt="Mozark Logo"
-                      width={482}
-                      height={149}
-                      className="object-contain rounded-[8px]"
-                      unoptimized
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col gap-2 flex-1 w-full md:w-[584px]">
-                    {/* Company Name */}
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "24px",
-                        lineHeight: "1.5",
-                        letterSpacing: "-0.4px",
-                        color: "#181818",
-                      }}
-                    >
-                      Mozark
-                    </h3>
-
-                    {/* Testimonial Text and Author */}
-                    <div className="flex flex-col gap-4">
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "1.7",
-                          letterSpacing: "-0.4px",
-                          color: "#34414e",
-                        }}
-                      >
-                        Partnering with Tangram.ai has accelerated outcomes beyond expectations. Within months, the collaboration has become core to every growth motion we run. Our shared customer obsession drives perfect alignment across every deal — leading to faster closes, higher conversions, and expanded opportunities that power scalable, efficient growth.
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "normal",
-                          color: "#091917",
-                        }}
-                      >
-                        - Chandrasekar Ramamoorthy, CTO
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Testimonial Card 3 (Duplicate) */}
-                <div className="flex flex-col md:flex-row gap-8 md:gap-[72px] items-center min-w-full">
-                  {/* Logo */}
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "481.33px",
-                      height: "148.77px",
-                      maxWidth: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src="/Mozak_logo.png"
-                      alt="Mozark Logo"
-                      width={482}
-                      height={149}
-                      className="object-contain rounded-[8px]"
-                      unoptimized
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex flex-col gap-2 flex-1 w-full md:w-[584px]">
-                    {/* Company Name */}
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "24px",
-                        lineHeight: "1.5",
-                        letterSpacing: "-0.4px",
-                        color: "#181818",
-                      }}
-                    >
-                      Mozark
-                    </h3>
-
-                    {/* Testimonial Text and Author */}
-                    <div className="flex flex-col gap-4">
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "1.7",
-                          letterSpacing: "-0.4px",
-                          color: "#34414e",
-                        }}
-                      >
-                        Partnering with Tangram.ai has accelerated outcomes beyond expectations. Within months, the collaboration has become core to every growth motion we run. Our shared customer obsession drives perfect alignment across every deal — leading to faster closes, higher conversions, and expanded opportunities that power scalable, efficient growth.
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          fontStyle: "normal",
-                          fontSize: "16px",
-                          lineHeight: "normal",
-                          color: "#091917",
-                        }}
-                      >
-                        - Chandrasekar Ramamoorthy, CTO
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Partner Stories Section */}
+        <section id="video-walkthrough" className="w-full px-4 md:px-8 lg:px-12 pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-20 lg:pb-24 fade-in-section" style={{ backgroundColor: "#F9FAFB", transform: "translateZ(0)", willChange: "transform" }}>
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-left mb-12 space-y-2">
+              <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]" style={{ fontFamily: "Poppins" }}>From Build to Scale</h2>
+              <p className="text-sm md:text-base text-[#4b5563]">
+                Partner stories across the entire AI product lifecycle.
+              </p>
             </div>
-
-            {/* Navigation Arrows and Dots */}
-            <div className="flex justify-center items-center gap-4 mt-12">
-              {/* Left Arrow */}
-              <button
-                onClick={goToPrevious}
-                className="bg-transparent border-none cursor-pointer p-2 hover:opacity-70 transition-opacity"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                aria-label="Previous testimonial"
-              >
-                <ChevronLeft className="w-6 h-6 text-gray-700" />
-              </button>
-
-              {/* Navigation Dots with Progress Timer */}
+            <div className="flex flex-col lg:flex-row items-stretch gap-4">
+              {/* Left small card (swapped to Veehive) */}
               <div
+                className="w-[220px] min-w-[220px] min-h-[320px] flex-none rounded-2xl text-white relative overflow-hidden flex flex-col"
                 style={{
-                  width: "124px",
-                  height: "8px",
-                  display: "flex",
-                  gap: "8px",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundImage: `url(${veehivePortrait.src})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
-                {[0, 1, 2].map((index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setIsTransitioning(true)
-                      setCurrentTestimonial(index)
-                      setProgress(0)
-                    }}
-                    style={{
-                      width: "32px",
-                      height: "8px",
-                      borderRadius: "4px",
-                      backgroundColor: "#E5E7EB",
-                      border: "none",
-                      cursor: "pointer",
-                      position: "relative",
-                      overflow: "hidden",
-                    }}
-                    aria-label={`Go to testimonial ${index + 1}`}
-                  >
-                    {index === actualTestimonialIndex && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          height: "100%",
-                          width: `${progress}%`,
-                          backgroundColor: "#000000",
-                          borderRadius: "4px",
-                          transition: "width 0.1s linear",
-                        }}
-                      />
-                    )}
-                  </button>
-                ))}
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="relative z-10 h-[320px] flex flex-col justify-between pt-3 px-4 pb-4">
+                  <div className="flex items-center justify-end text-sm opacity-90 gap-3">
+                    <button
+                      type="button"
+                      aria-label="Play video"
+                      className="w-6 h-6 rounded-full border border-white/60 text-white flex items-center justify-center bg-transparent hover:bg-white/10 focus:outline-none transition"
+                    >
+                      <Play className="w-2.5 h-2.5" fill="currentColor" stroke="currentColor" />
+                    </button>
+                  </div>
+                  <div className="grid items-center gap-3 justify-start mt-auto">
+                    <div className="text-sm leading-tight">
+                      <div>Sathish Jeyakumar</div>
+                      <div className="opacity-80 text-xs">CEO - Veehive</div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Right Arrow */}
-              <button
-                onClick={goToNext}
-                className="bg-transparent border-none cursor-pointer p-2 hover:opacity-70 transition-opacity"
+              {/* Right text block */}
+              <div className="flex-[2] bg-white rounded-2xl p-0 border border-gray-100 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-10 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-white via-white/90 to-white/75 pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="flex flex-col md:flex-row gap-4 items-start md:items-end bg-white">
+                    <div
+                      className="w-full md:w-[220px] min-h-[320px] rounded-2xl text-white relative overflow-hidden flex flex-col"
+                      style={{
+                        backgroundImage: `url(${leftCardPortrait.src})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-black/30" />
+                      <div className="relative z-10 h-[320px] flex flex-col justify-between pt-3 px-4 pb-4">
+                        <div className="flex items-center justify-end text-sm opacity-90 gap-2">
+                          <button
+                            type="button"
+                            aria-label="Play video"
+                            className="w-6 h-6 rounded-full border border-white/60 text-white flex items-center justify-center bg-transparent hover:bg-white/10 focus:outline-none transition"
+                          >
+                            <Play className="w-2.5 h-2.5" fill="currentColor" stroke="currentColor" />
+                          </button>
+                        </div>
+                        <div className="grid items-center gap-3 justify-start mt-auto">
+                          <div className="text-sm leading-tight">
+                            <div>V S Hariharan</div>
+                            <div className="opacity-80 text-xs">MD & Group CEO - Redington</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 pl-3 pr-3 md:pl-4 md:pr-4">
+                      <div className="mb-4">
+                        <img
+                          src="/redington-logo.png"
+                          alt="Redington logo"
+                          className="h-8 w-auto object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      <p className="text-[#111] text-base leading-relaxed mb-4">
+                        Tangram AI enables partners to bring enterprise-grade AI solutions to market faster and at scale. Its agent-first, enterprise-ready platform makes it a compelling addition to any reseller’s portfolio, delivering the right balance of innovation, reliability, and commercial value.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Duplicate small card */}
+              <div
+                className="w-[220px] min-w-[220px] min-h-[320px] flex-none rounded-2xl text-white relative overflow-hidden flex flex-col"
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  backgroundImage: `url(${rightCardPortrait.src})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
-                aria-label="Next testimonial"
               >
-                <ChevronRight className="w-6 h-6 text-gray-700" />
-              </button>
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="relative z-10 h-[320px] flex flex-col justify-between pt-3 px-4 pb-4">
+                  <div className="flex items-center justify-end text-sm opacity-90 gap-2">
+                    <button
+                      type="button"
+                      aria-label="Play video"
+                      className="w-6 h-6 rounded-full border border-white/60 text-white flex items-center justify-center bg-transparent hover:bg-white/10 focus:outline-none transition"
+                    >
+                      <Play className="w-2.5 h-2.5" fill="currentColor" stroke="currentColor" />
+                    </button>
+                  </div>
+                  <div className="grid items-center gap-2 justify-start mt-auto">
+                    <div className="text-sm leading-tight">
+                      <div>Chandrasekar Ramamoorthy</div>
+                      <div className="opacity-80 text-xs">CEO - MOZARK</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section className="w-full px-8 md:px-12 lg:px-16 py-16 md:py-20 lg:py-24 bg-white" style={{ transform: "translateZ(0)", contain: "layout style paint" }}>
+        <section className="w-full px-8 md:px-12 lg:px-16 py-16 md:py-20 lg:py-24 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
           <div className="max-w-[1200px] mx-auto">
-            <div className="flex flex-col md:flex-row gap-8 md:gap-[32px] items-start">
-              {/* Left Column - Heading */}
-              <div className="w-full md:w-[481.33px] shrink-0">
-                <div className="sticky top-0">
-                  <h2
-                    className="fade-in-blur"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      fontWeight: 600,
-                      fontStyle: "normal",
-                      fontSize: "32px",
-                      lineHeight: "normal",
-                      background: "linear-gradient(90deg, #002e84 0%, #1157d9 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    frequently asked questions<br />
-                    FAQ's
-                  </h2>
+            {/* Simplified FAQ layout */}
+            <div className="px-0 py-4 rounded-none mb-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12">
+                <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]" style={{ fontFamily: "Poppins" }}>FAQ</h2>
+                <div className="flex flex-wrap gap-3">
+                  {Array.from(new Set(faqEntries.map((e) => e.section))).map((section) => (
+                    <button
+                      key={section}
+                      onClick={() => {
+                        setFaqFilter(section)
+                        setExpandedFAQ(null)
+                      }}
+                      className={`rounded-full px-4 py-2 text-sm transition ${
+                        faqFilter === section
+                          ? "bg-[#161d26] text-white"
+                          : "bg-white text-[#161d26] border border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {section}
+                    </button>
+                  ))}
                 </div>
               </div>
-
-              {/* Spacer */}
-              <div className="hidden md:block w-[70.66px] shrink-0" />
-
-              {/* Right Column - FAQ Items */}
-              <div className="flex-1 w-full md:w-[584px]">
-                {/* FAQ Item 1 */}
-                <div className="fade-in-section">
-                  <button
-                    onClick={() => setExpandedFAQ(expandedFAQ === 0 ? null : 0)}
-                    className="w-full flex items-center justify-between px-2 py-6"
-                    style={{
-                      paddingTop: "24px",
-                      paddingBottom: "24px",
-                    }}
-                  >
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        color: "#161D26",
-                        fontFamily: "Poppins",
-                        fontSize: "17.4px",
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        lineHeight: "23.99px",
-                      }}
-                    >
-                      Incentives and Perks
-                    </h3>
-                    <div
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          transition: "opacity 0.3s ease, transform 0.3s ease",
-                          opacity: expandedFAQ === 0 ? 1 : 0,
-                          transform: expandedFAQ === 0 ? "rotate(0deg) scale(1)" : "rotate(90deg) scale(0)",
-                        }}
-                      >
-                        <X className="w-4 h-4 text-[#161d26]" />
+              <div className="flex flex-col divide-y divide-gray-300 border-b border-gray-300">
+                {faqEntries
+                  .filter((item) => item.section === faqFilter)
+                  .map((item, idx) => {
+                    const open = expandedFAQ === idx
+                    return (
+                      <div key={item.q}>
+                        <button
+                          onClick={() => setExpandedFAQ(open ? null : idx)}
+                          className="w-full flex items-center justify-between py-5"
+                          aria-expanded={open}
+                        >
+                          <span className={`text-[18px] text-[#161d26] text-left ${open ? "font-medium" : "font-normal"}`}>
+                            {item.q}
+                          </span>
+                          <span className="text-2xl text-[#161d26]">{open ? "−" : "+"}</span>
+                        </button>
+                        <div
+                          className="overflow-hidden transition-all duration-300"
+                          style={{
+                            maxHeight: open ? "400px" : "0px",
+                            opacity: open ? 1 : 0,
+                          }}
+                        >
+                          <p className="text-[16px] text-[#1a232d] pb-5 pr-2">
+                            {item.a}
+                          </p>
+                        </div>
                       </div>
-                      <div
-                        style={{
-                          position: "absolute",
-                          transition: "opacity 0.3s ease, transform 0.3s ease",
-                          opacity: expandedFAQ === 0 ? 0 : 1,
-                          transform: expandedFAQ === 0 ? "rotate(-90deg) scale(0)" : "rotate(0deg) scale(1)",
-                        }}
-                      >
-                        <Plus className="w-4 h-4 text-[#161d26]" />
-                      </div>
-                    </div>
-                  </button>
-                  <div
-                    className="overflow-hidden transition-all duration-300 ease-in-out"
-                    style={{
-                      maxHeight: expandedFAQ === 0 ? "500px" : "0",
-                      opacity: expandedFAQ === 0 ? 1 : 0,
-                    }}
-                  >
-                    <div className="px-2 pb-6">
-                      <p style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 400,
-                        fontSize: "16px",
-                        lineHeight: "1.5",
-                        color: "#34414e",
-                      }}>
-                        Reseller partners receive exclusive benefits including co-marketing opportunities, technical support, marketplace visibility, and revenue sharing programs.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FAQ Item 2 */}
-                <div className="border-t fade-in-section" style={{ borderColor: "#D1D6DB" }}>
-                  <button
-                    onClick={() => setExpandedFAQ(expandedFAQ === 1 ? null : 1)}
-                    className="w-full flex items-center justify-between px-2 py-6"
-                    style={{
-                      paddingTop: "24px",
-                      paddingBottom: "24px",
-                    }}
-                  >
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "18px",
-                        lineHeight: "23.99px",
-                        color: "#161d26",
-                      }}
-                    >
-                      Drive visibility with Tangram.ai Sales
-                    </h3>
-                    <div
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          transition: "opacity 0.3s ease, transform 0.3s ease",
-                          opacity: expandedFAQ === 1 ? 1 : 0,
-                          transform: expandedFAQ === 1 ? "rotate(0deg) scale(1)" : "rotate(90deg) scale(0)",
-                        }}
-                      >
-                        <X className="w-4 h-4 text-[#161d26]" />
-                      </div>
-                      <div
-                        style={{
-                          position: "absolute",
-                          transition: "opacity 0.3s ease, transform 0.3s ease",
-                          opacity: expandedFAQ === 1 ? 0 : 1,
-                          transform: expandedFAQ === 1 ? "rotate(-90deg) scale(0)" : "rotate(0deg) scale(1)",
-                        }}
-                      >
-                        <Plus className="w-4 h-4 text-[#161d26]" />
-                      </div>
-                    </div>
-                  </button>
-                  <div
-                    className="overflow-hidden transition-all duration-300 ease-in-out"
-                    style={{
-                      maxHeight: expandedFAQ === 1 ? "500px" : "0",
-                      opacity: expandedFAQ === 1 ? 1 : 0,
-                    }}
-                  >
-                    <div className="px-2 pb-6">
-                      <p style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 400,
-                        fontSize: "16px",
-                        lineHeight: "1.5",
-                        color: "#34414e",
-                      }}>
-                        Get direct access to our sales team, participate in joint customer meetings, and leverage our extensive customer network to accelerate your growth.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FAQ Item 3 */}
-                <div className="border-t fade-in-section" style={{ borderColor: "#D1D6DB" }}>
-                  <button
-                    onClick={() => setExpandedFAQ(expandedFAQ === 2 ? null : 2)}
-                    className="w-full flex items-center justify-between px-2 py-6"
-                    style={{
-                      paddingTop: "24px",
-                      paddingBottom: "24px",
-                    }}
-                  >
-                    <h3
-                      className="fade-in-blur"
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "17.2px",
-                        lineHeight: "23.99px",
-                        color: "#161d26",
-                      }}
-                    >
-                      Focused co-sell support and resources
-                    </h3>
-                    <div
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          transition: "opacity 0.3s ease, transform 0.3s ease",
-                          opacity: expandedFAQ === 2 ? 1 : 0,
-                          transform: expandedFAQ === 2 ? "rotate(0deg) scale(1)" : "rotate(90deg) scale(0)",
-                        }}
-                      >
-                        <X className="w-4 h-4 text-[#161d26]" />
-                      </div>
-                      <div
-                        style={{
-                          position: "absolute",
-                          transition: "opacity 0.3s ease, transform 0.3s ease",
-                          opacity: expandedFAQ === 2 ? 0 : 1,
-                          transform: expandedFAQ === 2 ? "rotate(-90deg) scale(0)" : "rotate(0deg) scale(1)",
-                        }}
-                      >
-                        <Plus className="w-4 h-4 text-[#161d26]" />
-                      </div>
-                    </div>
-                  </button>
-                  <div
-                    className="overflow-hidden transition-all duration-300 ease-in-out"
-                    style={{
-                      maxHeight: expandedFAQ === 2 ? "500px" : "0",
-                      opacity: expandedFAQ === 2 ? 1 : 0,
-                    }}
-                  >
-                    <div className="px-2 pb-6">
-                      <p style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 400,
-                        fontSize: "16px",
-                        lineHeight: "1.5",
-                        color: "#34414e",
-                      }}>
-                        Access dedicated partner managers, sales enablement materials, and co-selling resources to maximize your success in the marketplace.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                    )
+                  })}
               </div>
             </div>
           </div>
