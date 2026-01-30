@@ -44,7 +44,7 @@ export function CrayonHeader() {
   // Secondary menu items - Community (for Blog/Podcast)
   const communityMenuItems: SecondaryItem[] = [
     { label: "YouTube", path: "https://www.youtube.com", external: true },
-    { label: "LinkedIn", path: "https://www.linkedin.com", external: true },
+    { label: "LinkedIn", path: "/linkedin" },
     { label: "X", path: "/x" },
     { label: "Blogs", path: "/blog" },
     { label: "Podcast", path: "/podcast" },
@@ -54,7 +54,7 @@ export function CrayonHeader() {
   const isAboutUsPage = secondaryMenuItems.some(item => pathname === item.path)
   const isLegalPage = legalMenuItems.some(item => pathname === item.path)
   const isPlatformPage = platformMenuItems.some(item => pathname === item.path)
-  const isCommunityPage = pathname === "/blog" || pathname === "/podcast" || pathname === "/x"
+  const isCommunityPage = pathname === "/blog" || pathname === "/podcast" || pathname === "/x" || pathname === "/linkedin"
   
   // Only render after mount to avoid hydration issues
   useEffect(() => {
