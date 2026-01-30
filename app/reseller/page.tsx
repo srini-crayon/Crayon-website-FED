@@ -746,7 +746,7 @@ export default function ResellerPage() {
                         className="text-xs md:text-sm"
                         style={{
                           fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
+                          fontWeight: 400,
                           lineHeight: "140%",
                           color: "#111827",
                         }}
