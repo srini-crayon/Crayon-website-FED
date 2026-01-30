@@ -33,6 +33,14 @@ export function CrayonHeader() {
     { label: "Civil Liberties", path: "/privacy-civil-liberties" },
   ]
 
+  // Secondary menu items - Services (Catalyst)
+  const servicesMenuItems: SecondaryItem[] = [
+    { label: "Catalyst", path: "/catalyst" },
+    { label: "Labs", path: "/labs" },
+    { label: "Foundry", path: "/foundry" },
+    { label: "Factory", path: "/factory" },
+  ]
+
   // Secondary menu items - The Platform (similar to About Us)
   const platformMenuItems: SecondaryItem[] = [
     { label: "Tangram AI", path: "/tangram-ai" },
@@ -53,6 +61,7 @@ export function CrayonHeader() {
   // Check if current page is in the secondary menu
   const isAboutUsPage = secondaryMenuItems.some(item => pathname === item.path)
   const isLegalPage = legalMenuItems.some(item => pathname === item.path)
+  const isServicesPage = servicesMenuItems.some(item => pathname === item.path)
   const isPlatformPage = platformMenuItems.some(item => pathname === item.path)
   const isCommunityPage = pathname === "/blog" || pathname === "/podcast" || pathname === "/x" || pathname === "/linkedin"
   
@@ -76,7 +85,7 @@ export function CrayonHeader() {
     {
       title: "Services",
       icon: "/img/menu-service.png",
-      links: [{ label: "Catalyst", href: "/ai-catalyst" }, "Labs", "Foundry", "Factory"],
+      links: [{ label: "Catalyst", href: "/catalyst" }, "Labs", "Foundry", "Factory"],
     },
     {
       title: "Community",
@@ -147,7 +156,7 @@ export function CrayonHeader() {
           </div>
 
           {/* Vertical Separator - Only show when there's a secondary menu */}
-          {(isAboutUsPage || isLegalPage || isPlatformPage || isCommunityPage) && (
+          {(isAboutUsPage || isLegalPage || isServicesPage || isPlatformPage || isCommunityPage) && (
             <div
               style={{
                 width: '1px',
@@ -213,6 +222,20 @@ export function CrayonHeader() {
                   }}
                 >
                   Platform
+                </span>
+              )}
+              {isServicesPage && (
+                <span
+                  style={{
+                    color: '#4A4A4A',
+                    fontFamily: 'Poppins',
+                    fontSize: '16px',
+                    fontStyle: 'normal',
+                    fontWeight: 400,
+                    lineHeight: 'normal',
+                  }}
+                >
+                  Services
                 </span>
               )}
               {isCommunityPage && (
@@ -297,7 +320,7 @@ export function CrayonHeader() {
         </div>
 
         {/* Secondary Menu Bar - Only show on About Us, Legal, Platform, or Community pages and when mega menu is closed */}
-        {mounted && (isAboutUsPage || isLegalPage || isPlatformPage || isCommunityPage) && !isMenuOpen && (
+        {mounted && (isAboutUsPage || isLegalPage || isServicesPage || isPlatformPage || isCommunityPage) && !isMenuOpen && (
           <>
             <div
               style={{
@@ -327,9 +350,11 @@ export function CrayonHeader() {
                   ? secondaryMenuItems
                   : isLegalPage
                     ? legalMenuItems
-                    : isPlatformPage
-                      ? platformMenuItems
-                      : communityMenuItems
+                    : isServicesPage
+                      ? servicesMenuItems
+                      : isPlatformPage
+                        ? platformMenuItems
+                        : communityMenuItems
                 ).map((item) => {
                   const isActive = pathname === item.path
                   const isDisabledLegal =
