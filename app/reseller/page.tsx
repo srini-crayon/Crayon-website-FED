@@ -698,26 +698,32 @@ export default function ResellerPage() {
                     {
                       title: "Recurring Partner Revenue",
                       description: "Build predictable, subscription-based income streams from long-term enterprise AI deployments.",
+                      iconSrc: "/percentage-round.png",
                     },
                     {
                       title: "Attractive Reseller Margins",
                       description: "Benefit from reseller-only pricing and competitive commercial incentives that protect profitability.",
+                      iconSrc: "/coins.png",
                     },
                     {
                       title: "Faster Deal Closure",
                       description: "Shorten sales cycles with production-ready AI agents, proven use cases, and live demos.",
+                      icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-[#111827]" aria-hidden="true" />,
                     },
                     {
                       title: "Co-Selling & Deal Support",
                       description: "Win larger opportunities with joint selling, pre-sales assistance, and enterprise deal execution support.",
+                      iconSrc: "/headset-help.png",
                     },
                     {
                       title: "Enterprise-Grade AI Portfolio",
                       description: "Offer secure, scalable, and compliant AI solutions trusted by enterprise customers.",
+                      iconSrc: "/fingerprint-circled-lock.png",
                     },
                     {
                       title: "Multi-Industry Revenue Opportunities",
                       description: "Sell AI solutions across BFSI, Retail, Travel, Telecom, Healthcare, and SaaS industries.",
+                      icon: <Globe className="w-5 h-5 md:w-6 md:h-6 text-[#111827]" aria-hidden="true" />,
                     },
                   ].map((item, idx) => (
                     <div
@@ -752,6 +758,20 @@ export default function ResellerPage() {
                           zIndex: 1,
                         }}
                       >
+                        <div className="flex items-center justify-center mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6 text-[#111827]">
+                          {item.iconSrc ? (
+                            <Image
+                              src={item.iconSrc}
+                              alt={item.title}
+                              width={24}
+                              height={24}
+                              className="object-contain w-5 h-5 md:w-6 md:h-6"
+                              unoptimized
+                            />
+                          ) : (
+                            item.icon
+                          )}
+                        </div>
                         <h3
                           className="text-xs md:text-sm font-semibold text-[#111827]"
                           style={{ fontFamily: "Poppins" }}
