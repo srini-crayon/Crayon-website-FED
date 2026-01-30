@@ -357,239 +357,298 @@ export default function ResellerPage() {
               </div>
             </div>
           </div>
+
         </section>
 
-        {/* Build the Future Together Section */}
-        <section className="w-full px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-16 md:pb-20 lg:pb-24 bg-white" style={{ transform: "translateZ(0)", contain: "layout style paint" }}>
-          <div className="max-w-[1209px] mx-auto">
-            {/* Heading and Description */}
-            <div className="flex flex-col gap-3 items-center text-center mb-16 md:mb-18">
-              <h2
-                className="fade-in-blur"
-                style={{
-                  textAlign: "center",
-                  fontFamily: "Poppins",
-                  fontSize: "32px",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  lineHeight: "normal",
-                  background: "linear-gradient(90deg, #2D8E0C 0%, #77C402 100%)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Are You a Good Fit?
-              </h2>
+        {/* Secure control section */}
+        <section className="w-full px-8 md:px-12 lg:px-16 py-12 md:py-20 lg:py-24 fade-in-section" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(135deg, #f7f9ff 0%, #eef2ff 45%, #ffffff 100%)" }}>
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "radial-gradient(80% 50% at 80% 20%, rgba(138, 180, 255, 0.35), transparent)",
+              opacity: 1,
+            }}
+          />
+          <div className="relative max-w-[1200px] mx-auto flex flex-col lg:flex-row items-start gap-10 md:gap-12">
+            <div className="flex-1 flex flex-col gap-6 text-left">
+              <div>
+                <div className="space-y-2">
+                  <h2
+                    className="text-3xl md:text-4xl font-semibold text-[#161d26]"
+                    style={{ fontFamily: "Poppins", lineHeight: "normal" }}
+                  >
+                    Why Resell Tangram AI
+                  </h2>
+                  <p className="text-sm md:text-base text-[#0f172a] font-medium max-w-[720px]" style={{ fontFamily: "Poppins", lineHeight: "24px" }}>
+                    A Reseller-First AI Program Built for Predictable Revenue
+                  </p>
+                </div>
+              </div>
               <p
-                className="fade-in-section"
-                style={{
-                  color: "var(--Interface-Color-Primary-900, #091917)",
-                  textAlign: "center",
-                  fontFamily: "Poppins",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  maxWidth: "900px",
-                  margin: "0 auto",
-                }}
+                className="text-sm md:text-base text-[#4b5563] max-w-[720px]"
+                style={{ fontFamily: "Poppins", lineHeight: "24px" }}
               >
-                You're a good fit for the Tangram.ai Reseller Program if you help clients adopt AI-driven solutions and want to expand your portfolio with enterprise-ready intelligence.
+                Tangram AI enables resellers to add enterprise AI offerings to their catalog without the risk, cost, or complexity of developing AI solutions in‑house. The platform provides a ready‑to‑sell portfolio of AI agents that address real business problems and can be positioned directly within existing customer relationships.
+                <br /><br />
+                As a reseller, you focus on sales, account management, and expansion, while Tangram AI provides the platform, agents, and ongoing product enhancements.
               </p>
             </div>
 
-            {/* Feature Cards */}
-            <div className="flex flex-col md:flex-row gap-2 items-stretch justify-center" style={{ gap: "0px", alignItems: "stretch" }}>
-              {/* Card 1: AI Consultants & Solution Providers */}
-              <div
-                className="flex flex-col gap-6 p-6 w-full md:w-[386.72px] relative bg-white card-divider stagger-item cursor-pointer"
-                style={{
-                  padding: "24.51px",
-                  gap: "24.49px",
-                  backgroundColor: "#FFFFFF",
-                  position: "relative",
-                }}
-                onMouseEnter={() => setHoveredCard1(true)}
-                onMouseLeave={() => setHoveredCard1(false)}
-              >
-                {/* Icon */}
-                <div
-                  className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
-                  style={{
-                    width: "49.02px",
-                    height: "49.02px",
-                  }}
-                >
-                  <Target className="w-6 h-6 text-white" />
-                </div>
+            <div className="flex-1 w-full lg:max-w-[520px] mx-auto">
+              <div className="relative rounded border border-[#e2e8f0] bg-white overflow-hidden" style={{ height: "320px" }}>
+                <img
+                  src="/reseller-network.png"
+                  alt="Reseller network illustration"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
 
-                {/* Content */}
-                <div
-                  className="flex flex-col flex-1 relative z-10"
-                  style={{
-                    gap: "7.935px",
-                  }}
-                >
+          </div>
+ 
+          <div className="mt-8 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 text-[#0f172a] divide-y divide-[#e5e7eb] md:divide-y-0 md:divide-x md:divide-[#e5e7eb]">
+            <div className="p-3 rounded">
+              <div className="mb-2 text-[#5a67d8]">
+                <TrendingUp className="w-5 h-5" aria-hidden="true" />
+              </div>
+              <p className="text-base text-[#0f172a]" style={{ fontFamily: "Poppins", lineHeight: "22px" }}>
+                A Reseller-First AI Program Built for Predictable Revenue.
+              </p>
+            </div>
+            <div className="p-3 rounded md:pl-4">
+              <div className="mb-2 text-[#16a34a]">
+                <Globe className="w-5 h-5" aria-hidden="true" />
+              </div>
+              <p className="text-base text-[#0f172a]" style={{ fontFamily: "Poppins", lineHeight: "22px" }}>
+                Faster sales cycles compared to custom AI development.
+              </p>
+            </div>
+            <div className="p-3 rounded md:pl-4">
+              <div className="mb-2 text-[#f59e0b]">
+                <Target className="w-5 h-5" aria-hidden="true" />
+              </div>
+              <p className="text-base text-[#0f172a]" style={{ fontFamily: "Poppins", lineHeight: "22px" }}>
+                No AI infrastructure, model training, or maintenance required.
+              </p>
+            </div>
+            <div className="p-3 rounded md:pl-4">
+              <div className="mb-2 text-[#ef4444]">
+                <Play className="w-5 h-5" aria-hidden="true" />
+              </div>
+              <p className="text-base text-[#0f172a]" style={{ fontFamily: "Poppins", lineHeight: "22px" }}>
+                Clear commercial structure with recurring subscription revenue.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Resellers Choose Tangram Section */}
+        <section className="w-full px-8 md:px-12 lg:px-16 pt-10 md:pt-14 lg:pt-18 pb-12 md:pb-16 lg:pb-20 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
+          <div className="max-w-[1200px] mx-auto flex flex-col gap-10 md:gap-12">
+            <div className="text-center flex flex-col gap-3 items-center -mt-4">
+              <h2
+                className="fade-in-blur text-3xl md:text-4xl font-semibold text-[#161d26]"
+                style={{
+                  textAlign: "center",
+                  fontFamily: "Poppins",
+                  width: "780px",
+                  willChange: "opacity, transform, filter",
+                }}
+              >
+                Designed for Technology Resellers Serving Mid-Market and Enterprise Customers
+              </h2>
+              <p
+                className="fade-in-section text-sm md:text-base text-[#4b5563] text-center max-w-[780px] mx-auto"
+                style={{ willChange: "opacity, transform", width: "780px" }}
+              >
+                Designed for organizations that already sell technology or services and want to add AI solutions with minimal operational change.
+              </p>
+            </div>
+
+            <div className="relative">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#0f766e]">
+                    <Target className="w-6 h-6" aria-hidden="true" />
+                  </div>
                   <h3
-                    className="fade-in-blur transition-all duration-300"
+                    className="fade-in-blur transition-all duration-300 mb-3"
                     style={{
-                      color: hoveredCard1 ? "transparent" : "#181818",
+                      color: "#181818",
                       fontFamily: "Poppins",
-                      fontSize: "19px",
+                      fontSize: "clamp(15px, 3.5vw, 18px)",
                       fontStyle: "normal",
                       fontWeight: 500,
                       lineHeight: "150%",
                       letterSpacing: "-0.4px",
-                      background: hoveredCard1 ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                      backgroundClip: hoveredCard1 ? "text" : "unset",
-                      WebkitBackgroundClip: hoveredCard1 ? "text" : "unset",
-                      WebkitTextFillColor: hoveredCard1 ? "transparent" : "unset",
+                      willChange: "opacity, transform, filter",
                     }}
                   >
-                    AI Consultants & Solution Providers
+                    Consulting Firms &amp; SIs
                   </h3>
                   <p
+                    className="fade-in-section"
                     style={{
-                      color: "#65717C",
+                      color: "#1f2937",
                       fontFamily: "Poppins",
-                      fontSize: "16px",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
                       fontStyle: "normal",
                       fontWeight: 400,
                       lineHeight: "150%",
                       letterSpacing: "-0.4px",
                     }}
                   >
-                    Work with our partner ecosystem and access industry expertise and resources to help you achieve exceptional results.
+                    Add enterprise AI to transformation programs and increase deal value.
+                  </p>
+                </div>
+
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#2563eb]">
+                    <Globe className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="fade-in-blur transition-all duration-300 mb-3"
+                    style={{
+                      color: "#181818",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(16px, 4vw, 20px)",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                      willChange: "opacity, transform, filter",
+                    }}
+                  >
+                    IT Resellers &amp; MSPs
+                  </h3>
+                  <p
+                    className="fade-in-section"
+                    style={{
+                      color: "#4b5563",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                    }}
+                  >
+                    Expand portfolios with AI automation that drives retention.
+                  </p>
+                </div>
+
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#f97316]">
+                    <TrendingUp className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="fade-in-blur transition-all duration-300 mb-3"
+                    style={{
+                      color: "#181818",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(15px, 3.5vw, 18px)",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                      whiteSpace: "nowrap",
+                      willChange: "opacity, transform, filter",
+                    }}
+                  >
+                    Digital &amp; Tech Agencies
+                  </h3>
+                  <p
+                    className="fade-in-section"
+                    style={{
+                      color: "#4b5563",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                    }}
+                  >
+                    Deliver AI-powered CX, personalization, and analytics.
+                  </p>
+                </div>
+
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#7c3aed]">
+                    <Plus className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="fade-in-blur transition-all duration-300 mb-3"
+                    style={{
+                      color: "#181818",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(16px, 4vw, 20px)",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                      willChange: "opacity, transform, filter",
+                    }}
+                  >
+                    ISVs &amp; SaaS Vendors
+                  </h3>
+                  <p
+                    className="fade-in-section"
+                    style={{
+                      color: "#4b5563",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                    }}
+                  >
+                    ISVs &amp; SaaS Vendors – Resell or bundle AI agents to enhance product value and differentiation.
                   </p>
                 </div>
               </div>
 
-              {/* Card 2: IT Consultants & Service Providers */}
-              <div
-                className="flex flex-col gap-6 p-6 w-full md:w-[386.72px] relative bg-white card-divider stagger-item cursor-pointer"
-                style={{
-                  padding: "24.51px",
-                  gap: "24.49px",
-                  backgroundColor: "#FFFFFF",
-                  position: "relative",
-                }}
-                onMouseEnter={() => setHoveredCard2(true)}
-                onMouseLeave={() => setHoveredCard2(false)}
-              >
-                {/* Icon */}
-                <div
-                  className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
-                  style={{
-                    width: "49.02px",
-                    height: "49.02px",
-                  }}
-                >
-                  <Globe className="w-6 h-6 text-white" />
-                </div>
-
-                {/* Content */}
-                <div
-                  className="flex flex-col flex-1 relative z-10"
-                  style={{
-                    gap: "7.935px",
-                  }}
-                >
-                  <h3
-                    className="fade-in-blur transition-all duration-300"
-                    style={{
-                      color: hoveredCard2 ? "transparent" : "#181818",
-                      fontFamily: "Poppins",
-                      fontSize: "19px",
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                      background: hoveredCard2 ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                      backgroundClip: hoveredCard2 ? "text" : "unset",
-                      WebkitBackgroundClip: hoveredCard2 ? "text" : "unset",
-                      WebkitTextFillColor: hoveredCard2 ? "transparent" : "unset",
-                    }}
-                  >
-                    IT Consultants & Service Providers
-                  </h3>
-                  <p
-                    style={{
-                      color: "#65717C",
-                      fontFamily: "Poppins",
-                      fontSize: "16px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                    }}
-                  >
-                    Enter new markets while accelerating your business's international reach with global partners or local experts.
-                  </p>
-                </div>
+              {/* Connecting Lines Image */}
+              <div className="flex justify-center pt-0">
+                <img
+                  src="/lines-connector.png"
+                  alt="Connecting lines"
+                  className="max-w-[620px] w-full h-auto pointer-events-none select-none"
+                />
               </div>
 
-              {/* Card 3: AI Enterprise and GTM Agencies */}
-              <div
-                className="flex flex-col gap-6 p-6 w-full md:w-[386.72px] relative bg-white stagger-item cursor-pointer"
-                style={{
-                  padding: "24.51px",
-                  gap: "24.49px",
-                  backgroundColor: "#FFFFFF",
-                  position: "relative",
-                }}
-                onMouseEnter={() => setHoveredCard3(true)}
-                onMouseLeave={() => setHoveredCard3(false)}
-              >
-                {/* Icon */}
-                <div
-                  className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
+              {/* Build With Us CTA */}
+              <div className="flex flex-col items-center text-center gap-3 pt-0">
+                <h3
+                  className="fade-in-blur"
                   style={{
-                    width: "49.02px",
-                    height: "49.02px",
+                    fontFamily: "Poppins",
+                    fontSize: "24px",
+                    fontWeight: 600,
+                    color: "#0E1116",
                   }}
                 >
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-
-                {/* Content */}
-                <div
-                  className="flex flex-col flex-1 relative z-10"
+                How the Reseller Program Works
+                </h3>
+                <p
+                  className="fade-in-section text-sm md:text-base text-[#4b5563] text-center max-w-[780px] mx-auto"
                   style={{
-                    gap: "7.935px",
+                    lineHeight: "24px",
+                    marginBottom: "12px",
+                    willChange: "opacity, transform",
                   }}
                 >
-                  <h3
-                    className="fade-in-blur transition-all duration-300"
-                    style={{
-                      color: hoveredCard3 ? "transparent" : "#181818",
-                      fontFamily: "Poppins",
-                      fontSize: "19px",
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                      background: hoveredCard3 ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                      backgroundClip: hoveredCard3 ? "text" : "unset",
-                      WebkitBackgroundClip: hoveredCard3 ? "text" : "unset",
-                      WebkitTextFillColor: hoveredCard3 ? "transparent" : "unset",
-                    }}
-                  >
-                    AI Enterprise and GTM Agencies
-                  </h3>
-                  <p
-                    style={{
-                      color: "#65717C",
-                      fontFamily: "Poppins",
-                      fontSize: "16px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                    }}
-                  >
-                    Reduce time to deployment and accelerate projects with pre-configured, industry specific solutions.
-                  </p>
+                A simple, structured reseller journey with onboarding, enablement, and on-demand resources to help resellers sell Tangram AI effectively.
+                </p>
+                <div className="w-full max-w-[720px] mt-2">
+                  <img
+                    src="/isv-video.png"
+                    alt="Start ISV onboarding video"
+                    className="w-full h-auto rounded-[12px] shadow-sm"
+                  />
                 </div>
               </div>
             </div>
@@ -884,9 +943,9 @@ export default function ResellerPage() {
         <section id="video-walkthrough" className="w-full px-4 md:px-8 lg:px-12 pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-20 lg:pb-24 fade-in-section" style={{ backgroundColor: "#F9FAFB", transform: "translateZ(0)", willChange: "transform" }}>
           <div className="max-w-[1200px] mx-auto">
             <div className="text-left mb-12 space-y-2">
-              <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]" style={{ fontFamily: "Poppins" }}>From Build to Scale</h2>
-              <p className="text-sm md:text-base text-[#4b5563]">
-                Partner stories across the entire AI product lifecycle.
+              <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]" style={{ fontFamily: "Poppins" }}>Partner Experience</h2>
+              <p className="text-sm md:text-base text-[#4b5563] max-w-[720px]">
+                Enterprise Consulting Partner leveraged Tangram AI to introduce enterprise AI offerings across multiple client engagements, accelerating deal velocity and expanding service scope.
               </p>
             </div>
             <div className="flex flex-col lg:flex-row items-stretch gap-4">
