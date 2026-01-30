@@ -675,7 +675,7 @@ export default function ResellerPage() {
                 <h2
                   className="mb-6 fade-in-blur"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Poppins",
                     fontWeight: 600,
                     fontStyle: "normal",
                     fontSize: "32px",
@@ -689,12 +689,12 @@ export default function ResellerPage() {
                     color: "transparent",
                   }}
                 >
-                  Benefits of Reseller Partnership
+                  Why Resellers Choose Tangram AI
                 </h2>
                 <p
                   className="fade-in-section"
                   style={{
-                    fontFamily: "Poppins, sans-serif",
+                    fontFamily: "Poppins",
                     fontWeight: 400,
                     fontStyle: "normal",
                     fontSize: "18px",
@@ -703,7 +703,7 @@ export default function ResellerPage() {
                     color: "#374151",
                   }}
                 >
-                  Partnering with Tangram.ai unlocks new revenue streams, faster deal cycles, and access to enterprise-ready AI solutions. Resellers gain co-selling support, marketing enablement, and dedicated partner success resources — empowering them to deliver intelligent, scalable value to every client.
+                  Turn AI demand into recurring revenue with pre-built, enterprise-ready agents. Get co-selling and marketing support, faster deal cycles, preferential pricing, and dedicated partner success so you can launch, scale, and expand every account with confidence.
                 </p>
               </div>
 
