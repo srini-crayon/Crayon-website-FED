@@ -12,8 +12,6 @@ export const metadata: Metadata = {
 }
 
 export default function XPage() {
-  const cards = Array.from({ length: 5 }, (_, i) => i)
-
   return (
     <div
       className="flex min-h-screen px-5 pt-32 pb-16"
@@ -39,7 +37,7 @@ export default function XPage() {
           <div className="elfsight-app-bcc6e0ac-14ab-48a8-b58b-6c75d359b3b2" data-elfsight-app-lazy />
         </section>
 
-        <div className="flex flex-col lg:flex-row gap-8 justify-start items-start mt-10">
+        <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mt-10">
           <article
             className="w-[360px] flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white lg:sticky lg:top-20 lg:self-start"
           >
@@ -97,118 +95,6 @@ export default function XPage() {
               </div>
             </div>
           </article>
-
-          <div className="w-full lg:w-[520px] rounded-lg flex flex-col gap-6">
-            {cards.map((card, idx) => (
-              <article key={card} className="rounded-lg border border-gray-200 bg-white text-gray-900">
-                <div className="px-5 pt-5">
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center border border-gray-300">
-                      <Image
-                        src={avatarLogo}
-                        alt="Crayon avatar"
-                        width={48}
-                        height={48}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-900">Crayon Data</span>
-                      </div>
-                      <div className="text-sm text-gray-500">@CrayonBigData · Jan 26, 2024</div>
-                    </div>
-                  </div>
-
-                  {idx === 2 ? (
-                    <p className="mt-4 text-sm text-gray-800 leading-relaxed font-normal">
-                      #OnTheShouldersOf Marvin Minsky
-                      <br />
-                      <br />
-                      Marvin Lee Minsky is considered one of the founding fathers of AI. His work laid the groundwork for modern AI research and continues to influence the field to this day.
-                      <br />
-                      <br />
-                      <span className="text-blue-500 font-semibold">#AI</span> <span className="text-blue-500 font-semibold">#ArtificialIntelligence</span>
-                    </p>
-                  ) : idx === 1 ? (
-                    <p className="mt-4 text-sm text-gray-800 leading-relaxed font-normal">
-                      Can you say “Yes, I will!” to the following?
-                      <br />
-                      <br />
-                      Help is on developing the largest pool of merchant repository called Bazaar as a value proposition for our clients across the continent.
-                      <br />
-                      <br />
-                      You will be joining this team as a software engineer.
-                      <br />
-                      <br />
-                      <a
-                        href="https://crayondata.zohorecruit.com/recruit/ViewJob.na?digest=CCO4y0GzCU1Xebmp4jb2@ngUmjvtGVJzOatum4MXxts-&embedsource=Twitter"
-                        className="text-blue-500 font-semibold break-all no-underline hover:underline"
-                      >
-                        https://crayondata.zohorecruit.com/recruit/ViewJob...
-                      </a>
-                    </p>
-                  ) : (
-                    <p className="mt-4 text-sm text-gray-800 leading-relaxed font-normal">
-                      Happy 75th Republic Day, India!
-                      <br />
-                      <br />
-                      As we celebrate the spirit of unity, diversity, and progress, Crayon Data wishes you all a day filled with pride, joy, and reflection. Let's continue to move forward together towards a brighter and more inclusive future.
-                      <br />
-                      <br />
-                      <span className="text-blue-500 font-semibold">#RepublicDay</span> <span className="text-blue-500 font-semibold">#India75</span>
-                    </p>
-                  )}
-                </div>
-
-                {idx === 2 ? (
-                  <div className="mt-4 px-5">
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
-                      <Image
-                        src={tweetMockAlt}
-                        alt="Twitter mock"
-                        className="w-full h-auto object-cover"
-                        placeholder="blur"
-                        sizes="(min-width: 1024px) 480px, 100vw"
-                        priority
-                      />
-                    </div>
-                  </div>
-                ) : idx !== 1 ? (
-                  <div className="mt-4 px-5">
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
-                      <Image
-                        src={tweetMock}
-                        alt="Twitter mock"
-                        className="w-full h-auto object-cover"
-                        placeholder="blur"
-                        sizes="(min-width: 1024px) 480px, 100vw"
-                        priority
-                      />
-                    </div>
-                  </div>
-                ) : null}
-
-                {idx === 1 ? (
-                  <div className="px-5 flex justify-start">
-                    <div className="mt-4 w-full max-w-[480px] border-t border-gray-200 py-4 text-sm text-gray-600 flex items-center justify-end gap-4">
-                      <span className="text-gray-800">59 Views</span>
-                      <span className="text-gray-800">1 Repost</span>
-                      <span className="text-gray-800">1 Like</span>
-                      <span className="text-gray-800">0 Reply</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="px-5 py-4 text-sm text-gray-600 flex items-center justify-end gap-4">
-                    <span className="text-gray-800">59 Views</span>
-                    <span className="text-gray-800">1 Repost</span>
-                    <span className="text-gray-800">1 Like</span>
-                    <span className="text-gray-800">0 Reply</span>
-                  </div>
-                )}
-              </article>
-            ))}
-          </div>
 
         </div>
       </div>
