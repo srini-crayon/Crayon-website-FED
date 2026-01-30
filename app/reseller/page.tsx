@@ -736,16 +736,20 @@ export default function ResellerPage() {
                         className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
                         unoptimized
                       />
+                      <h3
+                        className="text-sm md:text-base font-semibold text-[#111827]"
+                        style={{ fontFamily: "Poppins" }}
+                      >
+                        Recurring Revenue
+                      </h3>
                       <p
-                        className="text-xs md:text-sm"
+                        className="text-xs md:text-sm text-[#4b5563] mt-1"
                         style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 500,
-                          lineHeight: "140%",
-                          color: "#111827",
+                          fontFamily: "Poppins",
+                          lineHeight: "150%",
                         }}
                       >
-                        Up to 40% off Annual Plans for Clients
+                        Build predictable, subscription-based income from enterprise AI deals.
                       </p>
                     </div>
                   </div>
