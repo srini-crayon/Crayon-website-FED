@@ -691,223 +691,107 @@ export default function ResellerPage() {
                 </p>
               </div>
 
-              {/* Right side - Benefits cards in 2x2 grid */}
+              {/* Right side - Benefits cards */}
               <div className="flex-1 md:w-1/2">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Card 1: Up to 40% off */}
-                  <div
-                    className="relative rounded-lg overflow-hidden w-full md:w-[258px] h-[120px] md:h-[151px] stagger-item transition-all duration-300 hover:scale-105"
-                    style={{ willChange: "transform" }}
-                  >
-                    {/* Background Mask Image */}
+                  {[
+                    {
+                      title: "Recurring Revenue",
+                      description: "Build predictable, subscription-based income from enterprise AI customers.",
+                      iconSrc: "/percentage-round.png",
+                    },
+                    {
+                      title: "High Partner Margins",
+                      description: "Access partner-only pricing and strong commercial incentives.",
+                      iconSrc: "/coins.png",
+                    },
+                    {
+                      title: "Faster Sales Cycles",
+                      description: "Close deals quicker with proven, enterprise-ready AI solutions.",
+                      icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />,
+                    },
+                    {
+                      title: "Co-Selling Advantage",
+                      description: "Win larger opportunities through joint selling and deal support.",
+                      iconSrc: "/headset-help.png",
+                    },
+                    {
+                      title: "Enterprise-Grade AI",
+                      description: "Offer secure, scalable, and compliant AI solutions.",
+                      iconSrc: "/fingerprint-circled-lock.png",
+                    },
+                    {
+                      title: "Multi-Industry Reach",
+                      description: "Sell AI use cases across BFSI, Retail, Travel, Telecom, Healthcare, and SaaS.",
+                      icon: <Globe className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />,
+                    },
+                  ].map((item, idx) => (
                     <div
-                      className="absolute inset-0 pointer-events-none w-full h-full"
-                      style={{
-                        zIndex: 0,
-                      }}
+                      key={item.title}
+                      className="relative rounded-lg overflow-hidden w-full h-full min-h-[151px] stagger-item transition-all duration-300 hover:scale-105"
+                      style={{ willChange: "transform" }}
                     >
-                      <Image
-                        src="/Mask group.png"
-                        alt=""
-                        fill
-                        className="object-cover"
-                        unoptimized
-                        style={{
-                          objectFit: "cover",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    </div>
-
-                    {/* Card Content */}
-                    <div
-                      className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
-                      style={{
-                        border: "1px dashed #D1D5DB",
-                        zIndex: 1,
-                      }}
-                    >
-                      <Image
-                        src="/percentage-round.png"
-                        alt="Percentage"
-                        width={24}
-                        height={24}
-                        className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
-                        unoptimized
-                      />
-                      <h3
-                        className="text-xs md:text-sm font-semibold text-[#111827]"
-                        style={{ fontFamily: "Poppins" }}
+                      {/* Background Mask Image */}
+                      <div
+                        className="absolute inset-0 pointer-events-none w-full h-full"
+                        style={{ zIndex: 0 }}
                       >
-                        Recurring Revenue
-                      </h3>
-                      <p
-                        className="text-xs md:text-sm mt-2"
+                        <Image
+                          src="/Mask group.png"
+                          alt=""
+                          fill
+                          className="object-cover"
+                          unoptimized
+                          style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      </div>
+
+                      {/* Card Content */}
+                      <div
+                        className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
                         style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          lineHeight: "140%",
-                          color: "#111827",
+                          border: "1px dashed #D1D5DB",
+                          zIndex: 1,
                         }}
                       >
-                        Build predictable, subscription-based income from enterprise AI deals.
-                      </p>
+                        <div className="flex items-center justify-center mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6 text-[#111827]">
+                          {item.iconSrc ? (
+                            <Image
+                              src={item.iconSrc}
+                              alt={item.title}
+                              width={24}
+                              height={24}
+                              className="object-contain w-5 h-5 md:w-6 md:h-6"
+                              unoptimized
+                            />
+                          ) : (
+                            item.icon
+                          )}
+                        </div>
+                        <h3
+                          className="text-xs md:text-sm font-semibold text-[#111827]"
+                          style={{ fontFamily: "Poppins" }}
+                        >
+                          {item.title}
+                        </h3>
+                        <p
+                          className="text-xs md:text-sm mt-2"
+                          style={{
+                            fontFamily: "Poppins, sans-serif",
+                            fontWeight: 400,
+                            lineHeight: "140%",
+                            color: "#111827",
+                          }}
+                        >
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Card 2: Rev-Share Model */}
-                  <div
-                    className="relative rounded-lg overflow-hidden w-full md:w-[258px] h-[120px] md:h-[151px] md:mt-[25px] stagger-item transition-all duration-300 hover:scale-105"
-                    style={{ willChange: "transform" }}
-                  >
-                    {/* Background Mask Image */}
-                    <div
-                      className="absolute inset-0 pointer-events-none w-full h-full"
-                      style={{
-                        zIndex: 0,
-                      }}
-                    >
-                      <Image
-                        src="/Mask group.png"
-                        alt=""
-                        fill
-                        className="object-cover"
-                        unoptimized
-                        style={{
-                          objectFit: "cover",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    </div>
-
-                    {/* Card Content */}
-                    <div
-                      className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
-                      style={{
-                        border: "1px dashed #D1D5DB",
-                        zIndex: 1,
-                      }}
-                    >
-                      <Image
-                        src="/coins.png"
-                        alt="Coins"
-                        width={24}
-                        height={24}
-                        className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
-                        unoptimized
-                      />
-                      <h3
-                        className="text-xs md:text-sm font-semibold text-[#111827]"
-                        style={{ fontFamily: "Poppins" }}
-                      >
-                        Rev-Share Model on Closed Deals
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Card 3: Enterprise Demo Account */}
-                  <div
-                    className="relative rounded-lg overflow-hidden w-full md:w-[258px] h-[120px] md:h-[151px] stagger-item transition-all duration-300 hover:scale-105"
-                    style={{ willChange: "transform" }}
-                  >
-                    {/* Background Mask Image */}
-                    <div
-                      className="absolute inset-0 pointer-events-none w-full h-full"
-                      style={{
-                        zIndex: 0,
-                      }}
-                    >
-                      <Image
-                        src="/Mask group.png"
-                        alt=""
-                        fill
-                        className="object-cover"
-                        unoptimized
-                        style={{
-                          objectFit: "cover",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    </div>
-
-                    {/* Card Content */}
-                    <div
-                      className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
-                      style={{
-                        border: "1px dashed #D1D5DB",
-                        zIndex: 1,
-                      }}
-                    >
-                      <Image
-                        src="/fingerprint-circled-lock.png"
-                        alt="Fingerprint Lock"
-                        width={24}
-                        height={24}
-                        className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
-                        unoptimized
-                      />
-                      <h3
-                        className="text-xs md:text-sm font-semibold text-[#111827]"
-                        style={{ fontFamily: "Poppins" }}
-                      >
-                        Access to a Enterprise - level Demo Account
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Card 4: Dedicated Support */}
-                  <div
-                    className="relative rounded-lg overflow-hidden w-full md:w-[258px] h-[120px] md:h-[151px] md:mt-[25px] stagger-item transition-all duration-300 hover:scale-105"
-                    style={{ willChange: "transform" }}
-                  >
-                    {/* Background Mask Image */}
-                    <div
-                      className="absolute inset-0 pointer-events-none w-full h-full"
-                      style={{
-                        zIndex: 0,
-                      }}
-                    >
-                      <Image
-                        src="/Mask group.png"
-                        alt=""
-                        fill
-                        className="object-cover"
-                        unoptimized
-                        style={{
-                          objectFit: "cover",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    </div>
-
-                    {/* Card Content */}
-                    <div
-                      className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
-                      style={{
-                        border: "1px dashed #D1D5DB",
-                        zIndex: 1,
-                      }}
-                    >
-                      <Image
-                        src="/headset-help.png"
-                        alt="Headset Help"
-                        width={24}
-                        height={24}
-                        className="object-contain mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6"
-                        unoptimized
-                      />
-                      <h3
-                        className="text-xs md:text-sm font-semibold text-[#111827]"
-                        style={{ fontFamily: "Poppins" }}
-                      >
-                        Dedicated Support and Co-Selling
-                      </h3>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
