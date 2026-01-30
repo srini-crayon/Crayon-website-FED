@@ -699,31 +699,43 @@ export default function ResellerPage() {
                       title: "Recurring Partner Revenue",
                       description: "Build predictable, subscription-based income streams from long-term enterprise AI deployments.",
                       iconSrc: "/percentage-round.png",
+                      iconBg: "#FFF7ED",
+                      iconColor: "#EA580C",
                     },
                     {
                       title: "Attractive Reseller Margins",
                       description: "Benefit from reseller-only pricing and competitive commercial incentives that protect profitability.",
                       iconSrc: "/coins.png",
+                      iconBg: "#ECFEFF",
+                      iconColor: "#06B6D4",
                     },
                     {
                       title: "Faster Deal Closure",
                       description: "Shorten sales cycles with production-ready AI agents, proven use cases, and live demos.",
-                      icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-[#111827]" aria-hidden="true" />,
+                      icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />,
+                      iconBg: "#EEF2FF",
+                      iconColor: "#4F46E5",
                     },
                     {
                       title: "Co-Selling & Deal Support",
                       description: "Win larger opportunities with joint selling, pre-sales assistance, and enterprise deal execution support.",
                       iconSrc: "/headset-help.png",
+                      iconBg: "#F5F3FF",
+                      iconColor: "#7C3AED",
                     },
                     {
                       title: "Enterprise-Grade AI Portfolio",
                       description: "Offer secure, scalable, and compliant AI solutions trusted by enterprise customers.",
                       iconSrc: "/fingerprint-circled-lock.png",
+                      iconBg: "#EFF6FF",
+                      iconColor: "#2563EB",
                     },
                     {
                       title: "Multi-Industry Revenue Opportunities",
                       description: "Sell AI solutions across BFSI, Retail, Travel, Telecom, Healthcare, and SaaS industries.",
-                      icon: <Globe className="w-5 h-5 md:w-6 md:h-6 text-[#111827]" aria-hidden="true" />,
+                      icon: <Globe className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />,
+                      iconBg: "#ECFDF3",
+                      iconColor: "#16A34A",
                     },
                   ].map((item, idx) => (
                     <div
@@ -758,13 +770,19 @@ export default function ResellerPage() {
                           zIndex: 1,
                         }}
                       >
-                        <div className="flex items-center justify-center mb-2 md:mb-4 w-5 h-5 md:w-6 md:h-6 text-[#111827]">
+                        <div
+                          className="flex items-center justify-center mb-3 w-10 h-10 rounded-full"
+                          style={{
+                            backgroundColor: item.iconBg || "#F3F4F6",
+                            color: item.iconColor || "#111827",
+                          }}
+                        >
                           {item.iconSrc ? (
                             <Image
                               src={item.iconSrc}
                               alt={item.title}
-                              width={24}
-                              height={24}
+                              width={20}
+                              height={20}
                               className="object-contain w-5 h-5 md:w-6 md:h-6"
                               unoptimized
                             />
