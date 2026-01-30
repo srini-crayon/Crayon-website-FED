@@ -693,8 +693,8 @@ export default function ResellerPage() {
 
               {/* Right side - Benefits cards */}
               <div className="flex-1 md:w-1/2">
-                {(() => {
-                  const cards = [
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
                     {
                       title: "Recurring Partner Revenue",
                       description: "Build predictable, subscription-based income streams from long-term enterprise AI deployments.",
@@ -737,98 +737,80 @@ export default function ResellerPage() {
                       iconBg: "#ECFDF3",
                       iconColor: "#16A34A",
                     },
-                  ];
-
-                  const topRow = cards.slice(0, 2);
-                  const bottomRow = cards.slice(2);
-
-                  const renderCards = (items: typeof cards) => (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      {items.map((item) => (
-                        <div
-                          key={item.title}
-                          className="relative rounded-lg overflow-hidden w-full h-full min-h-[151px] stagger-item transition-all duration-300 hover:scale-105"
-                          style={{ willChange: "transform" }}
-                        >
-                          {/* Background Mask Image */}
-                          <div
-                            className="absolute inset-0 pointer-events-none w-full h-full"
-                            style={{ zIndex: 0 }}
-                          >
-                            <Image
-                              src="/Mask group.png"
-                              alt=""
-                              fill
-                              className="object-cover"
-                              unoptimized
-                              style={{
-                                objectFit: "cover",
-                                width: "100%",
-                                height: "100%",
-                              }}
-                            />
-                          </div>
-
-                          {/* Card Content */}
-                          <div
-                            className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
-                            style={{
-                              border: "1px dashed #D1D5DB",
-                              zIndex: 1,
-                            }}
-                          >
-                            <div
-                              className="flex items-center justify-center mb-3 w-10 h-10 rounded-full"
-                              style={{
-                                backgroundColor: item.iconBg || "#F3F4F6",
-                                color: item.iconColor || "#111827",
-                              }}
-                            >
-                              {item.iconSrc ? (
-                                <Image
-                                  src={item.iconSrc}
-                                  alt={item.title}
-                                  width={20}
-                                  height={20}
-                                  className="object-contain w-5 h-5 md:w-6 md:h-6"
-                                  unoptimized
-                                />
-                              ) : (
-                                item.icon
-                              )}
-                            </div>
-                            <h3
-                              className="text-xs md:text-sm font-semibold text-[#111827]"
-                              style={{ fontFamily: "Poppins" }}
-                            >
-                              {item.title}
-                            </h3>
-                            <p
-                              className="text-xs md:text-sm mt-2"
-                              style={{
-                                fontFamily: "Poppins, sans-serif",
-                                fontWeight: 400,
-                                lineHeight: "140%",
-                                color: "#111827",
-                              }}
-                            >
-                              {item.description}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  );
-
-                  return (
-                    <div className="flex flex-col gap-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {renderCards(topRow)}
+                  ].map((item, idx) => (
+                    <div
+                      key={item.title}
+                      className="relative rounded-lg overflow-hidden w-full h-full min-h-[151px] stagger-item transition-all duration-300 hover:scale-105"
+                      style={{ willChange: "transform" }}
+                    >
+                      {/* Background Mask Image */}
+                      <div
+                        className="absolute inset-0 pointer-events-none w-full h-full"
+                        style={{ zIndex: 0 }}
+                      >
+                        <Image
+                          src="/Mask group.png"
+                          alt=""
+                          fill
+                          className="object-cover"
+                          unoptimized
+                          style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
                       </div>
-                      {renderCards(bottomRow)}
+
+                      {/* Card Content */}
+                      <div
+                        className="relative bg-white rounded-lg p-3 md:p-6 flex flex-col items-start text-left"
+                        style={{
+                          border: "1px dashed #D1D5DB",
+                          zIndex: 1,
+                        }}
+                      >
+                        <div
+                          className="flex items-center justify-center mb-3 w-10 h-10 rounded-full"
+                          style={{
+                            backgroundColor: item.iconBg || "#F3F4F6",
+                            color: item.iconColor || "#111827",
+                          }}
+                        >
+                          {item.iconSrc ? (
+                            <Image
+                              src={item.iconSrc}
+                              alt={item.title}
+                              width={20}
+                              height={20}
+                              className="object-contain w-5 h-5 md:w-6 md:h-6"
+                              unoptimized
+                            />
+                          ) : (
+                            item.icon
+                          )}
+                        </div>
+                        <h3
+                          className="text-xs md:text-sm font-semibold text-[#111827]"
+                          style={{ fontFamily: "Poppins" }}
+                        >
+                          {item.title}
+                        </h3>
+                        <p
+                          className="text-xs md:text-sm mt-2"
+                          style={{
+                            fontFamily: "Poppins, sans-serif",
+                            fontWeight: 400,
+                            lineHeight: "140%",
+                            color: "#111827",
+                          }}
+                        >
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
-                  );
-                })()}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
