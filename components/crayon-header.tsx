@@ -236,8 +236,9 @@ export function CrayonHeader() {
         {/* Right Section - Button & Menu */}
         <div className="flex items-center gap-6">
           {/* Enquiry Now Button */}
-          <a
-            href="http://127.0.0.1:4000/enquiry"
+          <Link
+            href="/enquiry"
+            onClick={() => setIsMenuOpen(false)}
             style={{
               backgroundColor: '#1A1A1A',
               color: '#FFFFFF',
@@ -252,9 +253,10 @@ export function CrayonHeader() {
             }}
             onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
             onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            aria-label="Go to enquiry page"
           >
             Enquire Now
-          </a>
+          </Link>
 
           {/* Hamburger Menu Icon */}
           <button
