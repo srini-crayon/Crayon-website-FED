@@ -743,7 +743,7 @@ export default function ResellerPage() {
                         Recurring Revenue
                       </h3>
                       <p
-                        className="text-xs md:text-sm mt-1"
+                        className="text-xs md:text-sm mt-2"
                         style={{
                           fontFamily: "Poppins, sans-serif",
                           fontWeight: 400,
