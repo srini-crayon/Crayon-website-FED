@@ -1,0 +1,13 @@
+/* Banking page: marquee animation (different from main site's marquee) */
+@keyframes marquee-banking {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap, 1rem)));
+  }
+}
+
+.animate-marquee-banking {
+  animation: marquee-banking linear infinite;
+}

@@ -1,0 +1,16 @@
+"use client"
+
+import { usePathname } from "next/navigation"
+import { Navbar } from "./navbar"
+import { CrayonHeader } from "./crayon-header"
+
+export function ConditionalNavbar() {
+  const pathname = usePathname()
+  
+  // Use crayon-header on crayondata, tangram-ai, tangram-ai-isv, tangram-ai-reseller, blog, podcast, privacy-policy, cookie-policy, security-policy, terms-of-use, trust-center, privacy-civil-liberties, our-story, our-investors, our-values, vision, our-team, career, enquiry, agents-store, and x pages
+  if (pathname === "/crayondata" || pathname === "/tangram-ai" || pathname === "/tangram-ai-isv" || pathname === "/tangram-ai-reseller" || pathname === "/blog" || pathname === "/podcast" || pathname === "/privacy-policy" || pathname === "/cookie-policy" || pathname === "/security-policy" || pathname === "/terms-of-use" || pathname === "/trust-center" || pathname === "/privacy-civil-liberties" || pathname === "/our-story" || pathname === "/our-investors" || pathname === "/our-values" || pathname === "/vision" || pathname === "/our-team" || pathname === "/career" || pathname === "/enquiry" || pathname === "/agents-store" || pathname === "/x") {
+    return <CrayonHeader />
+  }
+
+  return <Navbar />
+}
