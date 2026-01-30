@@ -388,7 +388,7 @@ export default function ISVPage() {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: "Poppins",
                   fontWeight: 500,
                   fontSize: "14px",
                   lineHeight: "normal",
@@ -422,22 +422,7 @@ export default function ISVPage() {
                 </span>
               </button>
             </div>
-            <div className="mt-6 text-center scale-in">
-              <a
-                href="#video-walkthrough"
-                className="inline-flex items-center justify-center text-[#111111] font-medium no-underline hover:text-[#0b0b0b]"
-                style={{
-                  fontFamily: "Poppins",
-                  fontSize: "14px",
-                  lineHeight: "22px",
-                  letterSpacing: "0.2px",
-                  gap: "8px",
-                }}
-              >
-                <Play className="w-4 h-4" aria-hidden="true" fill="currentColor" stroke="currentColor" />
-                How It Works
-              </a>
-            </div>
+            {/* How It Works link removed per request */}
 
             {/* Static Logo Row */}
             <div className="mt-16 md:mt-24 fade-in-section">
@@ -459,92 +444,35 @@ export default function ISVPage() {
           </div>
         </section>
 
-        {/* Build the Future Together Section */}
-        <section id="how-it-works" className="w-full px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-16 md:pb-20 lg:pb-24 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
-          <div className="max-w-[1209px] mx-auto">
-            {/* Heading and Description */}
-            <div className="flex flex-col gap-3 items-center text-center mb-16 md:mb-18">
+        {/* Why ISVs Choose Tangram Section */}
+        <section className="w-full px-8 md:px-12 lg:px-16 pt-12 md:pt-16 lg:pt-20 pb-12 md:pb-16 lg:pb-20 bg-white fade-in-section" style={{ transform: "translateZ(0)", willChange: "transform" }}>
+          <div className="max-w-[1200px] mx-auto flex flex-col gap-10 md:gap-12">
+            <div className="text-center flex flex-col gap-3 items-center">
               <h2
-                className="fade-in-blur"
+                className="fade-in-blur text-3xl md:text-4xl font-semibold text-[#161d26]"
                 style={{
                   textAlign: "center",
                   fontFamily: "Poppins",
-                  fontSize: "32px",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  lineHeight: "normal",
-                  background: "linear-gradient(90deg, #2F0368 0%, #5E04D2 100%)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
                   willChange: "opacity, transform, filter",
                 }}
               >
-                Build the Future Together
+                Why ISV's Choose Tangram AI
               </h2>
-              <p
-                className="fade-in-section"
-                style={{
-                  color: "var(--Interface-Color-Primary-900, #091917)",
-                  textAlign: "center",
-                  fontFamily: "Poppins",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  maxWidth: "1100px",
-                  margin: "0 auto",
-                  willChange: "opacity, transform",
-                }}
-              >
-                The Tangram.ai ISV Program empowers Independent Software Vendors to build, integrate, and scale on the Tangram.ai platform. Partners gain co-sell support, marketplace visibility, and go-to-market alignment — accelerating growth and expanding reach across the Tangram.ai ecosystem.
+              <p className="fade-in-section text-sm md:text-base text-[#4b5563] text-center max-w-[780px] mx-auto" style={{ willChange: "opacity, transform" }}>
+                Tangram AI helps Independent Software Vendors bring enterprise-ready AI and GenAI solutions to market faster by simplifying discovery, deployment, and go-to-market at scale.
               </p>
             </div>
 
-            {/* Feature Cards */}
-            <div className="flex flex-col md:flex-row gap-2 items-stretch justify-center" style={{ gap: "0px", alignItems: "stretch" }}>
-              {/* Card 1: Accelerate Project Successes */}
-              <div
-                className="flex flex-col gap-6 p-6 w-full md:w-[386.72px] relative bg-white card-divider stagger-item cursor-pointer"
-                style={{
-                  padding: "24.51px",
-                  gap: "24.49px",
-                  backgroundColor: "#FFFFFF",
-                  position: "relative",
-                }}
-                onMouseEnter={() => setHoveredCard1(true)}
-                onMouseLeave={() => setHoveredCard1(false)}
-              >
-                {/* Icon */}
-                <div
-                  className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
-                  style={{
-                    width: "49.02px",
-                    height: "49.02px",
-                  }}
-                >
-                  <div
-                    className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
-                    style={{
-                      width: "49.02px",
-                      height: "49.02px",
-                    }}
-                  >
-                    <Target className="w-6 h-6 text-white" />
+            <div className="relative">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#2563eb]">
+                    <Globe className="w-6 h-6" aria-hidden="true" />
                   </div>
-                </div>
-
-                {/* Content */}
-                <div
-                  className="flex flex-col flex-1 relative z-10"
-                  style={{
-                    gap: "7.935px",
-                  }}
-                >
                   <h3
-                    className="fade-in-blur transition-all duration-300"
+                    className="fade-in-blur transition-all duration-300 mb-3"
                     style={{
-                      color: hoveredCard1 ? "transparent" : "#181818",
+                      color: "#181818",
                       fontFamily: "Poppins",
                       fontSize: "clamp(16px, 4vw, 20px)",
                       fontStyle: "normal",
@@ -552,17 +480,14 @@ export default function ISVPage() {
                       lineHeight: "150%",
                       letterSpacing: "-0.4px",
                       willChange: "opacity, transform, filter",
-                      background: hoveredCard1 ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                      backgroundClip: hoveredCard1 ? "text" : "unset",
-                      WebkitBackgroundClip: hoveredCard1 ? "text" : "unset",
-                      WebkitTextFillColor: hoveredCard1 ? "transparent" : "unset",
                     }}
                   >
-                    Accelerate Project Successes
+                    Reach Enterprises
                   </h3>
                   <p
+                    className="fade-in-section"
                     style={{
-                      color: "#65717C",
+                      color: "#4b5563",
                       fontFamily: "Poppins",
                       fontSize: "clamp(14px, 3.5vw, 16px)",
                       fontStyle: "normal",
@@ -571,151 +496,136 @@ export default function ISVPage() {
                       letterSpacing: "-0.4px",
                     }}
                   >
-                    Work with our partner ecosystem and access industry expertise and resources to help you achieve exceptional results.
+                    Get your <span style={{ fontWeight: 500 }}>AI solutions</span> in front of enterprises actively looking for production-ready AI.
+                  </p>
+                </div>
+
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#f59e0b]">
+                    <TrendingUp className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="fade-in-blur transition-all duration-300 mb-3"
+                    style={{
+                      color: "#181818",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(16px, 4vw, 20px)",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                      willChange: "opacity, transform, filter",
+                    }}
+                  >
+                    Sell Faster
+                  </h3>
+                  <p
+                    className="fade-in-section"
+                    style={{
+                      color: "#4b5563",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                    }}
+                  >
+                    Go to market with <span style={{ fontWeight: 500 }}>co-sell support</span> that helps shorten enterprise sales cycles.
+                  </p>
+                </div>
+
+                <div className="rounded-[4px] border border-gray-200 bg-white p-6">
+                  <div className="mb-4 text-[#22c55e]">
+                    <Target className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h3
+                    className="fade-in-blur transition-all duration-300 mb-3"
+                    style={{
+                      color: "#181818",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(16px, 4vw, 20px)",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                      willChange: "opacity, transform, filter",
+                    }}
+                  >
+                    Scale Confidently
+                  </h3>
+                  <p
+                    className="fade-in-section"
+                    style={{
+                      color: "#4b5563",
+                      fontFamily: "Poppins",
+                      fontSize: "clamp(14px, 3.5vw, 16px)",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.4px",
+                    }}
+                  >
+                    Deploy and scale with <span style={{ fontWeight: 500, color: "#111111" }}>enterprise-grade security, integration, compliance</span> built in.
                   </p>
                 </div>
               </div>
 
-              {/* Card 2: Scale your operations globally */}
-              <div
-                className="flex flex-col gap-6 p-6 w-full md:w-[386.72px] relative bg-white card-divider stagger-item cursor-pointer"
-                style={{
-                  padding: "24.51px",
-                  gap: "24.49px",
-                  backgroundColor: "#FFFFFF",
-                  position: "relative",
-                }}
-                onMouseEnter={() => setHoveredCard2(true)}
-                onMouseLeave={() => setHoveredCard2(false)}
-              >
-                {/* Icon */}
-
-                <div
-                  className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
-                  style={{
-                    width: "49.02px",
-                    height: "49.02px",
-                  }}
-                >
-                  <Globe className="w-6 h-6 text-white" />
-                </div>
-
-                {/* Content */}
-                <div
-                  className="flex flex-col flex-1 relative z-10"
-                  style={{
-                    gap: "7.935px",
-                  }}
-                >
-                  <h3
-                    className="fade-in-blur transition-all duration-300"
-                    style={{
-                      color: hoveredCard2 ? "transparent" : "#181818",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(16px, 4vw, 20px)",
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                      whiteSpace: "nowrap",
-                      willChange: "opacity, transform, filter",
-                      background: hoveredCard2 ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                      backgroundClip: hoveredCard2 ? "text" : "unset",
-                      WebkitBackgroundClip: hoveredCard2 ? "text" : "unset",
-                      WebkitTextFillColor: hoveredCard2 ? "transparent" : "unset",
-                    }}
-                  >
-                    Scale your operations globally
-                  </h3>
-                  <p
-                    style={{
-                      color: "#65717C",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(14px, 3.5vw, 16px)",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                    }}
-                  >
-                    Enter new markets while accelerating your business's international reach with global partners or local experts.
-                  </p>
-                </div>
+              {/* Connecting Lines Image */}
+              <div className="flex justify-center pt-0">
+                <img
+                  src="/lines-connector.png"
+                  alt="Connecting lines"
+                  className="max-w-[620px] w-full h-auto pointer-events-none select-none"
+                />
               </div>
 
-              {/* Card 3: Get faster business results */}
-              <div
-                className="flex flex-col gap-6 p-6 w-full md:w-[386.72px] relative bg-white stagger-item cursor-pointer"
-                style={{
-                  padding: "24.51px",
-                  gap: "24.49px",
-                  backgroundColor: "#FFFFFF",
-                  position: "relative",
-                }}
-                onMouseEnter={() => setHoveredCard3(true)}
-                onMouseLeave={() => setHoveredCard3(false)}
-              >
-                {/* Icon */}
-                <div
-                  className="bg-[#181818] rounded-[8.17px] flex items-center justify-center shrink-0 relative z-10"
+              {/* Build With Us CTA */}
+              <div className="flex flex-col items-center text-center gap-3 pt-0">
+                <h3
+                  className="fade-in-blur"
                   style={{
-                    width: "49.02px",
-                    height: "49.02px",
+                    fontFamily: "Poppins",
+                    fontSize: "24px",
+                    fontWeight: 600,
+                    color: "#0E1116",
                   }}
                 >
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-
-                {/* Content */}
-                <div
-                  className="flex flex-col flex-1 relative z-10"
+                  Build With Us
+                </h3>
+                <p
+                  className="fade-in-section text-sm md:text-base text-[#4b5563] text-center max-w-[780px] mx-auto"
                   style={{
-                    gap: "7.935px",
+                    lineHeight: "24px",
+                    marginBottom: "12px",
+                    willChange: "opacity, transform",
                   }}
                 >
-                  <h3
-                    className="fade-in-blur transition-all duration-300"
-                    style={{
-                      color: hoveredCard3 ? "transparent" : "#181818",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(16px, 4vw, 20px)",
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                      willChange: "opacity, transform, filter",
-                      background: hoveredCard3 ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                      backgroundClip: hoveredCard3 ? "text" : "unset",
-                      WebkitBackgroundClip: hoveredCard3 ? "text" : "unset",
-                      WebkitTextFillColor: hoveredCard3 ? "transparent" : "unset",
-                    }}
-                  >
-                    Get faster business results
-                  </h3>
-                  <p
-                    style={{
-                      color: "#65717C",
-                      fontFamily: "Poppins",
-                      fontSize: "clamp(14px, 3.5vw, 16px)",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                      letterSpacing: "-0.4px",
-                    }}
-                  >
-                    Reduce time to deployment and accelerate projects with pre-configured, industry specific solutions.
-                  </p>
+                  See how Tangram AI helps ISVs onboard, build, launch, and scale enterprise-ready AI solutions through our marketplace, co-sell support, and deployment capabilities.
+                </p>
+                <div className="w-full max-w-[720px] mt-2">
+                  <img
+                    src="/isv-video.png"
+                    alt="Start ISV onboarding video"
+                    className="w-full h-auto rounded-[12px] shadow-sm"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
+
         {/* ISV Testimonials - Static Row Layout */}
         <section id="video-walkthrough" className="w-full px-4 md:px-8 lg:px-12 pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-20 lg:pb-24 fade-in-section" style={{ backgroundColor: "#F9FAFB", transform: "translateZ(0)", willChange: "transform" }}>
           <div className="max-w-[1200px] mx-auto">
             <div className="text-left mb-12 space-y-2">
-              <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]">From Build to Scale</h2>
+              <h2
+                className="text-3xl md:text-4xl font-semibold text-[#161d26]"
+                style={{ fontFamily: "Poppins" }}
+              >
+                From Build to Scale
+              </h2>
               <p className="text-sm md:text-base text-[#4b5563]">
                 Partner stories across the entire AI product lifecycle.
               </p>
@@ -839,7 +749,12 @@ export default function ISVPage() {
             {/* Simplified FAQ layout */}
             <div className="px-0 py-4 rounded-none mb-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12">
-                <h2 className="text-3xl md:text-4xl font-semibold text-[#161d26]">FAQ</h2>
+                <h2
+                  className="text-3xl md:text-4xl font-semibold text-[#161d26]"
+                  style={{ fontFamily: "Poppins" }}
+                >
+                  FAQ
+                </h2>
                 <div className="flex flex-wrap gap-3">
                   {Array.from(new Set(faqEntries.map((e) => e.section))).map((section) => (
                     <button
@@ -898,7 +813,7 @@ export default function ISVPage() {
                   <h2
                     className="fade-in-blur"
                     style={{
-                      fontFamily: "Poppins, sans-serif",
+                      fontFamily: "Poppins",
                       fontWeight: 600,
                       fontStyle: "normal",
                       fontSize: "32px",
@@ -986,7 +901,7 @@ export default function ISVPage() {
                   >
                     <div className="px-2 pb-6">
                       <p style={{
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins",
                         fontWeight: 400,
                         fontSize: "16px",
                         lineHeight: "1.5",
@@ -1011,7 +926,7 @@ export default function ISVPage() {
                     <h3
                       className="fade-in-blur"
                       style={{
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins",
                         fontWeight: 500,
                         fontStyle: "normal",
                         fontSize: "18px",
@@ -1063,7 +978,7 @@ export default function ISVPage() {
                   >
                     <div className="px-2 pb-6">
                       <p style={{
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins",
                         fontWeight: 400,
                         fontSize: "16px",
                         lineHeight: "1.5",
@@ -1088,7 +1003,7 @@ export default function ISVPage() {
                     <h3
                       className="fade-in-blur"
                       style={{
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins",
                         fontWeight: 500,
                         fontStyle: "normal",
                         fontSize: "17.2px",
@@ -1140,7 +1055,7 @@ export default function ISVPage() {
                   >
                     <div className="px-2 pb-6">
                       <p style={{
-                        fontFamily: "Poppins, sans-serif",
+                        fontFamily: "Poppins",
                         fontWeight: 400,
                         fontSize: "16px",
                         lineHeight: "1.5",
