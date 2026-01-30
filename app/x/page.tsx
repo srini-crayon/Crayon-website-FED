@@ -16,76 +16,84 @@ export default function XPage() {
     <div
       className="flex min-h-screen px-5 pt-32 pb-16"
       style={{
-        background: "linear-gradient(135deg, #000000 5%, #1d9bf0 15%, #eff3f4 80%)",
+        background: "linear-gradient(180deg, #0f172a 0%, #111827 35%, #e5e7eb 70%, #fafafa 100%)",
       }}
     >
-      <div className="w-full max-w-5xl mx-auto">
-        {/* Embedded Twitter feed */}
-        <section className="flex justify-center mb-10">
-          <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
-          <div className="elfsight-app-bcc6e0ac-14ab-48a8-b58b-6c75d359b3b2" data-elfsight-app-lazy />
-        </section>
-
-        <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mt-10">
+      <div className="w-full" style={{ maxWidth: "1472px", margin: "0 auto" }}>
+        <div className="flex flex-col gap-8 justify-center items-stretch mt-10">
           <article
-            className="w-[360px] flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white lg:sticky lg:top-20 lg:self-start"
+            className="w-full flex flex-col md:flex-row overflow-hidden rounded-lg border border-gray-200 bg-white"
           >
-            <div
-              className="relative h-32"
-              style={{
-                background: "linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #312e81 100%)",
-              }}
-            >
-              <div className="absolute left-5 bottom-[-36px] h-20 w-20 rounded-full border-4 border-white bg-white flex items-center justify-center">
-                <div
-                  className="h-14 w-14 rounded-full overflow-hidden"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent 45%), radial-gradient(circle at 70% 70%, rgba(255,255,255,0.3), transparent 45%), #0f172a",
-                  }}
-                >
-                  <Image
-                    src={avatarLogo}
-                    alt="Crayon avatar"
-                    width={56}
-                    height={56}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              </div>
-              <div className="absolute right-5 top-5 text-white text-lg font-semibold">#tangramai</div>
-            </div>
-
-            <div className="pt-12 px-5 pb-6">
-              <h1 className="text-xl font-semibold text-gray-900">Crayon Data</h1>
-              <p className="text-sm text-gray-500">@CrayonBigData</p>
-              <p className="mt-3 text-sm text-gray-600">
-                We're a fast-growing big data &amp; AI startup with a vision to simplify the world’s choices with our all-new personalization engine, http://maya.ai
-              </p>
-
-              <div className="mt-4 flex items-center gap-6 text-sm text-gray-700">
-                <div>
-                  <span className="font-semibold text-gray-900">873</span> Following
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-900">1,788</span> Followers
-                </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <div
+                className="md:w-56 flex items-center justify-center p-6"
+                style={{
+                  background: "#ffffff",
+                }}
+              >
+                <Image
+                  src="/img/crayon-full-logo.png"
+                  alt="Crayon Data logo"
+                  width={200}
+                  height={200}
+                  className="h-auto w-44 md:w-48 object-contain"
+                  priority
+                />
               </div>
 
-              <div className="mt-6">
-                <button
-                  className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-normal text-white transition hover:opacity-90"
-                  style={{
-                    fontFamily: "Poppins",
-                  }}
-                >
-                  Follow
-                </button>
+              <div
+                className="hidden md:block w-px bg-gray-200"
+                style={{ marginTop: "16px", marginBottom: "16px" }}
+                aria-hidden="true"
+              />
+
+              <div className="flex-1 px-6 py-6 flex flex-col gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex flex-col gap-0.5">
+                    <h1 className="text-xl font-semibold text-gray-900">Crayon Data</h1>
+                    <p className="text-sm text-gray-500">@CrayonBigData</p>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-gray-700">
+                    <div className="flex items-center gap-6">
+                      <div>
+                        <span className="font-semibold text-gray-900">873</span> Following
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-900">1,788</span> Followers
+                      </div>
+                    </div>
+                    <a
+                      href="https://x.com/CrayonBigData"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-md bg-gray-900 px-4 py-2 text-sm font-normal text-white transition hover:opacity-80"
+                      style={{
+                        fontFamily: "Poppins",
+                        whiteSpace: "nowrap",
+                      }}
+                      aria-label="Follow Crayon Data on X"
+                    >
+                      Follow
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-600" style={{ width: "480px", maxWidth: "100%" }}>
+                  Crayon Data helps enterprises move from GenAI pilots to production. With AI Catalyst and the Tangram.ai platform, we deliver results fast, real, and measurable.
+                </p>
+
+                <span className="inline-block text-sm font-medium text-blue-700">#tangramai</span>
               </div>
             </div>
           </article>
 
         </div>
+
+        {/* Embedded Twitter feed */}
+        <section className="flex justify-center mt-10">
+          <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
+          <div className="elfsight-app-bcc6e0ac-14ab-48a8-b58b-6c75d359b3b2" data-elfsight-app-lazy />
+        </section>
       </div>
     </div>
   )
