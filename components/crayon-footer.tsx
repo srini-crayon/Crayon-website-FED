@@ -39,14 +39,14 @@ export function CrayonFooter() {
                 alt="Crayon" 
                 width={120} 
                 height={40} 
-                className="h-auto w-auto" 
+                className="h-7 w-auto" 
               />
               <Image 
-                src="/img/tangram-logo.png" 
+                src="/img/tangram-logo-light.svg" 
                 alt="tangram.ai" 
                 width={140} 
                 height={40} 
-                className="h-auto w-auto" 
+                className="h-7 w-auto" 
               />
             </div>
             

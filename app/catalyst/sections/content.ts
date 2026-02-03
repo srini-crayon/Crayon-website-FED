@@ -1,11 +1,11 @@
 export const heroContent = {
-  eyebrow: "",
-  title: "Catalyst: Enterprise AI Adoption & Execution Engine",
+  eyebrow: "Catalyst",
+  title: "Enterprise AI Adoption & Execution Engine",
   subtitle: "",
   description:
     "Turn AI experiments into scalable, production-ready impact. Catalyst is Crayon Data’s structured execution engine that moves enterprises from pilots to production and into governed, enterprise-wide AI adoption.",
   primaryCta: "Talk to an AI Expert",
-  secondaryCta: "Explore Tangram",
+  secondaryCta: "EXPLORE TANGRAM AI",
   valuePoints: [
     "Outcome-first pods with cross-functional AI, product, and data talent.",
     "Prebuilt agents, accelerators, and playbooks to skip the blank page.",
@@ -16,30 +16,58 @@ export const heroContent = {
 export const problemContent = {
   title: "The Enterprise AI Reality: The Last-Mile Problem",
   intro:
-    "Most enterprises don’t fail at AI because of models or tooling. They fail because they lack a system to scale it.",
+    "Across industries, we see the same patterns:",
+  afterGridText:
+    "Enterprises don’t fail at AI because of technology. They fail because they lack a system to scale it.",
   bullets: [
-    "Teams run isolated pilots and demos.",
-    "PoCs succeed technically but fail operationally.",
-    "Use cases never move beyond experimentation.",
-    "Governance and compliance arrive too late.",
-    "Adoption stalls after deployment.",
+    {
+      title: "Isolated Pilots",
+      description: "Teams run isolated pilots and demos",
+    },
+    {
+      title: "PoCs That Fail in Production",
+      description: "PoCs succeed technically but fail operationally",
+    },
+    {
+      title: "Use Cases Stuck in Experimentation",
+      description: "Use cases never move beyond experimentation",
+    },
+    {
+      title: "Late Governance & Compliance",
+      description: "Governance and compliance come too late",
+    },
+    {
+      title: "Low User Adoption",
+      description: "Adoption remains low after deployment",
+    },
   ],
 }
 
 export const whyExistsContent = {
   title: "What Crayon Data Learned from Running AI in Production",
   body: [
-    "Platforms alone do not create outcomes. Successful AI requires organizational readiness, real-world validation, governance, and engineered adoption.",
+    "After delivering AI programs for over a decade, one truth became clear: Platforms alone do not create outcomes.",
     "The biggest blockers were rarely models or infrastructure. They were execution, operating models, and change. This is why we built Catalyst.",
+  ],
+  pills: [
+    "Organizational readiness",
+    "Real-world validation",
+    "Engineered adoption",
+    "Built-in governance",
   ],
 }
 
 export const definitionContent = {
   title: "What Is Catalyst?",
-  body: [
-    "Catalyst is Crayon Data’s AI adoption and execution engine built to turn experimentation into operational AI, move enterprises from pilots to production, and create repeatable AI success patterns.",
-    "Because AI success isn’t a one-time build—it’s a continuous system of experimentation, validation, and scale that ensures Tangram is deployed, adopted, and measured.",
+  subtitle: "Catalyst is Crayon Data's AI adoption and execution engine designed to",
+  benefits: [
+    { icon: "search", text: "Turn experimentation into operational AI" },
+    { icon: "globe", text: "Move enterprises from pilots to production" },
+    { icon: "layers", text: "Create repeatable AI success patterns" },
+    { icon: "rocket", text: "Ensure Tangram isn't just demoed - but deployed and adopted" },
   ],
+  closingSentence:
+    "Because AI success isn't a one-time build.\nIt's a continuous system of experimentation, validation, and scale.",
   cta: "Start Your AI Execution Journey",
 }
 
@@ -147,68 +175,83 @@ export const whyChooseContent = {
 }
 
 export const modelTabsContent = {
-  title: "The Catalyst Model: Labs → Foundry → Factory",
+  title: "The Catalyst Model",
+  subtitle: "Labs → Foundry → Factory",
+  description:
+    "Catalyst runs as a continuous execution loop — building maturity without overwhelming the organization.",
   tabs: [
     {
       value: "labs",
       label: "Labs",
-      tagline: "Discover & Experiment with Direction",
+      titleLine: "Labs",
+      tagline: "Discovery & Experiment with direction",
       programCount: "13+ client engagements and growing",
+      intro:
+        "Labs help enterprises go beyond isolated tools and understand what \"AI inside\" really means.",
       focus: [
-        "Identify high-impact business use cases.",
-        "Rapid experimentation and early internal agents.",
-        "Unify data, documents, and knowledge.",
-        "Fast prototyping to test assumptions.",
+        "Identifying high-impact business use cases",
+        "Rapid experimentation and early internal agents",
+        "Unifying data, documents, and knowledge",
+        "Fast prototyping to test assumptions",
       ],
       outcome: "A prioritized AI roadmap and validated early pilots.",
     },
     {
       value: "foundry",
       label: "Foundry",
+      titleLine: "Foundry",
       tagline: "Build & Validate Real AI Solutions",
       programCount: "7+ enterprise programs and growing",
+      intro: "Foundry moves validated ideas into live operational systems.",
       focus: [
-        "Build AI agents on Tangram’s modular platform.",
-        "Integrate enterprise data and workflows.",
-        "Use internal teams as early adopters.",
-        "Validate usability and business impact.",
+        "Building AI agents on Tangram's modular platform",
+        "Integrating enterprise data and workflows",
+        "Using internal teams as early adopters",
+        "Validating usability and business impact",
       ],
       outcome: "Production-ready AI agents and workflows proven in real environments.",
     },
     {
       value: "factory",
       label: "Factory",
+      titleLine: "Factory",
       tagline: "Scale AI Across the Enterprise",
       programCount: "23+ enterprise rollouts and growing",
+      intro: "Factory transforms what works into enterprise-wide AI capabilities.",
       focus: [
-        "Scale agents across teams and geographies.",
-        "Governance, compliance, and repeatability.",
-        "Standardized design patterns and data frameworks.",
-        "Deep integration into enterprise systems.",
+        "Scaling agents across teams and geographies",
+        "Governance, compliance, and repeatability",
+        "Standardized design patterns and data frameworks",
+        "Deep integration into enterprise systems",
       ],
-      outcome: "AI becomes business-as-usual—governed, scalable, and measurable.",
+      outcome: "AI becomes business-as-usual — governed, scalable, and measurable.",
     },
   ],
 }
 
 export const reverseBuildContent = {
   title: "The Reverse Build Philosophy",
-  traditional: ["Product → Prototype → Demo → Requirement"],
-  catalyst: ["Requirement → Demo → Prototype → Product"],
+  leftFlowTitle: "Traditional AI build flow",
+  rightFlowTitle: "Catalyst reverses it",
+  traditional: ["Product", "Prototype", "Demo", "Requirement"],
+  catalyst: ["Requirement", "Demo", "Prototype", "Product"],
+  proofHeading: "This Ensures",
   proofPoints: [
-    "Business problems drive AI solutions.",
-    "Validation happens early in real workflows.",
-    "Only proven value is scaled—no more demos that die in pilot.",
+    "Business problems drive AI solutions",
+    "Validation happens early in real workflows",
+    "Only proven value is scaled",
+    "No more impressive demos that die in pilot mode.",
   ],
 }
 
 export const maturityContent = {
-  title: "Built for Every Stage of AI Maturity",
-  bullets: [
-    "Infrastructure-agnostic and works with your security posture.",
-    "Suitable for early experimentation or full-scale transformation.",
-    "Delivered through blended on-site and remote teams.",
-    "Enterprises can start from current state or a defined AI end-state—every journey is personalized.",
+  title: "Built for Every Stage of Your AI Journey",
+  cards: [
+    { header: "Infrastructure-agnostic", subtext: "Works across any enterprise environment" },
+    { header: "Supports every stage", subtext: "From early experimentation to full-scale transformation" },
+    { header: "Delivered by blended teams", subtext: "Combining on-site and remote expertise" },
+    { header: "Start from your current state", subtext: "Or from a clearly defined AI end state" },
+    { header: "Every journey is personalized", subtext: "To your business goals and operating model" },
   ],
 }
 

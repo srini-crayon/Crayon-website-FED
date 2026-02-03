@@ -354,24 +354,9 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
             zIndex: -1,
           }}
         />
-        <div className="w-full px-8 md:px-12 lg:px-16 mx-auto" style={{ maxWidth: "1407px" }}>
+        <div className="w-full px-8 md:px-12 lg:px-16 mx-auto mt-[150px]" style={{ maxWidth: "1407px" }}>
           <div className="flex flex-col lg:flex-row gap-12 items-start w-full">
             <div style={{ flex: '0 0 40%', maxWidth: '40%' }}>
-              <Link
-                href="/agents"
-                className="inline-flex items-center mb-4"
-                style={{
-                  color: '#091917',
-                  fontFamily: 'Poppins, sans-serif',
-                  fontSize: '12px',
-                  fontStyle: 'normal',
-                  fontWeight: 400,
-                  lineHeight: '150%',
-                }}
-              >
-                <ChevronLeft className="mr-1 h-4 w-4" />
-                Back to Agent Store
-              </Link>
               <h1
                 className="mb-2"
                 style={{

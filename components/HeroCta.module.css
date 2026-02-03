@@ -11,6 +11,11 @@
   overflow: hidden;
 }
 
+/* Striped variant (used on Tangram AI page) */
+.stripedHero {
+  padding: 80px 0;
+}
+
 /* Outer Container */
 .outerContainer {
   width: 100%;
@@ -28,6 +33,19 @@
   gap: 0;
   box-sizing: border-box;
   z-index: 1;
+}
+
+.stripedFrame {
+  border: 10px solid transparent;
+  border-radius: 8px;
+  background:
+    linear-gradient(#eef5ff, #eef5ff) padding-box,
+    repeating-linear-gradient(
+        135deg,
+        rgba(17, 24, 39, 0.18) 0 6px,
+        rgba(17, 24, 39, 0) 6px 12px
+      )
+      border-box;
 }
 
 /* Pattern Background */

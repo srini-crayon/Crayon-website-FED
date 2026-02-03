@@ -3,16 +3,14 @@
 import { useEffect, useState } from "react";
 import {
   CatalystModelTabsSection,
+  CustomServicesSection,
+  ProvenRealWorldSection,
   DefinitionSection,
-  ExecutionLoopSection,
   HeroSection,
-  JourneySelectorSection,
   MaturityCoverageSection,
   ProblemStatementSection,
-  ProofPromiseSection,
   ReverseBuildSection,
   TwinEngineSection,
-  WhyChooseSection,
   WhyExistsSection,
 } from "./sections/sections";
 import {
@@ -23,10 +21,8 @@ import {
   maturityContent,
   modelTabsContent,
   problemContent,
-  proofPromiseContent,
   reverseBuildContent,
   twinEngineContent,
-  whyChooseContent,
   whyExistsContent,
 } from "./sections/content";
 import { SchedulerDialog } from "./sections/scheduler-dialog";
@@ -82,14 +78,12 @@ export default function CatalystPage() {
         <ProblemStatementSection data={problemContent} />
         <WhyExistsSection data={whyExistsContent} />
         <DefinitionSection data={definitionContent} onTalkToExpert={handleTalkToExpert} />
-        <JourneySelectorSection paths={journeyPaths} onTalkToExpert={handleTalkToExpert} />
-        <ExecutionLoopSection data={executionLoopContent} />
-        <WhyChooseSection data={whyChooseContent} />
-        <CatalystModelTabsSection data={modelTabsContent} onTalkToExpert={handleTalkToExpert} />
+        <CatalystModelTabsSection data={modelTabsContent} />
         <ReverseBuildSection data={reverseBuildContent} />
         <MaturityCoverageSection data={maturityContent} />
         <TwinEngineSection data={twinEngineContent} />
-        <ProofPromiseSection data={proofPromiseContent} onTalkToExpert={handleTalkToExpert} />
+        <ProvenRealWorldSection />
+        <CustomServicesSection onTalkToExpert={handleTalkToExpert} />
       </div>
     </>
   );

@@ -23,28 +23,38 @@
 import styles from './HeroCta.module.css';
 import Link from 'next/link';
 
-export default function HeroCta() {
+export default function HeroCta({
+  variant = "default",
+  showPill = true,
+  pillText = "Enquire Now",
+  title = "Turn GenAI From Cost Center to Value Engine",
+  subtitle = "Whether you're a CDO, CIO, or a Product Owner — if you're done with endless pilots and need real outcomes. Let's make it happen.",
+  primaryHref = "/contact",
+  primaryText = "Talk to us",
+  secondaryHref = "/agents",
+  secondaryText = "Start with a pilot",
+} = {}) {
   return (
-    <section className={styles.hero}>
+    <section className={`${styles.hero} ${variant === "striped" ? styles.stripedHero : ""}`}>
       <div className={styles.patternBackground} />
       <div className={styles.outerContainer}>
         {/* Header Section */}
         <div className={styles.header}>
           {/* Top Pill Badge */}
-          <div className={styles.pillContainer}>
-            <div className={styles.pill}>
-              Enquire Now
+          {showPill && (
+            <div className={styles.pillContainer}>
+              <div className={styles.pill}>{pillText}</div>
             </div>
-          </div>
+          )}
 
           {/* Main Heading */}
           <h1 className={styles.title}>
-            Turn GenAI From Cost Center to Value Engine
+            {title}
           </h1>
 
           {/* Subtitle */}
           <p className={styles.subtitle}>
-            Whether you're a CDO, CIO, or a Product Owner — if you're done with endless pilots and need real outcomes. Let's make it happen.
+            {subtitle}
           </p>
         </div>
 
@@ -52,19 +62,19 @@ export default function HeroCta() {
         <div className={styles.btnGroup}>
           <div className={styles.btnPrimaryWrapper}>
             <Link
-              href="/contact"
+              href={primaryHref}
               className={styles.btnPrimary}
-              aria-label="Talk to us"
+              aria-label={primaryText}
             >
-              Talk to us
+              {primaryText}
             </Link>
           </div>
           <Link
-            href="/agents"
+            href={secondaryHref}
             className={styles.btnSecondary}
-            aria-label="Start with a pilot"
+            aria-label={secondaryText}
           >
-            Start with a pilot
+            {secondaryText}
           </Link>
         </div>
       </div>

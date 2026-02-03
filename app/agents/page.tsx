@@ -173,7 +173,16 @@ function TypingHeading() {
   }, []);
 
   return (
-    <h1 className="mb-3 text-center" style={{ minHeight: "80px", display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+    <h1
+      className="mb-3 text-center"
+      style={{
+        minHeight: "80px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
+      }}
+    >
       <span
         style={{
           fontFamily: "Poppins, sans-serif",
@@ -1053,10 +1062,20 @@ export default function AgentLibraryPage() {
               }}
             />
             {/* Hero Section */}
-            <section className="fade-in-section" style={{ transform: "translateZ(0)", willChange: "scroll-position", contain: "layout style paint", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <section
+              className="fade-in-section flex items-center justify-center"
+              style={{
+                transform: "translateZ(0)",
+                willChange: "scroll-position",
+                contain: "layout style paint",
+                minHeight: "100svh",
+                paddingTop: "120px",
+                paddingBottom: "80px",
+              }}
+            >
               <div className="w-full px-8 md:px-12 lg:px-16">
-                <div className="text-center">
-                  <div className="flex justify-center mb-4">
+                <div className="mx-auto max-w-6xl text-center flex flex-col items-center">
+                  <div className="mt-20 flex justify-center mb-2">
                     <span
                       className="inline-block scale-in"
                       style={{

@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import { Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script"
 import { ConditionalNavbar } from "../components/conditional-navbar"
@@ -12,12 +11,6 @@ import { DynamicFavicon } from "../components/dynamic-favicon"
 import { LocalAuthInit } from "../components/local-auth-init"
 import { Suspense } from "react"
 import "./globals.css"
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-})
 
 export const metadata: Metadata = {
   title: "Crayon Data - B2B AI Solutions for Enterprises",
@@ -55,7 +48,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${poppins.variable}`}>
+      <body
+        suppressHydrationWarning
+        className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}
+      >
         <Suspense fallback={<div>Loading...</div>}>
           <DynamicFavicon />
           <LocalAuthInit />

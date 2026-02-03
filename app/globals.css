@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 /* tw-animate-css: removed - package had no dist/ in node_modules, causing layout.css 500. Add back when fixed. */
 /* @import "tw-animate-css"; */
@@ -983,6 +984,36 @@ nextjs-portal {
 
 .button-press {
   animation: buttonPress 0.2s ease-out;
+}
+
+/* Button glow animation */
+@keyframes buttonGlow {
+  0%,
+  100% {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12), 0 0 16px rgba(0, 0, 0, 0.12);
+  }
+  50% {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12), 0 0 28px rgba(0, 0, 0, 0.2), 0 0 40px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.animate-button-glow {
+  animation: buttonGlow 2s ease-in-out infinite;
+}
+
+/* Gradient stroke glow button */
+@keyframes buttonGradientGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.4), 0 0 40px rgba(236, 72, 153, 0.2), 0 0 60px rgba(139, 92, 246, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(249, 115, 22, 0.5), 0 0 48px rgba(236, 72, 153, 0.3), 0 0 72px rgba(139, 92, 246, 0.2);
+  }
+}
+
+.animate-button-glow-gradient {
+  animation: buttonGradientGlow 2s ease-in-out infinite;
 }
 
 /* Input focus ring animation */

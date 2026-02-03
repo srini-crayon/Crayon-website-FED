@@ -5,11 +5,13 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { X } from "lucide-react"
+import { useModal } from "../hooks/use-modal"
 
 export function CrayonHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+  const { openModal } = useModal()
 
   type SecondaryItem = { label: string; path: string; external?: boolean }
   
@@ -44,7 +46,8 @@ export function CrayonHeader() {
   // Secondary menu items - The Platform (similar to About Us)
   const platformMenuItems: SecondaryItem[] = [
     { label: "Tangram AI", path: "/tangram-ai" },
-    { label: "Agents Store", path: "/agents-store" },
+    // "Agents Store" should land on the agents library page
+    { label: "Agents Store", path: "/tangram-ai-agents" },
     { label: "ISV", path: "/tangram-ai-isv" },
     { label: "Reseller", path: "/tangram-ai-reseller" },
   ]
@@ -62,7 +65,13 @@ export function CrayonHeader() {
   const isAboutUsPage = secondaryMenuItems.some(item => pathname === item.path)
   const isLegalPage = legalMenuItems.some(item => pathname === item.path)
   const isServicesPage = servicesMenuItems.some(item => pathname === item.path)
-  const isPlatformPage = platformMenuItems.some(item => pathname === item.path)
+  // Treat Agents Store routes as part of Platform as well.
+  // This enables the secondary header bar on `/agents` and agent detail pages (`/agents/[id]`).
+  const isPlatformPage =
+    pathname === "/agents-store" ||
+    pathname === "/agents" ||
+    pathname.startsWith("/agents/") ||
+    platformMenuItems.some(item => pathname === item.path)
   const isCommunityPage = pathname === "/blog" || pathname === "/podcast" || pathname === "/x" || pathname === "/linkedin"
   
   // Only render after mount to avoid hydration issues
@@ -77,7 +86,7 @@ export function CrayonHeader() {
       icon: "/img/menu-platform.png",
       links: [
         { label: "Tangram AI", href: "/tangram-ai" },
-        { label: "Agents Store", href: "/agents-store" },
+        { label: "Agents Store", href: "/tangram-ai-agents" },
         { label: "ISV", href: "/tangram-ai-isv" },
         { label: "Reseller", href: "/tangram-ai-reseller" },
       ],
@@ -458,7 +467,11 @@ export function CrayonHeader() {
                 >
                   <Link
                     href="/auth/login"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsMenuOpen(false)
+                      openModal("auth", { mode: "login", role: "client" })
+                    }}
                     style={{
                       color: 'var(--Interface-Color-Neutral-700, #374151)',
                       fontFamily: 'Poppins',
@@ -481,7 +494,11 @@ export function CrayonHeader() {
                   </Link>
                   <Link
                     href="/auth/signup"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsMenuOpen(false)
+                      openModal("auth", { mode: "signup", role: "client" })
+                    }}
                     style={{
                       color: 'var(--Interface-Color-Neutral-700, #374151)',
                       fontFamily: 'Poppins',
