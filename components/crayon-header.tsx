@@ -154,14 +154,26 @@ export function CrayonHeader() {
         <div className="flex items-center" style={{ gap: '18px' }}>
           {/* Logo */}
           <div className="flex items-center">
-            <Image
-              src="/img/crayon-header-logo.png"
-              alt="Crayon Logo"
-              width={100}
-              height={28}
-              className="h-auto"
-              priority
-            />
+            <Link 
+              href="/"
+              onClick={() => setIsMenuOpen(false)}
+              style={{
+                cursor: 'pointer',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              aria-label="Go to home page"
+            >
+              <Image
+                src="/img/crayon-header-logo.png"
+                alt="Crayon Logo"
+                width={100}
+                height={28}
+                className="h-auto"
+                priority
+              />
+            </Link>
           </div>
 
           {/* Vertical Separator - Only show when there's a secondary menu */}
