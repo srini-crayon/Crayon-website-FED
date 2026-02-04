@@ -16,7 +16,7 @@ export default function OurInvestorsPage() {
     },
     {
       id: 3,
-      name: "Ratan Tata (RNT Associates)",
+      name: "Late Ratan Tata (RNT Associates)",
       image: "/img/investors/ratan-tata.svg",
     },
     {
@@ -56,34 +56,42 @@ export default function OurInvestorsPage() {
             zIndex: 1,
             textAlign: "center",
             paddingTop: "120px",
-            paddingBottom: "80px",
+            paddingBottom: "0",
           }}
         >
           <h1
+            className="mb-4 text-center fade-in-blur fade-in-blur-visible"
             style={{
-              color: "#000",
-              textAlign: "center",
               fontFamily: "Poppins",
-              fontSize: "96px",
+              fontWeight: 500,
               fontStyle: "normal",
-              fontWeight: 200,
-              lineHeight: "120%",
+              fontSize: "42px",
+              lineHeight: "48px",
+              textAlign: "center",
+              color: "var(--Interface-Color-Primary-900, #091917)",
+              maxWidth: "920px",
+              width: "100%",
+              marginLeft: "auto",
+              marginRight: "auto",
               marginTop: "40px",
-              marginBottom: "24px",
+              marginBottom: "18px",
+              willChange: "opacity, transform, filter",
             }}
           >
             The Crayon Data Circle
           </h1>
           <p
+            className="mx-auto max-w-[780px] text-center fade-in-section fade-in-visible"
             style={{
-              color: "#111827",
               fontFamily: "Poppins",
-              fontSize: "20px",
-              fontStyle: "normal",
               fontWeight: 400,
-              lineHeight: "32px",
-              maxWidth: "900px",
-              margin: "32px auto 0 auto",
+              fontStyle: "normal",
+              fontSize: "16px",
+              lineHeight: "26px",
+              textAlign: "center",
+              color: "var(--Interface-Color-Primary-900, #091917)",
+              marginBottom: "0",
+              willChange: "opacity, transform",
             }}
           >
             Meet the people who believe in our vision to simplify the world's choices using data and AI. Our companions on this journey—every step of the way.
@@ -92,7 +100,7 @@ export default function OurInvestorsPage() {
       </section>
 
       {/* Investors Section */}
-      <section className="py-24">
+      <section className="pt-0 pb-24">
         <div
           style={{
             width: "100%",

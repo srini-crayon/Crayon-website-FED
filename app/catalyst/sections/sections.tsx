@@ -168,7 +168,24 @@ export function HeroSection({
             </p>
           ) : null}
           <div className="space-y-3 mx-auto text-center">
-            <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-slate-900 md:text-5xl mx-auto">
+            <h1
+              className="mb-4 text-center fade-in-blur fade-in-blur-visible"
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: 500,
+                fontStyle: "normal",
+                fontSize: "42px",
+                lineHeight: "48px",
+                textAlign: "center",
+                color: "var(--Interface-Color-Primary-900, #091917)",
+                maxWidth: "920px",
+                width: "100%",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginBottom: "18px",
+                willChange: "opacity, transform, filter",
+              }}
+            >
               {data.title}
             </h1>
             <p className="max-w-3xl text-lg font-semibold text-slate-800 mx-auto">{data.subtitle}</p>

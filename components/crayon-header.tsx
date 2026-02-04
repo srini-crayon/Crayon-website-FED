@@ -13,7 +13,7 @@ export function CrayonHeader() {
   const pathname = usePathname()
   const { openModal } = useModal()
 
-  type SecondaryItem = { label: string; path: string; external?: boolean }
+  type SecondaryItem = { label: string; path: string; external?: boolean; disabled?: boolean }
   
   // Secondary menu items - About Us
   const secondaryMenuItems: SecondaryItem[] = [
@@ -38,9 +38,9 @@ export function CrayonHeader() {
   // Secondary menu items - Services (Catalyst)
   const servicesMenuItems: SecondaryItem[] = [
     { label: "Catalyst", path: "/catalyst" },
-    { label: "Labs", path: "/labs" },
-    { label: "Foundry", path: "/foundry" },
-    { label: "Factory", path: "/factory" },
+    { label: "Labs", path: "/labs", disabled: true },
+    { label: "Foundry", path: "/foundry", disabled: true },
+    { label: "Factory", path: "/factory", disabled: true },
   ]
 
   // Secondary menu items - The Platform (similar to About Us)
@@ -79,7 +79,7 @@ export function CrayonHeader() {
     setMounted(true)
   }, [])
 
-  type MenuLink = string | { label: string; href: string }
+  type MenuLink = string | { label: string; href: string; disabled?: boolean }
   const megaMenuSections: { title: string; icon: string; links: MenuLink[] }[] = [
     {
       title: "Platform",
@@ -94,7 +94,12 @@ export function CrayonHeader() {
     {
       title: "Services",
       icon: "/img/menu-service.png",
-      links: [{ label: "Catalyst", href: "/catalyst" }, "Labs", "Foundry", "Factory"],
+      links: [
+        { label: "Catalyst", href: "/catalyst" },
+        { label: "Labs", href: "/labs", disabled: true },
+        { label: "Foundry", href: "/foundry", disabled: true },
+        { label: "Factory", href: "/factory", disabled: true },
+      ],
     },
     {
       title: "Community",
@@ -109,7 +114,15 @@ export function CrayonHeader() {
     {
       title: "Other links",
       icon: "/img/menu-other.png",
-      links: ["Pricing", "Dev Docs", "Open Source [FOSS]", "Brand Kit", "Use case", "Case Study", "Micro Sites"]
+      links: [
+        { label: "Pricing", href: "#", disabled: true },
+        { label: "Dev Docs", href: "#", disabled: true },
+        { label: "Open Source [FOSS]", href: "#", disabled: true },
+        { label: "Brand Kit", href: "#", disabled: true },
+        { label: "Use case", href: "#", disabled: true },
+        { label: "Case Study", href: "#", disabled: true },
+        { label: "Micro Sites", href: "#", disabled: true },
+      ]
     }
   ]
 
@@ -381,8 +394,9 @@ export function CrayonHeader() {
                   const isDisabledLegal =
                     isLegalPage &&
                     (item.path === "/terms-of-use" || item.path === "/trust-center" || item.path === "/privacy-civil-liberties")
+                  const isDisabled = item.disabled || isDisabledLegal
 
-                  if (isDisabledLegal) {
+                  if (isDisabled) {
                     return (
                       <span
                         key={item.path}
@@ -396,7 +410,7 @@ export function CrayonHeader() {
                           fontWeight: 400,
                           lineHeight: "24px",
                           whiteSpace: "nowrap",
-                          cursor: "not-allowed",
+                          cursor: "default",
                           userSelect: "none",
                         }}
                       >
@@ -609,6 +623,27 @@ export function CrayonHeader() {
                   {section.links.map((link) => {
                     const label = typeof link === 'string' ? link : link.label
                     const href = typeof link === 'string' ? `/${link.toLowerCase().replace(/\s+/g, '-')}` : link.href
+                    const disabled = typeof link === 'object' && link.disabled
+                    if (disabled) {
+                      return (
+                        <li key={label}>
+                          <span
+                            title="Coming soon"
+                            style={{
+                              color: '#9CA3AF',
+                              fontFamily: 'Poppins',
+                              fontSize: '14px',
+                              fontStyle: 'normal',
+                              fontWeight: 400,
+                              lineHeight: '24px',
+                              cursor: 'default',
+                            }}
+                          >
+                            {label}
+                          </span>
+                        </li>
+                      )
+                    }
                     return (
                       <li key={label}>
                         <Link

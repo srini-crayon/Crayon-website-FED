@@ -128,35 +128,6 @@ export default function EnquiryPage() {
 
               {/* Contact Details */}
               <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-                {/* Phone */}
-                <div>
-                  <p
-                    style={{
-                      color: "#6B7280",
-                      fontFamily: "Poppins",
-                      fontSize: "14px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "20px",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Phone
-                  </p>
-                  <p
-                    style={{
-                      color: "#000",
-                      fontFamily: "Poppins",
-                      fontSize: "16px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "24px",
-                    }}
-                  >
-                    +(65) 1234-5678
-                  </p>
-                </div>
-
                 {/* Email */}
                 <div>
                   <p
