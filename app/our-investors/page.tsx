@@ -26,7 +26,7 @@ const investors = [
   },
   {
     id: 3,
-    name: "Ratan Tata (RNT Associates)",
+    name: "Late Ratan Tata (RNT Associates)",
     image: "/img/investors/ratan-tata.svg",
   },
   {
