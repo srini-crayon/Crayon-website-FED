@@ -21,6 +21,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'crayondata.ai',
+      },
     ],
   },
   // Ensure proper module resolution
