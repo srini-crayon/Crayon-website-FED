@@ -141,7 +141,7 @@ export function CrayonHeader() {
 
       {/* Floating Header */}
       <header 
-        className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white"
+        className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white transition-[top] duration-150 ease-out header-with-banner"
         style={{
           display: 'flex',
           flexDirection: 'column',

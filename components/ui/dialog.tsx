@@ -4,7 +4,7 @@ import * as React from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { XIcon } from 'lucide-react'
 
-import { cn } from '../../lib/utils'
+import { cn } from '@/lib/utils'
 
 function Dialog({
   ...props
@@ -38,10 +38,9 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm pointer-events-auto',
+        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50',
         className,
       )}
-      style={{ zIndex: 9998 }}
       {...props}
     />
   )
@@ -51,40 +50,19 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
-  showOverlay = true,
-  disableCentering = false,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
-  showOverlay?: boolean
-  disableCentering?: boolean
 }) {
-  // Base classes without centering
-  const baseClasses = 'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed z-[9999] grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg'
-  
-  // Centering classes - only apply if not disabled
-  // When disableCentering is true, we don't apply any positioning classes
-  const centeringClasses = disableCentering ? '' : 'top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
-  
   return (
     <DialogPortal data-slot="dialog-portal">
-      {showOverlay && <DialogOverlay />}
+      <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          baseClasses,
-          centeringClasses,
+          'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg',
           className,
         )}
-        style={disableCentering ? {
-          // Ensure no default positioning when centering is disabled
-          top: 'auto',
-          left: 'auto',
-          right: 'auto',
-          bottom: 'auto',
-          transform: 'none',
-          margin: 0
-        } : undefined}
         {...props}
       >
         {children}
@@ -163,7 +141,3 @@ export {
   DialogTitle,
   DialogTrigger,
 }
-
-
-
-
