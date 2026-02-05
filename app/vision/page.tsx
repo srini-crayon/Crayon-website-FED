@@ -1,32 +1,24 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import ScrollToTopButton from "@/components/scroll-to-top-button";
 
 export default function VisionPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Hero Section */}
+      {/* Hero Section - Text above image */}
       <section
         className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(90deg, rgba(147, 197, 253, 0.4) 0%, rgba(251, 207, 232, 0.4) 100%)",
-          height: "100vh",
+          backgroundColor: "#FFFFFF",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
+          paddingTop: "80px",
+          paddingBottom: "48px",
         }}
       >
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(90deg, rgba(147, 197, 253, 0.4) 0%, rgba(251, 207, 232, 0.4) 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(180deg, transparent 0%, #FFFFFF 60%)",
-          }}
-        />
         <div
           style={{
             width: "100%",
@@ -34,55 +26,98 @@ export default function VisionPage() {
             margin: "0 auto",
             paddingLeft: "20px",
             paddingRight: "20px",
-            position: "relative",
-            zIndex: 1,
-            flex: 1,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            alignItems: "center",
             textAlign: "center",
-            paddingTop: "100px",
-            paddingBottom: "80px",
           }}
         >
-          {/* Main Title */}
-          <h1
+          {/* Text block - above image */}
+          <div
             style={{
-              color: "#000",
-              textAlign: "center",
-              fontFamily: "Poppins",
-              fontSize: "96px",
-              fontStyle: "normal",
-              fontWeight: 300,
-              lineHeight: "120%",
-              marginBottom: "24px",
+              width: "100%",
               maxWidth: "900px",
-              margin: "0 auto 24px auto",
+              marginBottom: "48px",
             }}
           >
-            Simplify the World's Choices
-          </h1>
+            {/* VISION Label */}
+            <div
+              style={{
+                color: "#06B6D4",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "12px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "21px",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                marginBottom: "12px",
+              }}
+            >
+              VISION
+            </div>
 
-          {/* Sub-heading */}
-          <p
+            {/* Main Title - reduced size to match reference */}
+            <h2
+              style={{
+                color: "#000000",
+                textAlign: "center",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "48px",
+                fontStyle: "normal",
+                fontWeight: 700,
+                lineHeight: "120%",
+                margin: "0 auto 16px auto",
+              }}
+            >
+              Simplify the World&apos;s Choices
+            </h2>
+
+            {/* Sub-heading - smaller to match second image */}
+            <p
+              style={{
+                color: "#4A4A4A",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "18px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "28px",
+                maxWidth: "720px",
+                margin: "0 auto",
+              }}
+            >
+              Welcome to Crayon Data, where we solve complex problems with simple data and AI solutions
+            </p>
+          </div>
+
+          {/* Illustration - below text */}
+          <div
             style={{
-              color: "#111827",
-              fontFamily: "Poppins",
-              fontSize: "20px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "32px",
-              maxWidth: "900px",
-              margin: "32px auto 0 auto",
+              width: "100%",
+              maxWidth: "1000px",
+              position: "relative",
+              aspectRatio: "16/10",
+              minHeight: "320px",
             }}
           >
-            Welcome to Crayon Data, where we solve complex problems with simple data and AI solutions
-          </p>
+            <Image
+              src="https://crayondata.ai/wp-content/uploads/Top-Image-2.png"
+              alt="Vision - Simplify the World's Choices"
+              fill
+              style={{ objectFit: "contain", objectPosition: "center" }}
+              unoptimized
+              priority
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+              }}
+            />
+          </div>
         </div>
       </section>
 
       {/* Our raison d'etre Section */}
-      <section className="py-24" style={{ backgroundColor: "#FFFFFF" }}>
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "64px", paddingBottom: "64px" }}>
         <div
           style={{
             width: "100%",
@@ -96,12 +131,13 @@ export default function VisionPage() {
           <h2
             style={{
               color: "#111827",
-              fontFamily: "Poppins",
-              fontSize: "48px",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "36px",
               fontStyle: "normal",
               fontWeight: 700,
               lineHeight: "120%",
-              marginBottom: "24px",
+              marginBottom: "20px",
+              marginTop: 0,
             }}
           >
             Our raison d'etre
@@ -109,11 +145,11 @@ export default function VisionPage() {
           <p
             style={{
               color: "#111827",
-              fontFamily: "Poppins",
-              fontSize: "20px",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "18px",
               fontStyle: "normal",
               fontWeight: 400,
-              lineHeight: "32px",
+              lineHeight: "28px",
               maxWidth: "900px",
               margin: "0 auto",
             }}
@@ -123,96 +159,69 @@ export default function VisionPage() {
         </div>
       </section>
 
-      {/* Why Section */}
-      <section className="py-24" style={{ backgroundColor: "#FFFFFF", position: "relative" }}>
+      {/* Divider Line */}
+      <div
+        style={{
+          width: "100%",
+          height: "1px",
+          backgroundColor: "#E5E7EB",
+          margin: "0",
+        }}
+      />
+
+      {/* Why Section - single row: image left, text center, image right */}
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "64px", paddingBottom: "64px" }}>
         <div
+          className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 w-full"
           style={{
             width: "100%",
             maxWidth: "1420px",
             margin: "0 auto",
             paddingLeft: "20px",
             paddingRight: "20px",
-            display: "flex",
-            alignItems: "center",
-            gap: "80px",
-            flexDirection: "column",
           }}
-          className="md:flex-row"
         >
-          {/* Background Graphic - Dotted W */}
+          {/* Left Image */}
           <div
             style={{
-              position: "absolute",
-              left: "0",
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: "50%",
-              height: "100%",
-              opacity: 0.15,
-              zIndex: 0,
+              flex: "0 0 auto",
+              width: "100%",
+              maxWidth: "240px",
+              minHeight: "200px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              pointerEvents: "none",
             }}
+            className="md:order-1"
           >
-            <svg
-              width="400"
-              height="400"
-              viewBox="0 0 400 400"
-              style={{ opacity: 0.2 }}
-            >
-              <text
-                x="50%"
-                y="50%"
-                dominantBaseline="middle"
-                textAnchor="middle"
-                fontSize="400"
-                fontFamily="Poppins"
-                fontWeight="300"
-                fill="#D1D5DB"
-                style={{
-                  stroke: "#D1D5DB",
-                  strokeWidth: "2",
-                  strokeDasharray: "8 8",
-                  fill: "none",
-                }}
-              >
-                W
-              </text>
-            </svg>
-            <div
-              style={{
-                position: "absolute",
-                bottom: "20%",
-                left: "30%",
-                width: "0",
-                height: "0",
-                borderLeft: "20px solid transparent",
-                borderRight: "20px solid transparent",
-                borderBottom: "40px solid #06B6D4",
+            <img
+              src="https://crayondata.ai/wp-content/uploads/Layer_1-4.svg#1191"
+              alt="Why Illustration 1"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
               }}
             />
           </div>
 
-          {/* Content */}
+          {/* Center Text */}
           <div
             style={{
-              flex: 1,
+              flex: "1 1 0%",
               display: "flex",
               flexDirection: "column",
-              gap: "24px",
-              position: "relative",
-              zIndex: 1,
-              marginLeft: "auto",
-              maxWidth: "600px",
+              gap: "20px",
+              textAlign: "center",
+              minWidth: 0,
             }}
+            className="md:order-2"
           >
             <h2
               style={{
                 color: "#06B6D4",
-                fontFamily: "Poppins",
-                fontSize: "48px",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "36px",
                 fontStyle: "normal",
                 fontWeight: 700,
                 lineHeight: "120%",
@@ -224,7 +233,7 @@ export default function VisionPage() {
             <p
               style={{
                 color: "#111827",
-                fontFamily: "Poppins",
+                fontFamily: "Poppins, sans-serif",
                 fontSize: "20px",
                 fontStyle: "normal",
                 fontWeight: 400,
@@ -236,79 +245,85 @@ export default function VisionPage() {
             </p>
           </div>
 
-          {/* Illustration - Trees */}
+          {/* Right Image */}
           <div
             style={{
-              width: "400px",
-              height: "300px",
-              position: "relative",
-              zIndex: 1,
+              flex: "0 0 auto",
+              width: "100%",
+              maxWidth: "240px",
+              minHeight: "200px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
+            className="md:order-3"
           >
-            <Image
-              src="/img/vision/Layer_1-4.svg"
-              alt="Why Illustration"
-              width={400}
-              height={300}
-              style={{ width: "100%", height: "auto", objectFit: "contain" }}
-              unoptimized
+            <img
+              src="https://crayondata.ai/wp-content/uploads/Layer_1-5.svg#1190"
+              alt="Why Illustration 2"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+              }}
             />
           </div>
         </div>
       </section>
 
-      {/* How Section */}
-      <section className="py-24" style={{ backgroundColor: "#FFFFFF", position: "relative" }}>
+      {/* How Section - single row: image left, text center, image right */}
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "48px", paddingBottom: "64px" }}>
         <div
+          className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 w-full"
           style={{
             width: "100%",
             maxWidth: "1420px",
             margin: "0 auto",
             paddingLeft: "20px",
             paddingRight: "20px",
-            display: "flex",
-            alignItems: "center",
-            gap: "80px",
-            flexDirection: "column",
           }}
-          className="md:flex-row"
         >
-          {/* Illustration - Bell Jar */}
+          {/* Left Image */}
           <div
             style={{
-              width: "400px",
-              height: "300px",
-              position: "relative",
-              zIndex: 1,
+              flex: "0 0 auto",
+              width: "100%",
+              maxWidth: "240px",
+              minHeight: "200px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
+            className="md:order-1"
           >
-            <Image
-              src="/img/vision/Layer_1-5.svg"
-              alt="How Illustration"
-              width={400}
-              height={300}
-              style={{ width: "100%", height: "auto", objectFit: "contain" }}
-              unoptimized
+            <img
+              src="https://crayondata.ai/wp-content/uploads/Layer_1-6.svg#1194"
+              alt="How Illustration 1"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+              }}
             />
           </div>
 
-          {/* Content */}
+          {/* Center Text */}
           <div
             style={{
-              flex: 1,
+              flex: "1 1 0%",
               display: "flex",
               flexDirection: "column",
-              gap: "24px",
-              position: "relative",
-              zIndex: 1,
-              maxWidth: "600px",
+              gap: "20px",
+              textAlign: "center",
+              minWidth: 0,
             }}
+            className="md:order-2"
           >
             <h2
               style={{
                 color: "#06B6D4",
-                fontFamily: "Poppins",
-                fontSize: "48px",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "36px",
                 fontStyle: "normal",
                 fontWeight: 700,
                 lineHeight: "120%",
@@ -320,7 +335,7 @@ export default function VisionPage() {
             <p
               style={{
                 color: "#111827",
-                fontFamily: "Poppins",
+                fontFamily: "Poppins, sans-serif",
                 fontSize: "20px",
                 fontStyle: "normal",
                 fontWeight: 400,
@@ -332,152 +347,85 @@ export default function VisionPage() {
             </p>
           </div>
 
-          {/* Background Graphic - Dotted H */}
+          {/* Right Image */}
           <div
             style={{
-              position: "absolute",
-              right: "0",
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: "50%",
-              height: "100%",
-              opacity: 0.15,
-              zIndex: 0,
+              flex: "0 0 auto",
+              width: "100%",
+              maxWidth: "240px",
+              minHeight: "200px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              pointerEvents: "none",
             }}
+            className="md:order-3"
           >
-            <svg
-              width="400"
-              height="400"
-              viewBox="0 0 400 400"
-              style={{ opacity: 0.2 }}
-            >
-              <text
-                x="50%"
-                y="50%"
-                dominantBaseline="middle"
-                textAnchor="middle"
-                fontSize="400"
-                fontFamily="Poppins"
-                fontWeight="300"
-                fill="#D1D5DB"
-                style={{
-                  stroke: "#D1D5DB",
-                  strokeWidth: "2",
-                  strokeDasharray: "8 8",
-                  fill: "none",
-                }}
-              >
-                H
-              </text>
-            </svg>
-            <div
-              style={{
-                position: "absolute",
-                bottom: "20%",
-                right: "30%",
-                width: "40px",
-                height: "40px",
-                backgroundColor: "#ED2E7E",
+            <img
+              src="https://crayondata.ai/wp-content/uploads/Group-1171278287.svg#1193"
+              alt="How Illustration 2"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
               }}
             />
           </div>
         </div>
       </section>
 
-      {/* What Section */}
-      <section className="py-24" style={{ backgroundColor: "#FFFFFF", position: "relative" }}>
+      {/* What Section - single row: image left, text center, image right */}
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "48px", paddingBottom: "64px" }}>
         <div
+          className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 w-full"
           style={{
             width: "100%",
             maxWidth: "1420px",
             margin: "0 auto",
             paddingLeft: "20px",
             paddingRight: "20px",
-            display: "flex",
-            alignItems: "center",
-            gap: "80px",
-            flexDirection: "column",
           }}
-          className="md:flex-row"
         >
-          {/* Background Graphic - Dotted W */}
+          {/* Left Image */}
           <div
             style={{
-              position: "absolute",
-              left: "0",
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: "50%",
-              height: "100%",
-              opacity: 0.15,
-              zIndex: 0,
+              flex: "0 0 auto",
+              width: "100%",
+              maxWidth: "240px",
+              minHeight: "200px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              pointerEvents: "none",
             }}
+            className="md:order-1"
           >
-            <svg
-              width="400"
-              height="400"
-              viewBox="0 0 400 400"
-              style={{ opacity: 0.2 }}
-            >
-              <text
-                x="50%"
-                y="50%"
-                dominantBaseline="middle"
-                textAnchor="middle"
-                fontSize="400"
-                fontFamily="Poppins"
-                fontWeight="300"
-                fill="#D1D5DB"
-                style={{
-                  stroke: "#D1D5DB",
-                  strokeWidth: "2",
-                  strokeDasharray: "8 8",
-                  fill: "none",
-                }}
-              >
-                W
-              </text>
-            </svg>
-            <div
-              style={{
-                position: "absolute",
-                bottom: "20%",
-                left: "30%",
-                width: "0",
-                height: "0",
-                borderLeft: "20px solid transparent",
-                borderRight: "20px solid transparent",
-                borderBottom: "40px solid #974095",
+            <img
+              src="https://crayondata.ai/wp-content/uploads/Layer_1-8.svg#1195"
+              alt="What Illustration 1"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
               }}
             />
           </div>
 
-          {/* Content */}
+          {/* Center Text */}
           <div
             style={{
-              flex: 1,
+              flex: "1 1 0%",
               display: "flex",
               flexDirection: "column",
-              gap: "24px",
-              position: "relative",
-              zIndex: 1,
-              marginLeft: "auto",
-              maxWidth: "600px",
+              gap: "20px",
+              textAlign: "center",
+              minWidth: 0,
             }}
+            className="md:order-2"
           >
             <h2
               style={{
                 color: "#06B6D4",
-                fontFamily: "Poppins",
-                fontSize: "48px",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "36px",
                 fontStyle: "normal",
                 fontWeight: 700,
                 lineHeight: "120%",
@@ -489,7 +437,7 @@ export default function VisionPage() {
             <p
               style={{
                 color: "#111827",
-                fontFamily: "Poppins",
+                fontFamily: "Poppins, sans-serif",
                 fontSize: "20px",
                 fontStyle: "normal",
                 fontWeight: 400,
@@ -501,29 +449,34 @@ export default function VisionPage() {
             </p>
           </div>
 
-          {/* Illustration - Bell Jar with Sun */}
+          {/* Right Image */}
           <div
             style={{
-              width: "400px",
-              height: "300px",
-              position: "relative",
-              zIndex: 1,
+              flex: "0 0 auto",
+              width: "100%",
+              maxWidth: "240px",
+              minHeight: "200px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
+            className="md:order-3"
           >
-            <Image
-              src="/img/vision/Layer_1-6.svg"
-              alt="What Illustration"
-              width={400}
-              height={300}
-              style={{ width: "100%", height: "auto", objectFit: "contain" }}
-              unoptimized
+            <img
+              src="https://crayondata.ai/wp-content/uploads/Layer_1-7.svg#1196"
+              alt="What Illustration 2"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+              }}
             />
           </div>
         </div>
       </section>
 
-      {/* We handle data Section */}
-      <section className="py-24" style={{ backgroundColor: "#FFFFFF" }}>
+      {/* We handle data Section - single row: image left, text right */}
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px" }}>
         <div
           style={{
             width: "100%",
@@ -535,13 +488,14 @@ export default function VisionPage() {
         >
           <h2
             style={{
-              color: "#111827",
-              fontFamily: "Poppins",
-              fontSize: "48px",
+              color: "#000000",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "36px",
               fontStyle: "normal",
               fontWeight: 700,
               lineHeight: "120%",
-              marginBottom: "48px",
+              marginBottom: "40px",
+              marginTop: 0,
               textAlign: "center",
             }}
           >
@@ -549,64 +503,67 @@ export default function VisionPage() {
           </h2>
 
           <div
-            style={{
-              display: "flex",
-              gap: "80px",
-              alignItems: "flex-start",
-              flexDirection: "column",
-            }}
-            className="md:flex-row"
+            className="flex flex-col md:flex-row md:items-center gap-8 md:gap-10 w-full"
+            style={{ maxWidth: "100%" }}
           >
-            {/* Tangram Illustration */}
+            {/* Tangram Illustration - left column */}
             <div
               style={{
-                width: "500px",
-                height: "400px",
-                position: "relative",
-                flexShrink: 0,
+                flex: "0 0 auto",
+                width: "100%",
+                maxWidth: "280px",
+                minWidth: "180px",
+                aspectRatio: "253 / 225",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Image
-                src="/img/vision/Group-1171278287.svg"
+              <img
+                src="https://crayondata.ai/wp-content/uploads/Frame-3.svg#1197"
                 alt="Tangram Arrow Illustration"
-                width={500}
-                height={400}
-                style={{ width: "100%", height: "auto", objectFit: "contain" }}
-                unoptimized
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                }}
               />
             </div>
 
-            {/* Text Content */}
+            {/* Text Content - right column */}
             <div
               style={{
-                flex: 1,
+                flex: "1 1 0%",
+                minWidth: 0,
                 display: "flex",
                 flexDirection: "column",
-                gap: "24px",
+                gap: "20px",
               }}
             >
               <p
                 style={{
-                  color: "#111827",
-                  fontFamily: "Poppins",
-                  fontSize: "20px",
+                  color: "#4A4A4A",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "18px",
                   fontStyle: "normal",
                   fontWeight: 400,
-                  lineHeight: "32px",
+                  lineHeight: "28px",
                   margin: 0,
+                  textAlign: "left",
                 }}
               >
-                Our Crayon arrow logo is inspired by tangrams - the enduring Chinese puzzle involves just 7 precise pieces that have hundreds of different solutions. Just like data. The answers to everything in the universe are in the bytes of data we collect, that reveal different insights, through different combinations.
+                Our Crayon arrow logo is inspired by tangrams – the enduring Chinese puzzle involves just 7 precise pieces that have hundreds of different solutions. Just like data. The answers to everything in the universe are in the bytes of data we collect, that reveal different insights, through different combinations.
               </p>
               <p
                 style={{
-                  color: "#111827",
-                  fontFamily: "Poppins",
-                  fontSize: "20px",
+                  color: "#4A4A4A",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "18px",
                   fontStyle: "normal",
                   fontWeight: 400,
-                  lineHeight: "32px",
+                  lineHeight: "28px",
                   margin: 0,
+                  textAlign: "left",
                 }}
               >
                 Artful solutions from precise science. And the complex made simple.
@@ -615,6 +572,99 @@ export default function VisionPage() {
           </div>
         </div>
       </section>
+
+      {/* Get to Know Us Better Section */}
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "0" }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1420px",
+            margin: "0 auto",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+            textAlign: "center",
+            position: "relative",
+          }}
+        >
+          <div
+            className="fade-in-blur"
+            style={{
+              backgroundColor: "#1D8AD7",
+              backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px)`,
+              backgroundSize: "24px 24px",
+              borderRadius: "16px 16px 0 0",
+              paddingTop: "80px",
+              paddingBottom: "80px",
+              paddingLeft: "40px",
+              paddingRight: "40px",
+              willChange: "opacity, transform, filter",
+            }}
+          >
+            <h2
+              style={{
+                color: "#FFFFFF",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "36px",
+                fontStyle: "normal",
+                fontWeight: 700,
+                lineHeight: "120%",
+                marginBottom: "32px",
+                marginTop: 0,
+              }}
+            >
+              Get to Know Us Better
+            </h2>
+            <Link
+              href="/our-story"
+              className="fade-in-section"
+              style={{
+                backgroundColor: "#FFFFFF",
+                color: "#000000",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 600,
+                lineHeight: "120%",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+                display: "inline-block",
+                padding: "16px 32px",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              OUR STORY
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Dark Navy Footer Section */}
+      <section style={{ backgroundColor: "#1A2B49", paddingTop: "40px", paddingBottom: "40px" }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1420px",
+            margin: "0 auto",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+          }}
+        >
+          {/* Footer content can be added here if needed */}
+        </div>
+      </section>
+
+      {/* Scroll to Top Button */}
+      <ScrollToTopButton />
     </div>
   );
 }
