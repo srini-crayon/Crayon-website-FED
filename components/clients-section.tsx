@@ -2,28 +2,21 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Building2, Landmark, CreditCard, Globe, Sparkles, ShoppingBag, Beer, Tv } from "lucide-react"
 
 export function ClientsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const clients = [
-    { name: "HDFC Bank", icon: Landmark, region: "India", logo: "/img/hdfc-logo.png" },
-    { name: "ADIB", icon: Building2, region: "UAE", logo: "/img/adib-logo.png" },
-    { name: "Riyadh Bank", icon: CreditCard, region: "KSA", logo: "/img/riyadh-bank-logo.svg" },
-    { name: "KBZ Bank", icon: Landmark, region: "Myanmar", logo: "/img/kbz-logo.png" },
-    { name: "Mozark", icon: Sparkles, region: "Global", logo: "/img/mozark-logo.png" },
-    { name: "Gradiant", icon: Globe, region: "Global", logo: "/img/gradiant-logo.png" },
-    { name: "Western Union", icon: Globe, region: "Global", logo: "/img/western-union-logo.png" },
-    { name: "Fabindia", icon: ShoppingBag, region: "India", logo: "/img/fabindia-logo.png" },
-    { name: "Heineken", icon: Beer, region: "Global", logo: "/img/heinekenlogo.png" },
-    { name: "Sony TV", icon: Tv, region: "Asia", logo: "/img/sony-logo.svg" },
-  ]
-
-  const stats = [
-    { value: "117M+", label: "Users Reached" },
-    { value: "13B+", label: "Transactions" },
-    { value: "10+", label: "Countries" },
+    { name: "HDFC Bank", region: "India", logo: "/img/hdfc-logo.png" },
+    { name: "ADIB", region: "UAE", logo: "/img/adib-logo.png" },
+    { name: "Riyadh Bank", region: "KSA", logo: "/img/riyadh-bank-logo.svg" },
+    { name: "KBZ Bank", region: "Myanmar", logo: "/img/kbz-logo.png" },
+    { name: "Mozark", region: "Global", logo: "/img/mozark-logo.png" },
+    { name: "Gradiant", region: "Global", logo: "/img/gradiant-logo.png" },
+    { name: "AMEX", region: "Global", logo: "/img/amex-logo.png" },
+    { name: "Emirates", region: "UAE", logo: "/img/emirates-logo.png" },
+    { name: "Federal Bank", region: "India", logo: "/img/federal-bank-logo.png" },
+    { name: "Y9", region: "Africa", logo: "/img/y9-logo.png" },
   ]
 
   return (
@@ -53,7 +46,6 @@ export function ClientsSection() {
         {/* Client Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 border-l border-t border-border">
           {clients.map((client, index) => {
-            const Icon = client.icon
             return (
               <div
                 key={index}
@@ -70,14 +62,9 @@ export function ClientsSection() {
 
                 {/* Content */}
                 <div className="relative flex flex-col h-full">
-                  {/* Icon - bottom right */}
-                  <div className="absolute bottom-0 right-0 w-10 h-10 border border-border flex items-center justify-center shrink-0 transition-all duration-300 group-hover:border-accent/50 group-hover:bg-background z-10">
-                    <Icon className="w-4 h-4 text-muted-foreground transition-colors duration-300 group-hover:text-foreground" />
-                  </div>
-                  
                   {/* Logo */}
                   {client.logo ? (
-                    <div className="mb-3 h-8 flex items-center pr-12">
+                    <div className="mb-3 h-8 flex items-center">
                       <div className="relative w-24 h-8">
                         <Image
                           src={client.logo}
@@ -100,7 +87,7 @@ export function ClientsSection() {
                     <div className="h-8 mb-3" />
                   )}
                   
-                  <div className="flex-1 pr-12">
+                  <div className="flex-1">
                     {/* Name */}
                     <h3 className="text-sm font-medium text-foreground mb-1">
                       {client.name}
@@ -115,25 +102,6 @@ export function ClientsSection() {
               </div>
             )
           })}
-        </div>
-
-        {/* Stats */}
-        <div className="mt-4 pt-4">
-          <div className="grid grid-cols-3 gap-8">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="group text-center cursor-default"
-              >
-                <p className="text-3xl md:text-4xl font-light text-foreground transition-all duration-300 group-hover:tracking-wider">
-                  {stat.value}
-                </p>
-                <p className="text-[10px] font-mono text-muted-foreground mt-2 uppercase tracking-widest">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>

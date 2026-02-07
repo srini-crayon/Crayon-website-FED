@@ -42,15 +42,6 @@ const teamMembers: TeamMember[] = [
     category: "founders",
   },
   {
-    id: "3",
-    name: "Srikant Sastri",
-    title: "Co-Founder and Advisor",
-    description:
-      "Srikant is a successful entrepreneur, advisor and mentor in digital transformation, M&A-based growth strategy, intrapreneurship & CSR. He successfully built, scaled, and sold two large services to European companies.",
-    image: "https://crayondata.ai/wp-content/uploads/Srikant-Sastri-1.png",
-    category: "founders",
-  },
-  {
     id: "4",
     name: "Ajoy Krishnamurti",
     title: "Chief Business Officer",
@@ -102,15 +93,6 @@ const teamMembers: TeamMember[] = [
     description:
       "With over 9 years of multi-faceted experience across sales, business analytics, consulting and operations, Sethu's expertise lies in streamlining business processes using business intelligence. He strongly advocates that a process driven organization delivers value and efficiency.",
     image: "https://crayondata.ai/wp-content/uploads/Sethu-Ramalingam.png",
-    category: "leaders",
-  },
-  {
-    id: "10",
-    name: "Anbu Sampath",
-    title: "Director, Engineering",
-    description:
-      "An accomplished IT Architect with 15+ years of experience, Anbu is passionate about driving digital transformation across diverse industries(retail, banking, education, and telecom) to craft elegant and reliable IT solutions, with a proven track record. He thrives on tackling complex challenges and leading teams to deliver impactful projects.",
-    image: "https://crayondata.ai/wp-content/uploads/Anbu.png",
     category: "leaders",
   },
   {

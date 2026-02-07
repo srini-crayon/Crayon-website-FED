@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" fill="none">
+  <!-- Geometric arrow/chevron icon -->
+  <polygon points="0,50 30,20 50,40 30,60" fill="#4CAF50"/>
+  <polygon points="15,65 45,35 65,55 45,85" fill="#2E7D32"/>
+  <polygon points="30,50 60,20 80,40 60,60" fill="#388E3C"/>
+  <!-- Redington text -->
+  <text x="95" y="70" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="600" fill="#1B5E20">Redington</text>
+</svg>

@@ -15,56 +15,68 @@ import { SlideIllustration as SlideIllustrationComponent } from "@/components/sl
 
 const slides = [
   {
-    tag: "Enterprise AI Platform",
-    headline: ["From AI ambition", "to AI running", "in production."],
+    tag: "AI Transformation",
+    headline: ["Accelerate Your", "AI Transformation", ""],
     highlightLine: 1,
     gradientColors: {
       from: "oklch(0.5 0.35 260)",
       to: "oklch(0.65 0.35 175)",
     },
+    glowColors: {
+      primary: "oklch(0.55 0.2 260/0.15)",
+      secondary: "oklch(0.65 0.2 175/0.12)",
+    },
     description:
-      "Crayon Data helps enterprises design, deploy, and scale AI across real-world systems — where data is messy, regulations matter, and impact is measured in outcomes.",
-    primaryCta: { label: "Explore Tangram", href: "#tangram" },
-    secondaryCta: { label: "See How Catalyst Scales AI", href: "#catalyst" },
+      "Crayon Data's full-stack, AI-native platform helps enterprises accelerate their AI transformation journey. Leverage Crayon Data's deep expertise to get AI ready data, deploy models effectively, and transform your operating models for AI success!",
+    primaryCta: { label: "Discover AI COE", href: "#catalyst" },
   },
   {
-    tag: "Tangram AI Platform",
-    headline: ["Build intelligent", "AI agents that", "understand context."],
-    highlightLine: 1,
+    tag: "Introducing New Store",
+    headline: ["Tangram AI", "Our GenAI Platform", ""],
+    highlightLine: 0,
     gradientColors: {
       from: "oklch(0.6 0.35 330)",
       to: "oklch(0.5 0.35 260)",
     },
+    glowColors: {
+      primary: "oklch(0.6 0.25 330/0.15)",
+      secondary: "oklch(0.5 0.25 260/0.12)",
+    },
     description:
-      "Design and deploy AI agents with deep contextual understanding. Tangram combines knowledge graphs, multi-modal data, and enterprise-grade security.",
-    primaryCta: { label: "Discover Tangram", href: "#tangram" },
-    secondaryCta: { label: "View Case Studies", href: "#clients" },
+      "Crayon Data powers Tangram.ai — a composable GenAI platform built for scale. With 100+ agents, 20+ models, and 15+ solutions, Tangram is designed to plug into real workflows and deliver 7× enterprise impact.",
+    primaryCta: { label: "Explore Tangram AI", href: "#tangram" },
   },
   {
-    tag: "Catalyst Execution Engine",
-    headline: ["Scale AI from", "pilot to production", "with confidence."],
-    highlightLine: 1,
+    tag: "Enterprise GenAI Partner",
+    headline: ["Strategy to Scale.", "Executed in Enterprise GenAI", ""],
+    highlightLine: 0,
     gradientColors: {
       from: "oklch(0.7 0.35 75)",
       to: "oklch(0.6 0.35 175)",
     },
+    glowColors: {
+      primary: "oklch(0.7 0.2 75/0.15)",
+      secondary: "oklch(0.6 0.2 45/0.12)",
+    },
     description:
-      "Move beyond AI experiments. Catalyst provides the infrastructure to deploy, monitor, and scale AI systems across your entire organization.",
-    primaryCta: { label: "Explore Catalyst", href: "#catalyst" },
-    secondaryCta: { label: "Talk to Our Team", href: "#contact" },
+      "Crayon Data helps enterprises move from GenAI pilots to production. With AI Catalyst and the Tangram.ai platform, we deliver results fast, real, and measurable.",
+    primaryCta: { label: "Get Started", href: "#contact" },
   },
   {
-    tag: "Proven at Scale",
-    headline: ["117M+ users.", "13B+ transactions.", "Real impact."],
-    highlightLine: 2,
+    tag: "7X Impact",
+    headline: ["7X Accelerate", "Your Enterprise", ""],
+    highlightLine: 0,
     gradientColors: {
       from: "oklch(0.6 0.35 175)",
       to: "oklch(0.7 0.35 25)",
     },
+    glowColors: {
+      primary: "oklch(0.6 0.25 175/0.15)",
+      secondary: "oklch(0.7 0.2 25/0.12)",
+    },
     description:
-      "Trusted by leading banks and enterprises worldwide. Our AI solutions drive measurable business outcomes at unprecedented scale.",
-    primaryCta: { label: "See Our Impact", href: "#clients" },
-    secondaryCta: { label: "Get Started", href: "#contact" },
+      "Productivity. Experience. Data. Speed. All Transformed. Agentic AI workflows designed to eliminate drag and multiply performance — across strategy, operations, and product execution.",
+    primaryCta: { label: "See in Action", href: "#clients" },
   },
 ]
 
@@ -186,12 +198,24 @@ export function HeroSection() {
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-background/50 dark:bg-background/30 pointer-events-none z-0" />
       
-      {/* Colorful background gradients */}
+      {/* Colorful background gradients - changes per slide */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-[oklch(0.65_0.2_175/0.15)] rounded-full blur-[100px]" />
-        <div className="absolute top-40 right-40 w-[300px] h-[300px] bg-[oklch(0.55_0.2_260/0.12)] rounded-full blur-[80px]" />
-        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-[oklch(0.65_0.2_330/0.1)] rounded-full blur-[100px]" />
-        <div className="absolute bottom-40 left-1/3 w-[250px] h-[250px] bg-[oklch(0.7_0.18_75/0.08)] rounded-full blur-[80px]" />
+        <div
+          className="absolute top-10 right-0 w-[500px] h-[500px] rounded-full blur-[100px] transition-all duration-1000 ease-out"
+          style={{ backgroundColor: slides[current]?.glowColors.primary }}
+        />
+        <div
+          className="absolute top-40 right-40 w-[300px] h-[300px] rounded-full blur-[80px] transition-all duration-1000 ease-out"
+          style={{ backgroundColor: slides[current]?.glowColors.secondary }}
+        />
+        <div
+          className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full blur-[100px] transition-all duration-1000 ease-out"
+          style={{ backgroundColor: slides[current]?.glowColors.secondary, opacity: 0.8 }}
+        />
+        <div
+          className="absolute bottom-40 left-1/3 w-[250px] h-[250px] rounded-full blur-[80px] transition-all duration-1000 ease-out"
+          style={{ backgroundColor: slides[current]?.glowColors.primary, opacity: 0.6 }}
+        />
       </div>
 
       <div className="relative w-full z-10">
@@ -203,7 +227,7 @@ export function HeroSection() {
           }}
           plugins={[
             Autoplay({
-              delay: 5000,
+              delay: 10000,
               stopOnInteraction: false,
               stopOnMouseEnter: true,
             }),
@@ -261,13 +285,6 @@ export function HeroSection() {
                         <span className="relative z-10">{slide.primaryCta.label}</span>
                         <ArrowRight className="relative z-10 w-4 h-4" />
                       </button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="border-foreground/30 dark:border-foreground/40 text-foreground hover:bg-muted/50 hover:border-foreground/40 px-8 bg-transparent dark:bg-transparent h-12"
-                      >
-                        {slide.secondaryCta.label}
-                      </Button>
                     </div>
                   </div>
 

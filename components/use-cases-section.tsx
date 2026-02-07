@@ -3,11 +3,11 @@
 import { useState } from "react"
 import {
   CreditCard,
-  ShoppingBag,
   Plane,
-  Heart,
-  Building2,
-  Wifi,
+  Globe,
+  Smartphone,
+  TrendingUp,
+  Landmark,
   ArrowRight,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -17,43 +17,43 @@ const useCases = [
     id: "banking",
     icon: CreditCard,
     title: "Banking",
-    stat: "3x",
-    statLabel: "cross-sell conversion",
-  },
-  {
-    id: "retail",
-    icon: ShoppingBag,
-    title: "Retail",
-    stat: "25%",
-    statLabel: "lift in order value",
+    stat: "7%",
+    statLabel: "increase in customer spends for the largest private bank in India",
   },
   {
     id: "travel",
     icon: Plane,
     title: "Travel",
-    stat: "2x",
-    statLabel: "booking conversion",
+    stat: "80%",
+    statLabel: "reduction in booking time for a travel experience platform in the Middle East",
   },
   {
-    id: "healthcare",
-    icon: Heart,
-    title: "Healthcare",
-    stat: "30%",
-    statLabel: "patient adherence",
+    id: "bank-travel",
+    icon: Globe,
+    title: "Bank + Travel",
+    stat: "100M+",
+    statLabel: "customer genomes powering 1:1 personalization for Banks and Travel",
   },
   {
-    id: "insurance",
-    icon: Building2,
-    title: "Insurance",
-    stat: "50%",
-    statLabel: "faster claims",
+    id: "neo-banking",
+    icon: Smartphone,
+    title: "Neo Banking",
+    stat: "8M",
+    statLabel: "Pay-day loans in less than 6 months for a Neo banking initiative in Tanzania",
   },
   {
-    id: "telecom",
-    icon: Wifi,
-    title: "Telecom",
-    stat: "35%",
-    statLabel: "churn reduction",
+    id: "fintech",
+    icon: TrendingUp,
+    title: "FinTech",
+    stat: "126%",
+    statLabel: "increase in digital activation for a fast-scaling FinTech ecosystem in Myanmar",
+  },
+  {
+    id: "islamic-banking",
+    icon: Landmark,
+    title: "Islamic Banking",
+    stat: "10×",
+    statLabel: "ROI in customer value management for the largest Islamic bank in the Middle East",
   },
 ]
 
@@ -68,21 +68,21 @@ export function UseCasesSection() {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
               <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
-                Industries
+                AI Results. At Scale.
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-light text-balance">
               <span className="bg-gradient-to-r from-[oklch(0.65_0.2_175)] to-[oklch(0.7_0.18_75)] bg-clip-text text-transparent">
-                Built for enterprise
+                Measurable Impact
               </span>
-              <span className="font-medium text-foreground"> scale</span>
+              <span className="font-medium text-foreground"> Across Markets</span>
             </h2>
           </div>
           <a
             href="#"
             className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2 text-sm font-medium group"
           >
-            View all industries
+            View all
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
@@ -136,24 +136,26 @@ export function UseCasesSection() {
                     {useCase.title}
                   </p>
 
-                  <div
-                    className={cn(
-                      "mt-4 transition-all duration-300 flex flex-col",
-                      isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-                    )}
-                  >
+                  <div className="mt-4 flex flex-col">
                     <p 
                       className={cn(
                         "text-2xl font-medium transition-all duration-300",
-                        isHovered && "scale-110"
+                        isHovered && "text-lg mb-1"
                       )}
                       style={{
-                        color: isHovered ? accentColor : undefined
+                        color: accentColor
                       }}
                     >
                       {useCase.stat}
                     </p>
-                    <p className="text-xs text-foreground/80 dark:text-foreground/90 text-left">{useCase.statLabel}</p>
+                    <div
+                      className={cn(
+                        "transition-all duration-300 overflow-hidden",
+                        isHovered ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                      )}
+                    >
+                      <p className="text-xs text-foreground/80 dark:text-foreground/90 text-left">{useCase.statLabel}</p>
+                    </div>
                   </div>
                 </div>
               </button>

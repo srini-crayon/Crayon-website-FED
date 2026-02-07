@@ -25,8 +25,8 @@ const caseStudies = [
   },
   {
     company: "Redington",
-    industry: "Retail",
-    metric: "400%",
+    industry: "Tech Distribution",
+    metric: "400x",
     metricLabel: "ROI Achieved",
     description:
       "Real-time personalized offers across all touchpoints, processing 50M+ transactions daily.",
