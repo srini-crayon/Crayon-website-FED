@@ -171,7 +171,7 @@ export default function OurValuesPage() {
         className="relative overflow-hidden"
         style={{
           backgroundColor: "#FFFFFF",
-          paddingTop: "48px",
+          paddingTop: "140px",
           paddingBottom: "24px",
         }}
       >
@@ -197,23 +197,6 @@ export default function OurValuesPage() {
                 maxWidth: "600px",
               }}
             >
-              {/* Section Label */}
-              <div
-                className="fade-in-section"
-                style={{
-                  color: "#06B6D4",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 700,
-                  lineHeight: "21px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                }}
-              >
-                CRAYON VALUES
-              </div>
-
               {/* Main Heading */}
               <h1
                 className="fade-in-blur"
@@ -246,6 +229,34 @@ export default function OurValuesPage() {
               >
                 Culture and purpose lend a person happiness at work. Here are our set of values that we believe in and shape our culture. And as any Crayon will tell you, we're fanatical about them!
               </p>
+              <a
+                href="/The-Crayon-Box-of-Values.pdf"
+                download="The Crayon Box of Values.pdf"
+                className="fade-in-section"
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: "#111827",
+                  color: "#FFFFFF",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  lineHeight: "21px",
+                  textDecoration: "none",
+                  borderRadius: "6px",
+                  display: "inline-block",
+                  width: "fit-content",
+                  transition: "background-color 0.2s ease",
+                  marginTop: "8px",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#374151";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#111827";
+                }}
+              >
+                Download Values PDF
+              </a>
             </div>
 
             {/* Right Side - Hero Image */}
@@ -302,11 +313,10 @@ export default function OurValuesPage() {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "64px",
+              gap: "48px",
             }}
-            className="md:flex-row md:items-start md:gap-20"
           >
-            {/* Left Side - COMPANY VALUES Heading */}
+            {/* COMPANY VALUES Heading */}
             <div
               className="fade-in-section"
               style={{
@@ -316,7 +326,6 @@ export default function OurValuesPage() {
                 gap: "24px",
                 flexShrink: 0,
                 width: "100%",
-                maxWidth: "400px",
                 position: "relative",
               }}
             >
@@ -385,9 +394,9 @@ export default function OurValuesPage() {
               </div>
             </div>
 
-            {/* Right Side - Values Grid */}
-            <div style={{ flex: 1 }}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {/* Values Grid */}
+            <div style={{ width: "100%" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {companyValues.map((value, index) => (
                   <div
                     key={value.id}
@@ -453,39 +462,16 @@ export default function OurValuesPage() {
             paddingRight: "20px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "64px",
-            }}
-            className="md:flex-row md:items-start"
-          >
+          <div className="flex flex-col md:flex-row md:items-start gap-12">
             {/* Left Side - Text Content */}
             <div
-              className="fade-in-section"
+              className="fade-in-section flex-1 order-1"
               style={{
-                flex: "1 1 0%",
                 display: "flex",
                 flexDirection: "column",
                 gap: "24px",
-                maxWidth: "500px",
               }}
             >
-              <div
-                style={{
-                  color: "#06B6D4",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "14px",
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "21px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                }}
-              >
-                CRAYON VALUES
-              </div>
               <h2
                 style={{
                   color: "#111827",
@@ -497,7 +483,7 @@ export default function OurValuesPage() {
                   margin: 0,
                 }}
               >
-                Values We Prize in Our People
+                Values We Prize in<br />Our People
               </h2>
               <p
                 style={{
@@ -512,79 +498,33 @@ export default function OurValuesPage() {
               >
                 A true Crayon will embody all of these values and walk the talk. All the values, all the time.
               </p>
-              <button
-                style={{
-                  padding: "12px 24px",
-                  backgroundColor: "#06B6D4",
-                  color: "#FFFFFF",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "14px",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  lineHeight: "21px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  width: "fit-content",
-                  transition: "background-color 0.3s ease, transform 0.3s ease",
-                  marginTop: "8px",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#0891b2";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#06B6D4";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                EXPLORE VALUES
-              </button>
             </div>
 
-            {/* Right Side - Horizontal Scrollable Cards */}
-            <div className="fade-in-section" style={{ flex: "1 1 0%", position: "relative" }}>
-              <div
-                style={{
-                  overflowX: "auto",
-                  overflowY: "hidden",
-                  display: "flex",
-                  gap: "24px",
-                  paddingBottom: "16px",
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
-                }}
-                className="[&::-webkit-scrollbar]:hidden"
-              >
+            {/* Right Side - 2x2 Grid Cards */}
+            <div className="fade-in-section flex-1 order-2">
+              <div className="grid grid-cols-2 gap-4">
                 {peopleValues.map((value, index) => (
                   <div
                     key={index}
                     style={{
-                      minWidth: "280px",
-                      width: "280px",
-                      padding: "32px",
+                      padding: "0",
                       backgroundColor: "#FFFFFF",
                       borderRadius: "12px",
                       border: "1px solid #E5E7EB",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                      gap: "24px",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-                      flexShrink: 0,
-                      minHeight: "320px",
+                      overflow: "hidden",
                     }}
                   >
-                    <div style={{ width: "120px", height: "120px", position: "relative", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div style={{ width: "100%", height: "140px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
                       <img
                         src={value.icon}
                         alt={value.text}
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "contain",
+                          objectFit: "cover",
                         }}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -596,12 +536,13 @@ export default function OurValuesPage() {
                       style={{
                         color: "#111827",
                         fontFamily: "Poppins, sans-serif",
-                        fontSize: "20px",
+                        fontSize: "16px",
                         fontStyle: "normal",
-                        fontWeight: 600,
+                        fontWeight: 400,
                         lineHeight: "120%",
                         margin: 0,
                         textAlign: "center",
+                        padding: "16px",
                       }}
                     >
                       {value.text}
@@ -610,350 +551,12 @@ export default function OurValuesPage() {
                 ))}
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* Story Sections */}
-      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px" }}>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1420px",
-            margin: "0 auto",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-          }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* How Values 2.0 came to be */}
-            <div
-              className="fade-in-section scale-in"
-              style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}
-            >
-              {/* Image */}
-              <div
-                style={{
-                  width: "200px",
-                  height: "280px",
-                  position: "relative",
-                  flexShrink: 0,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  backgroundColor: "#F9FAFB",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    width: "100px",
-                    height: "100px",
-                    backgroundColor: "#FCD34D",
-                    clipPath: "polygon(0 100%, 0 0, 100% 100%)",
-                    zIndex: 1,
-                  }}
-                />
-                <Image
-                  src="https://crayondata.ai/wp-content/uploads/Group-1171278552-2.png"
-                  alt="Aarti Ramakrishnan"
-                  fill
-                  style={{
-                    objectFit: "cover",
-                  }}
-                  unoptimized
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = "none";
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-family: Poppins, sans-serif; font-size: 14px;">Image</div>`;
-                    }
-                  }}
-                />
-              </div>
 
-              {/* Text Box */}
-              <div
-                style={{
-                  flex: 1,
-                  backgroundColor: "#ED2E7E",
-                  borderRadius: "12px",
-                  padding: "32px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                  justifyContent: "space-between",
-                  minHeight: "280px",
-                }}
-              >
-                <div>
-                  <h3
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: "24px",
-                      fontStyle: "normal",
-                      fontWeight: 700,
-                      lineHeight: "120%",
-                      marginBottom: "12px",
-                      marginTop: 0,
-                    }}
-                  >
-                    How Values 2.0 came to be
-                  </h3>
-                  <p
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: "16px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "24px",
-                      margin: 0,
-                    }}
-                  >
-                    Co-founder and COO Aarti Ramakrishnan on the Crayon Values that have crafted our culture over the years.
-                  </p>
-                </div>
-                <button
-                  style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "50%",
-                    backgroundColor: "#FFFFFF",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "flex-start",
-                    transition: "transform 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                  aria-label="Read more"
-                >
-                  <span style={{ color: "#000", fontSize: "20px" }}>→</span>
-                </button>
-              </div>
-            </div>
-
-            {/* The story of Crayon */}
-            <div
-              className="fade-in-section scale-in"
-              style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}
-            >
-              {/* Image */}
-              <div
-                style={{
-                  width: "200px",
-                  height: "280px",
-                  position: "relative",
-                  flexShrink: 0,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  backgroundColor: "#F9FAFB",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    width: "100px",
-                    height: "100px",
-                    backgroundColor: "#3B82F6",
-                    clipPath: "polygon(0 100%, 0 0, 100% 100%)",
-                    zIndex: 1,
-                  }}
-                />
-                <Image
-                  src="https://crayondata.ai/wp-content/uploads/Group-1171278553-2.png"
-                  alt="Suresh Shankar"
-                  fill
-                  style={{
-                    objectFit: "cover",
-                  }}
-                  unoptimized
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = "none";
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-family: Poppins, sans-serif; font-size: 14px;">Image</div>`;
-                    }
-                  }}
-                />
-              </div>
-
-              {/* Text Box */}
-              <div
-                style={{
-                  flex: 1,
-                  backgroundColor: "#F97316",
-                  borderRadius: "12px",
-                  padding: "32px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                  justifyContent: "space-between",
-                  minHeight: "280px",
-                }}
-              >
-                <div>
-                  <h3
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: "24px",
-                      fontStyle: "normal",
-                      fontWeight: 700,
-                      lineHeight: "120%",
-                      marginBottom: "12px",
-                      marginTop: 0,
-                    }}
-                  >
-                    The story of Crayon
-                  </h3>
-                  <p
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: "16px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "24px",
-                      margin: 0,
-                    }}
-                  >
-                    Founder and CEO Suresh Shankar on building teams aligned to our mission.
-                  </p>
-                </div>
-                <button
-                  style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "50%",
-                    backgroundColor: "#FFFFFF",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "flex-start",
-                    transition: "transform 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                  aria-label="Read more"
-                >
-                  <span style={{ color: "#000", fontSize: "20px" }}>→</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Get to Know Us Better Section */}
-      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "0" }}>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1420px",
-            margin: "0 auto",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-            textAlign: "center",
-            position: "relative",
-          }}
-        >
-          <div
-            className="fade-in-blur"
-            style={{
-              backgroundColor: "#1D8AD7",
-              backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px)`,
-              backgroundSize: "24px 24px",
-              borderRadius: "16px 16px 0 0",
-              paddingTop: "80px",
-              paddingBottom: "80px",
-              paddingLeft: "40px",
-              paddingRight: "40px",
-              willChange: "opacity, transform, filter",
-            }}
-          >
-            <h2
-              style={{
-                color: "#FFFFFF",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "36px",
-                fontStyle: "normal",
-                fontWeight: 700,
-                lineHeight: "120%",
-                marginBottom: "32px",
-                marginTop: 0,
-              }}
-            >
-              Get to Know Us Better
-            </h2>
-            <Link
-              href="/our-story"
-              className="fade-in-section"
-              style={{
-                backgroundColor: "#FFFFFF",
-                color: "#000000",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: 600,
-                lineHeight: "120%",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                textDecoration: "none",
-                display: "inline-block",
-                padding: "16px 32px",
-                borderRadius: "8px",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              OUR STORY
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Dark Navy Footer Section */}
-      <section style={{ backgroundColor: "#1A2B49", paddingTop: "40px", paddingBottom: "40px" }}>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1420px",
-            margin: "0 auto",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-          }}
-        >
-          {/* Footer content can be added here if needed */}
-        </div>
-      </section>
 
       {/* Scroll to Top Button */}
       <ScrollToTopButton />
