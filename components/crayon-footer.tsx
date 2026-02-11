@@ -5,10 +5,10 @@ import Link from "next/link"
 
 export function CrayonFooter() {
   return (
-    <footer className="relative bg-black text-white overflow-hidden w-full">
-      <div className="relative pt-8 sm:pt-10 md:pt-12 pb-1 z-10 px-4 sm:px-6 md:px-8 md:pl-[52px] md:pr-0 lg:pl-[52px]">
+    <footer className="relative bg-black text-white overflow-hidden w-full max-h-[400px] flex flex-col">
+      <div className="relative flex-1 min-h-0 overflow-y-auto pt-8 sm:pt-10 md:pt-12 pb-2 z-10 px-4 sm:px-6 md:px-8 md:pl-[52px] md:pr-0 lg:pl-[52px]">
         {/* Main content: left stays in place; Legal + AI summary grouped on the right */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-10 sm:gap-12 md:gap-0 mb-6 w-full max-w-[1920px] mx-auto">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 sm:gap-10 md:gap-0 mb-4 w-full max-w-[1920px] mx-auto">
           {/* Left Column - Company Branding and Social Media (position unchanged) */}
           <div
             className="flex flex-col gap-4 shrink-0 w-full md:max-w-[308px] md:min-h-[126px]"
@@ -197,7 +197,7 @@ export function CrayonFooter() {
       </div>
 
       {/* Footer decoration with copyright overlaid on top - image not trimmed */}
-      <div className="relative w-full min-h-[100px] h-28 sm:h-32 md:h-[140px] overflow-hidden">
+      <div className="relative w-full flex-shrink-0 min-h-[80px] h-24 sm:h-28 md:h-[120px] overflow-hidden">
         <Image
           src="/img/Footer Container.png"
           alt=""
@@ -207,7 +207,7 @@ export function CrayonFooter() {
         />
         {/* Copyright - centered on top of the decorative image */}
         <p
-          className="absolute inset-x-0 bottom-0 top-10 sm:top-12 md:top-14 flex items-center justify-center text-center z-10 px-4 text-xs sm:text-sm md:text-[15px] font-normal leading-normal"
+          className="absolute inset-x-0 bottom-0 top-8 sm:top-10 md:top-12 flex items-center justify-center text-center z-10 px-4 text-xs sm:text-sm md:text-[15px] font-normal leading-normal"
           style={{
             color: 'rgba(255, 255, 255, 0.95)',
             fontFamily: 'Poppins',
