@@ -4,7 +4,7 @@ import { useState, Fragment, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { X } from "lucide-react"
+import { X, ChevronDown, ExternalLink } from "lucide-react"
 import { useModal } from "../hooks/use-modal"
 
 export function CrayonHeader() {
@@ -139,18 +139,15 @@ export function CrayonHeader() {
         />
       )}
 
-      {/* Floating Header */}
+      {/* Sticky header attached to top */}
       <header 
-        className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white transition-[top] duration-150 ease-out header-with-banner"
+        className="fixed top-0 left-0 right-0 z-50 bg-white transition-[top] duration-150 ease-out header-with-banner border-b border-gray-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
         style={{
           display: 'flex',
           flexDirection: 'column',
-          width: 'calc(100% - 40px)',
-          maxWidth: '1472px',
+          width: '100%',
           padding: isMenuOpen ? '0 25px' : '0 25px',
-          borderRadius: '4px',
           overflow: 'hidden',
-          boxShadow: '0 6px 16px rgba(17, 24, 39, 0.05)',
         }}
       >
         {/* Main Header Row */}
@@ -163,193 +160,138 @@ export function CrayonHeader() {
             padding: '9px 0',
           }}
         >
-        {/* Left Section - Logo & Tagline/Menu */}
-        <div className="flex items-center" style={{ gap: '18px' }}>
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link 
-              href="/"
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                cursor: 'pointer',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              aria-label="Go to home page"
-            >
-              <Image
-                src="/img/crayon-header-logo.png"
-                alt="Crayon Logo"
-                width={100}
-                height={28}
-                className="h-auto"
-                priority
-              />
-            </Link>
-          </div>
-
-          {/* Vertical Separator - Only show when there's a secondary menu */}
-          {(isAboutUsPage || isLegalPage || isServicesPage || isPlatformPage || isCommunityPage) && (
-            <div
-              style={{
-                width: '1px',
-                height: '20px',
-                backgroundColor: '#E5E7EB',
-              }}
+        {/* Left Section - Logo */}
+        <div className="flex items-center shrink-0">
+          <Link 
+            href="/"
+            onClick={() => setIsMenuOpen(false)}
+            style={{
+              cursor: 'pointer',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            aria-label="Go to home page"
+          >
+            <Image
+              src="/img/crayon-header-logo.png"
+              alt="Crayon Logo"
+              width={100}
+              height={28}
+              className="h-auto"
+              priority
             />
-          )}
-
-          {/* Tagline or Menu text */}
-          {isMenuOpen ? (
-            <span
-              style={{
-                color: '#1F2937',
-                fontFamily: 'Poppins',
-                fontSize: '16px',
-                fontStyle: 'normal',
-                fontWeight: 400,
-                lineHeight: '24px',
-              }}
-            >
-              Menu
-            </span>
-          ) : (
-            <>
-              {isAboutUsPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  About Us
-                </span>
-              )}
-              {isLegalPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Legal
-                </span>
-              )}
-              {isPlatformPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Platform
-                </span>
-              )}
-              {isServicesPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Services
-                </span>
-              )}
-              {isCommunityPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Community
-                </span>
-              )}
-            </>
-          )}
+          </Link>
         </div>
 
-        {/* Right Section - Button & Menu */}
-        <div className="flex items-center gap-6">
-          {/* Enquiry Now Button */}
+        {/* Separator "/" between logo and nav - desktop only */}
+        <span
+          className="hidden lg:inline-flex items-center px-4 text-[15px] font-medium text-[#9CA3AF] select-none"
+          aria-hidden
+        >
+          /
+        </span>
+
+        {/* Center - Main navigation (Platform, Services, Community, About Us, Pricing, Resources) - left aligned */}
+        <nav
+          className="hidden lg:flex items-center justify-start gap-6 flex-1"
+          aria-label="Main navigation"
+        >
+          <Link
+            href="/tangram-ai"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Platform
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/catalyst"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Services
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/blog"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Community
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/vision"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            About Us
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="#pricing"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Pricing
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/blog"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Resources
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+        </nav>
+
+        {/* Right Section - Enquire Now, Get started (platform only) - 24px gap */}
+        <div className="flex items-center gap-[24px]">
+          {/* Enquire Now */}
           <Link
             href="/enquiry"
             onClick={() => setIsMenuOpen(false)}
+            className="inline-flex items-center gap-2 text-[#091917] hover:text-[#0d2522] font-medium text-sm py-2 px-4 rounded-md transition-colors"
             style={{
-              backgroundColor: '#1A1A1A',
-              color: '#FFFFFF',
               fontFamily: 'Poppins',
-              fontSize: '14px',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              padding: '8px 16px',
-              borderRadius: '6px',
-              textDecoration: 'none',
-              transition: 'opacity 0.2s',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             aria-label="Go to enquiry page"
           >
             Enquire Now
+            <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
           </Link>
 
-          {/* Hamburger Menu Icon */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px',
-            }}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X size={24} color="#4A4A4A" />
-            ) : (
-              <>
-                <div
-                  style={{
-                    width: '25px',
-                    height: '2px',
-                    backgroundColor: '#4A4A4A',
-                  }}
-                />
-                <div
-                  style={{
-                    width: '25px',
-                    height: '2px',
-                    backgroundColor: '#4A4A4A',
-                  }}
-                />
-              </>
-            )}
-          </button>
+          {/* Get started - only on platform pages; opens login/signup */}
+          {isPlatformPage && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                setIsMenuOpen(false)
+                openModal("auth", { mode: "login", role: "client" })
+              }}
+              className="inline-flex items-center justify-center gap-2.5 rounded hover:opacity-90 transition-opacity"
+              style={{
+                width: 96,
+                height: 32,
+                padding: '7px 14px',
+                borderRadius: 4,
+                backgroundColor: '#181818',
+                fontFamily: 'Poppins',
+                fontWeight: 400,
+                fontSize: '12px',
+                lineHeight: '100%',
+                letterSpacing: '0px',
+                verticalAlign: 'middle',
+                color: '#FFFFFF',
+              }}
+              aria-label="Get started - Login or Sign up"
+            >
+              Get started
+            </button>
+          )}
         </div>
         </div>
 
@@ -455,25 +397,23 @@ export function CrayonHeader() {
                       href={item.path}
                       onClick={() => setIsMenuOpen(false)}
                       style={{
-                        color: isActive ? '#007BFF' : 'var(--Interface-Color-Neutral-700, #374151)',
+                        color: isActive ? '#004BEC' : '#374151',
                         fontFamily: 'Poppins',
                         fontSize: '14px',
                         fontStyle: 'normal',
                         fontWeight: isActive ? 500 : 400,
                         lineHeight: '24px',
+                        letterSpacing: '0px',
+                        verticalAlign: 'middle',
                         textDecoration: 'none',
                         transition: 'color 0.2s',
                         whiteSpace: 'nowrap',
                       }}
                       onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                        }
+                        if (!isActive) e.currentTarget.style.color = '#374151'
                       }}
                       onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                        }
+                        if (!isActive) e.currentTarget.style.color = '#374151'
                       }}
                     >
                       {item.label}
@@ -481,72 +421,6 @@ export function CrayonHeader() {
                   )
                 })}
               </div>
-
-              {/* Platform-only: Login / Signup on right end */}
-              {isPlatformPage && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '20px',
-                  }}
-                >
-                  <Link
-                    href="/auth/login"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsMenuOpen(false)
-                      openModal("auth", { mode: "login", role: "client" })
-                    }}
-                    style={{
-                      color: 'var(--Interface-Color-Neutral-700, #374151)',
-                      fontFamily: 'Poppins',
-                      fontSize: '14px',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      lineHeight: '24px',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#007BFF'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                    }}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsMenuOpen(false)
-                      openModal("auth", { mode: "signup", role: "client" })
-                    }}
-                    style={{
-                      color: 'var(--Interface-Color-Neutral-700, #374151)',
-                      fontFamily: 'Poppins',
-                      fontSize: '14px',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      lineHeight: '24px',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#007BFF'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                    }}
-                  >
-                    Signup
-                  </Link>
-                </div>
-              )}
             </div>
           </>
         )}
