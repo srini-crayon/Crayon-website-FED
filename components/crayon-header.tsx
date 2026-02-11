@@ -1,17 +1,38 @@
 'use client'
 
-import { useState, Fragment, useEffect } from "react"
+import { useState, Fragment, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { X, ChevronDown, ExternalLink } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { X, ChevronDown, ExternalLink, User, LayoutDashboard, LogOut } from "lucide-react"
 import { useModal } from "../hooks/use-modal"
+import { useAuthStore } from "../lib/store/auth.store"
+import { Avatar, AvatarFallback } from "./ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu"
 
 export function CrayonHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [headerVisible, setHeaderVisible] = useState(true)
+  const lastScrollY = useRef(0)
   const pathname = usePathname()
+  const router = useRouter()
   const { openModal } = useModal()
+  const { isAuthenticated, user, logout } = useAuthStore()
+  const scrollThreshold = 8
+
+  const getInitials = (email: string) => {
+    if (!email) return "U"
+    const part = email.split("@")[0]
+    if (part.length >= 2) return (part[0] + part[1]).toUpperCase()
+    return part[0].toUpperCase()
+  }
 
   type SecondaryItem = { label: string; path: string; external?: boolean; disabled?: boolean }
   
@@ -79,6 +100,24 @@ export function CrayonHeader() {
     setMounted(true)
   }, [])
 
+  // Hide header on scroll down, show on scroll up so it doesn't cover content
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isMenuOpen) return
+      const y = window.scrollY
+      if (y <= scrollThreshold) {
+        setHeaderVisible(true)
+      } else if (y > lastScrollY.current) {
+        setHeaderVisible(false)
+      } else {
+        setHeaderVisible(true)
+      }
+      lastScrollY.current = y
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [isMenuOpen])
+
   type MenuLink = string | { label: string; href: string; disabled?: boolean }
   const megaMenuSections: { title: string; icon: string; links: MenuLink[] }[] = [
     {
@@ -139,9 +178,11 @@ export function CrayonHeader() {
         />
       )}
 
-      {/* Sticky header attached to top */}
+      {/* Sticky header: hides on scroll down, shows on scroll up so it doesn't cover content */}
       <header 
-        className="fixed top-0 left-0 right-0 z-50 bg-white transition-[top] duration-150 ease-out header-with-banner border-b border-gray-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
+        className={`fixed top-0 left-0 right-0 z-50 bg-white header-with-banner border-b border-gray-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out ${
+          headerVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -247,7 +288,7 @@ export function CrayonHeader() {
           </Link>
         </nav>
 
-        {/* Right Section - Enquire Now, Get started (platform only) - 24px gap */}
+        {/* Right Section - Enquire Now, User profile (when logged in on platform) or Get started */}
         <div className="flex items-center gap-[24px]">
           {/* Enquire Now */}
           <Link
@@ -263,8 +304,68 @@ export function CrayonHeader() {
             <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
           </Link>
 
-          {/* Get started - only on platform pages; opens login/signup */}
-          {isPlatformPage && (
+          {/* User profile dropdown - on platform/agent store when logged in */}
+          {isPlatformPage && isAuthenticated && user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center rounded-full border border-gray-200 bg-white text-[#091917] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+                  aria-label="User menu"
+                >
+                  <Avatar className="h-8 w-8 border border-gray-200">
+                    <AvatarFallback
+                      className="bg-[#181818] text-white text-xs font-medium"
+                      style={{ fontFamily: 'Poppins' }}
+                    >
+                      {getInitials(user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={8} className="min-w-[180px]">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 cursor-pointer">
+                    <User className="h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                {(user.role === 'isv' || user.role === 'reseller') && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 cursor-pointer">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                {user.role === 'admin' && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 cursor-pointer">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Admin
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  className="cursor-pointer"
+                  onClick={() => {
+                    logout()
+                    setIsMenuOpen(false)
+                    router.push('/agents')
+                  }}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
+          {/* Get started - only on platform pages when not logged in; opens login/signup */}
+          {isPlatformPage && !isAuthenticated && (
             <button
               type="button"
               onClick={(e) => {
