@@ -3,22 +3,41 @@
 import { useState, useEffect, useRef } from "react"
 import { Plus, ArrowUp, X, ChevronDown } from "lucide-react"
 import { useChatStore } from "../lib/store/chat.store"
-import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group"
+import { cn } from "../lib/utils"
 import { VoiceInputControls } from "./voice-input-controls"
 
 interface AgentSearchChatProps {
   externalValue?: string
   onExternalValueChange?: (value: string) => void
   onEnterChat?: (message: string) => void
+  variant?: "default" | "hero"
+  placeholder?: string
 }
 
-export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterChat }: AgentSearchChatProps) {
+const defaultPlaceholder = "Ask, explore, and create AI agents in real time."
+
+export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterChat, variant = "default", placeholder = defaultPlaceholder }: AgentSearchChatProps) {
+  const isHero = variant === "hero"
   const { mode, setMode } = useChatStore()
   const [searchInput, setSearchInput] = useState("")
   const [attachedFile, setAttachedFile] = useState<File | null>(null)
   const [isFocused, setIsFocused] = useState(false)
+  const [modeDropdownOpen, setModeDropdownOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textInputRef = useRef<HTMLTextAreaElement>(null)
+  const modeDropdownRef = useRef<HTMLDivElement>(null)
+
+  // Close mode dropdown on outside click
+  useEffect(() => {
+    if (!modeDropdownOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (modeDropdownRef.current && !modeDropdownRef.current.contains(e.target as Node)) {
+        setModeDropdownOpen(false)
+      }
+    }
+    document.addEventListener("click", handleClick)
+    return () => document.removeEventListener("click", handleClick)
+  }, [modeDropdownOpen])
 
   // Sync external value with internal state
   useEffect(() => {
@@ -87,22 +106,36 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
 
   return (
     <div className="w-full">
+      {isHero && (
+        <style>{`.agent-search-hero-dark::placeholder { color: #C5C1BA; opacity: 1; }`}</style>
+      )}
       <div
-        className={`mx-auto mb-8 max-w-5xl rounded-2xl bg-white p-4 transition-all duration-300 ease-out ${isFocused
-          ? "scale-[1.01]"
-          : "shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-          }`}
+        className={`mx-auto p-4 transition-all duration-300 ease-out ${isHero ? "" : "mb-8 rounded-2xl max-w-5xl"} ${!isHero && (isFocused ? "scale-[1.01]" : "shadow-lg hover:shadow-xl hover:-translate-y-0.5")}`}
         style={{
-          border: `1px solid ${isFocused ? "#818CF8" : "#E5E7EB"}`,
-          boxShadow: isFocused
-            ? "0 20px 30px -10px rgba(99, 102, 241, 0.15), 0 0 0 4px rgba(99, 102, 241, 0.05)"
-            : undefined,
+          ...(isHero
+            ? {
+                width: "100%",
+                maxWidth: "768px",
+                minHeight: "146px",
+                borderRadius: "28px",
+                opacity: 1,
+                border: "1px solid rgba(252, 251, 248, 0.16)",
+                background: "#272725",
+                boxShadow: "0px 8px 10px -6px rgba(0,0,0,0.1), 0px 20px 25px -5px rgba(0,0,0,0.1), 0px 0px 0px 1px rgba(0,0,0,0.96)",
+              }
+            : {
+                background: "white",
+                border: `1px solid ${isFocused ? "#818CF8" : "#E5E7EB"}`,
+                boxShadow: isFocused
+                  ? "0 20px 30px -10px rgba(99, 102, 241, 0.15), 0 0 0 4px rgba(99, 102, 241, 0.05)"
+                  : undefined,
+              }),
         }}
         onMouseEnter={(e) => {
-          if (!isFocused) e.currentTarget.style.borderColor = "#D1D5DB";
+          if (!isHero && !isFocused) e.currentTarget.style.borderColor = "#D1D5DB";
         }}
         onMouseLeave={(e) => {
-          if (!isFocused) e.currentTarget.style.borderColor = "#E5E7EB";
+          if (!isHero && !isFocused) e.currentTarget.style.borderColor = "#E5E7EB";
         }}
       >
         {/* Upper section: Input */}
@@ -123,7 +156,7 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
                   left: "10px",
                   top: "30%",
                   transform: "translateY(-50%)",
-                  color: "#6B7280",
+                  color: isHero ? "#9CA3AF" : "#6B7280",
                   fontFamily: "Poppins, sans-serif",
                   fontSize: "18px",
                   lineHeight: "1.5",
@@ -132,16 +165,14 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
                   display: "flex",
                   alignItems: "center",
                   height: "100%",
-
                 }}
               >
                 +
-
               </div>
               <textarea
                 ref={textInputRef}
-                placeholder="Ask, explore, and create AI agents in real time."
-                className="w-full text-lg py-2 flex-1 resize-none border-none focus:outline-none focus:bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                placeholder={placeholder}
+                className={`w-full text-lg py-2 flex-1 resize-none border-none focus:outline-none focus:bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent ${isHero ? "agent-search-hero-dark" : ""}`}
                 value={searchInput}
                 onChange={(e) => handleInputChange(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -156,8 +187,15 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
                   minHeight: '40px',
                   maxHeight: '200px',
                   backgroundColor: 'transparent',
-                  fontFamily: "Poppins, sans-serif",
+                  fontFamily: isHero ? "Inter, sans-serif" : "Poppins, sans-serif",
+                  fontWeight: isHero ? 400 : undefined,
+                  fontStyle: isHero ? "normal" : undefined,
+                  fontSize: isHero ? "14.6px" : undefined,
+                  lineHeight: isHero ? "22px" : undefined,
+                  letterSpacing: isHero ? "0%" : undefined,
+                  verticalAlign: isHero ? "middle" : undefined,
                   paddingLeft: "30px",
+                  color: isHero ? "#C5C1BA" : undefined,
                 }}
                 onFocus={(e) => {
                   e.target.style.backgroundColor = 'transparent'
@@ -189,41 +227,68 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
 
         {/* Lower section: Buttons and controls */}
         <div className="flex items-center justify-between gap-4">
-          {/* Left side: Mode toggle */}
-          <div className="flex items-center gap-4">
-            <ToggleGroup
-              type="single"
-              value={mode}
-              onValueChange={(value) => {
-                if (value) setMode(value as "explore" | "create")
-              }}
-              className="bg-gray-100 rounded-lg p-1"
-            >
-              <ToggleGroupItem
-                value="explore"
-                aria-label="Explore"
-                className="px-4 py-2 text-sm rounded-md data-[state=on]:bg-white data-[state=on]:text-gray-900 data-[state=off]:text-gray-600 data-[state=off]:hover:text-gray-900"
+          {/* Left side: Mode dropdown (reference: Explore + caret) */}
+          <div className="flex items-center gap-4" ref={modeDropdownRef}>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setModeDropdownOpen((v) => !v)
+                }}
+                aria-expanded={modeDropdownOpen}
+                aria-haspopup="listbox"
+                aria-label="Select mode"
+                className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
                 style={{
-                  boxShadow: mode === "explore"
-                    ? "0px 3px 1px 0px #0000000A, 0px 3px 8px 0px #0000001F"
-                    : undefined,
+                  fontFamily: "Inter, sans-serif",
+                  ...(isHero
+                    ? { background: "transparent", color: "#C5C1BA" }
+                    : { background: "#F3F4F6", color: "#374151" }),
                 }}
               >
-                Explore
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="create"
-                aria-label="Create"
-                className="px-4 py-2 text-sm rounded-md data-[state=on]:bg-white data-[state=on]:text-gray-900 data-[state=off]:text-gray-600 data-[state=off]:hover:text-gray-900"
-                style={{
-                  boxShadow: mode === "create"
-                    ? "0px 3px 1px 0px #0000000A, 0px 3px 8px 0px #0000001F"
-                    : undefined,
-                }}
-              >
-                Create
-              </ToggleGroupItem>
-            </ToggleGroup>
+                <span className="capitalize">{mode}</span>
+                <ChevronDown size={16} style={{ opacity: 0.9 }} />
+              </button>
+              {modeDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    aria-hidden
+                    onClick={() => setModeDropdownOpen(false)}
+                  />
+                  <div
+                    role="listbox"
+                    className="absolute left-0 top-full z-20 mt-1 min-w-[140px] rounded-lg py-1 shadow-lg"
+                    style={{
+                      background: isHero ? "#272725" : "#FFFFFF",
+                      border: isHero ? "1px solid rgba(252,251,248,0.12)" : "1px solid #E5E7EB",
+                    }}
+                  >
+                    {(["explore", "create"] as const).map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        role="option"
+                        aria-selected={mode === option}
+                        onClick={() => {
+                          setMode(option)
+                          setModeDropdownOpen(false)
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm capitalize transition-colors"
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          color: isHero ? "#C5C1BA" : "#374151",
+                          backgroundColor: mode === option ? (isHero ? "rgba(255,255,255,0.08)" : "#F9FAFB") : "transparent",
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Language selector */}
             {/* <button
@@ -269,14 +334,18 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
 
           {/* Right side: Microphone and Submit button */}
           <div className="flex items-center gap-3">
-            {/* VoiceInputControls styled to show only mic button */}
-            <div className="[&>div>button:first-child]:hidden [&>div>button:last-child]:h-10 [&>div>button:last-child]:w-10 [&>div>button:last-child]:rounded-full [&>div>button:last-child]:bg-white [&>div>button:last-child]:hover:bg-gray-50">
+            {/* VoiceInputControls styled to show only mic button; hero uses custom voice icon */}
+            <div className={cn(
+              "[&>div>button:first-child]:hidden [&>div>button:last-child]:h-10 [&>div>button:last-child]:w-10 [&>div>button:last-child]:rounded-full",
+              isHero ? "[&>div>button:last-child]:!bg-transparent [&>div>button:last-child]:!shadow-none [&>div>button:last-child]:text-[#C5C1BA] [&>div>button:last-child]:border-[#C5C1BA]/30 [&>div>button:last-child]:hover:!bg-white/10 [&>div>button:last-child]:hover:border-[#C5C1BA]/50" : "[&>div>button:last-child]:bg-white [&>div>button:last-child]:hover:bg-gray-50"
+            )}>
               <VoiceInputControls
                 value={searchInput}
                 onValueChange={handleInputChange}
                 buttonSize="icon"
                 buttonVariant="outline"
                 ariaLabel="Use voice input for agent search"
+                useCustomVoiceIcon={isHero}
               />
             </div>
             <button
