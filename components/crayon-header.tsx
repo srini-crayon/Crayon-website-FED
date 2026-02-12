@@ -4,9 +4,12 @@ import { useState, Fragment, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { X, ChevronDown, ExternalLink, User, LayoutDashboard, LogOut } from "lucide-react"
+import { X, ChevronDown, ExternalLink, User, LayoutDashboard, LogOut, Heart } from "lucide-react"
 import { useModal } from "../hooks/use-modal"
 import { useAuthStore } from "../lib/store/auth.store"
+import { useWishlistsStore } from "../lib/store/wishlists.store"
+import { useCurrentAgentStore } from "../lib/store/current-agent.store"
+import { WishlistPickerModal } from "./wishlist-picker-modal"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import {
   DropdownMenu,
@@ -20,12 +23,33 @@ export function CrayonHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [headerVisible, setHeaderVisible] = useState(true)
+  const [isWishlistPickerOpen, setIsWishlistPickerOpen] = useState(false)
   const lastScrollY = useRef(0)
   const pathname = usePathname()
   const router = useRouter()
   const { openModal } = useModal()
   const { isAuthenticated, user, logout } = useAuthStore()
+  const { isInAnyWishlist, loadAllWishlists } = useWishlistsStore()
+  const { agentId: currentAgentId, agentName: currentAgentName } = useCurrentAgentStore()
   const scrollThreshold = 8
+
+  const isAgentDetailPage = pathname.startsWith('/agents/') && pathname !== '/agents' && pathname !== '/agents-store'
+  const agentIdFromPath = isAgentDetailPage ? pathname.replace(/^\/agents\//, '').split('/')[0] || null : null
+  const headerAgentId = agentIdFromPath || currentAgentId
+  const headerAgentName = currentAgentName ?? undefined
+  const isWishlisted = headerAgentId ? isInAnyWishlist(headerAgentId) : false
+
+  useEffect(() => {
+    if (isAuthenticated && headerAgentId) loadAllWishlists()
+  }, [isAuthenticated, headerAgentId, loadAllWishlists])
+
+  const handleHeaderWishlistClick = () => {
+    if (!isAuthenticated) {
+      openModal("auth", { mode: "login", role: "client" })
+      return
+    }
+    setIsWishlistPickerOpen(true)
+  }
 
   const getInitials = (email: string) => {
     if (!email) return "U"
@@ -288,8 +312,26 @@ export function CrayonHeader() {
           </Link>
         </nav>
 
-        {/* Right Section - Enquire Now, User profile (when logged in on platform) or Get started */}
+        {/* Right Section - Wishlist (on agent detail), Enquire Now, User profile or Get started */}
         <div className="flex items-center gap-[24px]">
+          {/* Wishlist button - top navbar right, same as AgentActionButtons (only on agent detail page) */}
+          {isAgentDetailPage && headerAgentId && (
+            <button
+              type="button"
+              onClick={handleHeaderWishlistClick}
+              className="flex items-center justify-center w-12 h-12 rounded border border-gray-200 bg-gray-100 text-[#111827] hover:bg-gray-200 transition-all duration-200 shadow-sm hover:shadow"
+              style={{ minWidth: 48, minHeight: 48 }}
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart
+                size={20}
+                fill={isWishlisted ? "#EF4444" : "none"}
+                stroke={isWishlisted ? "#EF4444" : "#111827"}
+                strokeWidth={2}
+              />
+            </button>
+          )}
+
           {/* Enquire Now */}
           <Link
             href="/enquiry"
@@ -666,6 +708,14 @@ export function CrayonHeader() {
           )}
         </div>
       </header>
+      {headerAgentId && (
+        <WishlistPickerModal
+          isOpen={isWishlistPickerOpen}
+          onClose={() => setIsWishlistPickerOpen(false)}
+          agentId={headerAgentId}
+          agentName={headerAgentName}
+        />
+      )}
     </Fragment>
   )
 }
