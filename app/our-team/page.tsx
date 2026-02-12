@@ -36,7 +36,7 @@ const teamMembers: TeamMember[] = [
     title: "Founder & CEO",
     description:
       "Suresh is a second-time entrepreneur, and an evangelist of big data, analytics, and digital personalization. His first venture, RedPill Analytics, was acquired by IBM. With a background in sales, marketing, advertising, media, analytics and Big Data, Suresh has been in the industry for 35 years. Long enough to see the transformation of marketing from right-brain to a left-brain pursuit.",
-    image: "https://crayondata.ai/wp-content/uploads/Suresh-1.png",
+    image: "/team-photos/suresh.png",
     category: "founders",
   },
   {
@@ -128,7 +128,7 @@ const teamMembers: TeamMember[] = [
     title: "Director – Engineering",
     description:
       "Karuna, Director – Engineering, brings over 13 years of experience in building scalable, high-performance technology systems. Known for his calm demeanor and clarity of thought, he leads engineering with precision and steady execution. He combines architectural discipline with delivery speed, ensuring products are robust, reliable, and production-ready. At Crayon Data, he translates complex AI ambitions into enterprise-grade systems that run seamlessly at scale.",
-    image: "/placeholder-user.jpg",
+    image: "/team-photos/karuna.png",
     category: "leaders",
   },
   {
@@ -146,7 +146,7 @@ const teamMembers: TeamMember[] = [
     title: "Assistant Director – Data Solutions",
     description:
       "Chinmoy has over 8+ years of experience and brings a deeply analytical lens to building scalable AI systems. With strong experience in data science, machine learning, and data engineering, he bridges the gap between technical rigor and product clarity. He ensures that AI products are not only intelligent, but architected for performance, reliability, and scale.",
-    image: "/placeholder-user.jpg",
+    image: "/team-photos/chinmoy.png",
     category: "leaders",
   },
   {
@@ -155,7 +155,7 @@ const teamMembers: TeamMember[] = [
     title: "Associate Director - Finance",
     description:
       "Bharath, Associate Director – Finance, brings strong financial discipline and operational rigor to Crayon Data. With deep experience in financial planning, controls, and compliance, he ensures clarity across cash flow, reporting, and governance. He partners closely with leadership to align financial strategy with business execution and growth. At Crayon Data, he plays a key role in strengthening financial resilience as the company scales.",
-    image: "/placeholder-user.jpg",
+    image: "/team-photos/bharath.png",
     category: "leaders",
   },
   {
@@ -164,7 +164,7 @@ const teamMembers: TeamMember[] = [
     title: "Associate Director – Sales Acceleration",
     description:
       "Vignesh, Associate Director, is known for building rapid prototypes and setting the execution bar across the company. With a strong bias for speed and experimentation, he turns ideas into working systems in record time. At Crayon Data, he leads the Sales Accelerator — the engine that powers high-velocity demos, proposals, and deal momentum. He operates at the intersection of product, sales, and AI execution, ensuring innovation translates directly into business impact.",
-    image: "/placeholder-user.jpg",
+    image: "/team-photos/vignesh.png",
     category: "leaders",
   },
 ];

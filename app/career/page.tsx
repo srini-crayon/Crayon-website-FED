@@ -198,37 +198,36 @@ export default function CareerPage() {
               Crayons are a diverse and passionate bunch
             </p>
 
-            {/* CTA Button */}
+            {/* CTA Button - same style as Download Values PDF on Our Values */}
             <div className="fade-in-section">
-              <button
+              <Link
+                href="/career#open-positions"
+                className="fade-in-section"
                 style={{
-                  padding: "16px 32px",
-                  backgroundColor: "#06B6D4",
+                  padding: "12px 24px",
+                  backgroundColor: "#111827",
                   color: "#FFFFFF",
                   fontFamily: "Poppins, sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
+                  fontSize: "14px",
                   fontWeight: 600,
-                  lineHeight: "120%",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  lineHeight: "21px",
+                  textDecoration: "none",
+                  borderRadius: "6px",
+                  display: "inline-block",
+                  width: "fit-content",
+                  transition: "background-color 0.2s ease",
+                  marginTop: "8px",
                   alignSelf: "flex-start",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#0891b2";
-                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.backgroundColor = "#374151";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#06B6D4";
-                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.backgroundColor = "#111827";
                 }}
               >
                 JOIN US
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -382,7 +381,7 @@ export default function CareerPage() {
       </section>
 
       {/* Be the CEO of Your Own Career Section */}
-      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px" }}>
+      <section id="open-positions" style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px" }}>
         <div
           style={{
             width: "100%",
@@ -694,34 +693,285 @@ export default function CareerPage() {
             Think you'll feel at home with our innovative, <em>quirky</em>, and data-driven tribe? Then jump right in! Check out our open positions here
           </p>
           <div className="fade-in-section">
-            <button
+            <Link
+              href="/career#open-positions"
+              className="fade-in-section"
               style={{
-                padding: "16px 32px",
-                backgroundColor: "#06B6D4",
+                padding: "12px 24px",
+                backgroundColor: "#111827",
                 color: "#FFFFFF",
                 fontFamily: "Poppins, sans-serif",
-                fontSize: "16px",
-                fontStyle: "normal",
+                fontSize: "14px",
                 fontWeight: 600,
-                lineHeight: "120%",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
+                lineHeight: "21px",
+                textDecoration: "none",
+                borderRadius: "6px",
+                display: "inline-block",
+                width: "fit-content",
+                transition: "background-color 0.2s ease",
+                marginTop: "8px",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#0891b2";
-                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.backgroundColor = "#374151";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#06B6D4";
-                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.backgroundColor = "#111827";
               }}
             >
               JOIN THE BOX!
-            </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px" }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1420px",
+            margin: "0 auto",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+          }}
+        >
+          <div
+            style={{
+              color: "#06B6D4",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "14px",
+              fontWeight: 400,
+              lineHeight: "21px",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              marginBottom: "8px",
+              textAlign: "center",
+            }}
+          >
+            TESTIMONIALS
+          </div>
+          <h2
+            style={{
+              color: "#111827",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "36px",
+              fontWeight: 700,
+              lineHeight: "120%",
+              marginBottom: "48px",
+              marginTop: 0,
+              textAlign: "center",
+            }}
+          >
+            Why Crayons Love Working Here
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: "32px",
+              alignItems: "stretch",
+            }}
+          >
+            {/* 1st testimonial - Arun Changotra */}
+            <div
+              className="fade-in-section"
+              style={{
+                backgroundColor: "#F9FAFB",
+                borderRadius: "12px",
+                padding: "32px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                border: "1px solid #E5E7EB",
+              }}
+            >
+              <div
+                style={{
+                  width: "120px",
+                  height: "120px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  marginBottom: "24px",
+                  flexShrink: 0,
+                }}
+              >
+                <Image
+                  src="/photo-testimonials/arun-changotra.png"
+                  alt="Arun Changotra"
+                  width={120}
+                  height={120}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+              <p
+                style={{
+                  color: "#374151",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "26px",
+                  marginBottom: "24px",
+                  flex: 1,
+                }}
+              >
+                Crayon fosters an atmosphere where challenges are seen as opportunities. With constant support and open communication, it&apos;s a place where both personal and professional growth thrive.
+              </p>
+              <div
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#111827",
+                  marginBottom: "4px",
+                }}
+              >
+                Arun Changotra
+              </div>
+              <div
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "14px",
+                  color: "#6B7280",
+                }}
+              >
+                Software Engineer
+              </div>
+            </div>
+
+            {/* 2nd testimonial - K S S Sreekrishna */}
+            <div
+              className="fade-in-section"
+              style={{
+                backgroundColor: "#F9FAFB",
+                borderRadius: "12px",
+                padding: "32px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                border: "1px solid #E5E7EB",
+              }}
+            >
+              <div
+                style={{
+                  width: "120px",
+                  height: "120px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  marginBottom: "24px",
+                  flexShrink: 0,
+                }}
+              >
+                <Image
+                  src="/photo-testimonials/sreekrishna.png"
+                  alt="K S S Sreekrishna"
+                  width={120}
+                  height={120}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+              <p
+                style={{
+                  color: "#374151",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "26px",
+                  marginBottom: "24px",
+                  flex: 1,
+                }}
+              >
+                At Crayon, it&apos;s the people and culture that make the difference. The environment is dynamic and fast-paced, challenging you to grow while surrounding you with genuine encouragement, collaboration, and support.
+              </p>
+              <div
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#111827",
+                  marginBottom: "4px",
+                }}
+              >
+                K S S Sreekrishna
+              </div>
+              <div
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "14px",
+                  color: "#6B7280",
+                }}
+              >
+                Associate Product Manager
+              </div>
+            </div>
+
+            {/* 3rd testimonial - Saravanan R */}
+            <div
+              className="fade-in-section"
+              style={{
+                backgroundColor: "#F9FAFB",
+                borderRadius: "12px",
+                padding: "32px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                border: "1px solid #E5E7EB",
+              }}
+            >
+              <div
+                style={{
+                  width: "120px",
+                  height: "120px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  marginBottom: "24px",
+                  flexShrink: 0,
+                }}
+              >
+                <Image
+                  src="/photo-testimonials/saravanan-r.png"
+                  alt="Saravanan R"
+                  width={120}
+                  height={120}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+              <p
+                style={{
+                  color: "#374151",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  lineHeight: "26px",
+                  marginBottom: "24px",
+                  flex: 1,
+                }}
+              >
+                At Crayon, I value the collaborative culture and the trust placed in me to take ownership of my responsibilities. #Responsibility with freedom
+              </p>
+              <div
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#111827",
+                  marginBottom: "4px",
+                }}
+              >
+                Saravanan R
+              </div>
+              <div
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "14px",
+                  color: "#6B7280",
+                }}
+              >
+                Lead System Administrator - IT
+              </div>
+            </div>
           </div>
         </div>
       </section>
