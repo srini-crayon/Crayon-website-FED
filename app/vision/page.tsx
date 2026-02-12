@@ -70,7 +70,7 @@ export default function VisionPage() {
                 margin: "0 auto 16px auto",
               }}
             >
-              Simplify the World&apos;s Choices
+              Simplify AI Success
             </h2>
 
             {/* Sub-heading - smaller to match second image */}
@@ -102,7 +102,7 @@ export default function VisionPage() {
           >
             <Image
               src="https://crayondata.ai/wp-content/uploads/Top-Image-2.png"
-              alt="Vision - Simplify the World's Choices"
+              alt="Vision - Simplify AI Success"
               fill
               style={{ objectFit: "contain", objectPosition: "center" }}
               unoptimized
@@ -140,7 +140,7 @@ export default function VisionPage() {
               marginTop: 0,
             }}
           >
-            Our raison d'etre
+            Our raison d&apos;etre
           </h2>
           <p
             style={{
@@ -241,7 +241,7 @@ export default function VisionPage() {
                 margin: 0,
               }}
             >
-              We believe that data is meant to serve the human spirit, not rule it
+              We believe that AI is meant to serve the human spirit, not rule it
             </p>
           </div>
 
@@ -343,7 +343,7 @@ export default function VisionPage() {
                 margin: 0,
               }}
             >
-              We do this by making it simple for everyone to see, touch, and use the information that will make a difference to our lives
+              We do this by making it simple for everyone to see, touch, and use AI that will make a difference to our lives
             </p>
           </div>
 
@@ -445,7 +445,7 @@ export default function VisionPage() {
                 margin: 0,
               }}
             >
-              We create solutions that use data and AI to illuminate and simplify every aspect of your existence
+              We deploy solutions that use data and AI to illuminate and simplify every aspect of your existence
             </p>
           </div>
 
@@ -499,7 +499,7 @@ export default function VisionPage() {
               textAlign: "center",
             }}
           >
-            We handle data. With art. With heart
+            We handle data. With speed. With responsibility
           </h2>
 
           <div
