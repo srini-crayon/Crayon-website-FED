@@ -169,7 +169,7 @@ async function fetchBundledAgents(agentId: string) {
       const data: BundledAgentsResponse = await res.json()
       // eslint-disable-next-line no-console
       console.log('Bundled Agents API Response:', JSON.stringify(data, null, 2))
-
+      
       // Check if response has bundled_agents array
       if (data?.success && data?.data?.bundled_agents && Array.isArray(data.data.bundled_agents) && data.data.bundled_agents.length > 0) {
         // Map bundled_agents directly to the format needed by RelatedAgentsSidebar
@@ -200,7 +200,7 @@ async function fetchSimilarAgents(agentId: string) {
       const data: SimilarAgentsResponse = await res.json()
       // eslint-disable-next-line no-console
       console.log('Similar Agents API Response:', JSON.stringify(data, null, 2))
-
+      
       // Check if response has similar_agents array
       if (data?.similar_agents && Array.isArray(data.similar_agents) && data.similar_agents.length > 0) {
         // Map similar_agents to the format needed by RelatedAgentsSidebar
@@ -370,7 +370,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
         {/* ── Centered Content Wrapper ── */}
         <div
           className="px-8 md:px-12 lg:px-16"
-          style={{
+                style={{
             position: 'relative',
             zIndex: 1,
             maxWidth: '1200px',
@@ -415,10 +415,10 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 </svg>
               </div>
             )}
-            <span
-              style={{
+                  <span
+                    style={{
                 fontFamily: 'Inter, sans-serif',
-                fontWeight: 500,
+                      fontWeight: 500,
                 fontStyle: 'normal',
                 fontSize: '12.9px',
                 lineHeight: '21px',
@@ -429,14 +429,14 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
             >
               {data?.agent?.agent_name || 'NPA Valuation Assistant'}
-            </span>
+                  </span>
           </div>
 
           {/* ── 2. Main Heading (last word = italic teal) ── */}
           <h1
-            style={{
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 500,
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
+                      fontWeight: 500,
               fontStyle: 'normal',
               fontSize: '42px',
               lineHeight: '54px',
@@ -499,13 +499,13 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
           {/* ── 4. DEMO NOW Button ── */}
           <a
             href={data?.agent?.demo_link || data?.agent?.application_demo_url || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
+                      target="_blank"
+                      rel="noopener noreferrer"
             className="inline-flex items-center justify-center bg-black no-underline mb-7 cursor-pointer border-none transition-all duration-200 hover:bg-[#1a1a1a] hover:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:-translate-y-px"
-            style={{
-              fontFamily: 'Poppins, sans-serif',
+                      style={{
+                        fontFamily: 'Poppins, sans-serif',
               fontWeight: 500,
-              fontStyle: 'normal',
+                        fontStyle: 'normal',
               fontSize: '14px',
               lineHeight: '100%',
               letterSpacing: '0.5px',
@@ -524,11 +524,11 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
 
           {/* ── 5. Just Ask AI + Provider Icons ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span
-              style={{
-                fontFamily: 'Poppins, sans-serif',
+                    <span
+                      style={{
+                        fontFamily: 'Poppins, sans-serif',
                 fontWeight: 400,
-                fontStyle: 'normal',
+                        fontStyle: 'normal',
                 fontSize: '14px',
                 lineHeight: '100%',
                 letterSpacing: '0%',
@@ -537,7 +537,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
             >
               Just Ask AI
-            </span>
+                    </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               {[
                 { src: '/img/footer/icon-1.png', style: { filter: 'brightness(0)' } },
@@ -550,8 +550,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   <Image src={icon.src} alt="" width={20} height={20} className="object-contain" style={icon.style} />
                 </span>
               ))}
-            </div>
-          </div>
+                </div>
+              </div>
 
         </div>
 
@@ -565,8 +565,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
           const isVideo = isVideoPreviewUrl(previewUrl)
           if (!hasPreview) return null
           return (
-            <div
-              style={{
+                <div
+                  style={{
                 position: 'absolute',
                 bottom: '40px',
                 right: '40px',
@@ -593,7 +593,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   background: 'rgba(0,0,0,0.5)',
                   border: 'none',
                   color: '#fff',
-                  fontSize: '14px',
+                    fontSize: '14px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -631,8 +631,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="#344054">
                       <path d="M8 5v14l11-7z" />
                     </svg>
-                  </div>
                 </div>
+              </div>
               )}
 
               {/* Auto-playing video when API returns a video URL */}
@@ -667,8 +667,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
 
           {/* ── 1. "CAPABILITIES" Label with left/right lines ── */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span
-              style={{
+                  <span
+                    style={{
                 width: '48px',
                 height: '1px',
                 backgroundColor: '#111827',
@@ -678,8 +678,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
             />
             <span
               style={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
+                      fontFamily: 'Poppins, sans-serif',
+                      fontWeight: 500,
                 fontStyle: 'normal',
                 fontSize: '12px',
                 lineHeight: '16px',
@@ -691,7 +691,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
             >
               CAPABILITIES
-            </span>
+                  </span>
             <span
               style={{
                 width: '48px',
@@ -862,7 +862,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     />
                   ))
                 }
-              </div>
+                  </div>
             );
           })()}
 
@@ -875,7 +875,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   agentName={agent?.agent_name}
                   agentsSource={agentsSource}
                 />
-              </div>
+                </div>
             </div>
           )}
           */}
@@ -887,8 +887,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
 
           {/* ── 2. "KEY BENEFITS & VALUE PROPOSITION" Label with left/right lines ── */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span
-              style={{
+                  <span
+                    style={{
                 width: '48px',
                 height: '1px',
                 backgroundColor: '#111827',
@@ -898,8 +898,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
             />
             <span
               style={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
+                      fontFamily: 'Poppins, sans-serif',
+                      fontWeight: 500,
                 fontStyle: 'normal',
                 fontSize: '12px',
                 lineHeight: '16px',
@@ -911,7 +911,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
             >
               KEY BENEFITS & VALUE PROPOSITION
-            </span>
+                  </span>
             <span
               style={{
                 width: '48px',
@@ -921,7 +921,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
               aria-hidden
             />
-          </div>
+                  </div>
 
           {/* ── 3. Section Heading (gradient text) ── */}
           <h2
@@ -1042,9 +1042,9 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                               flexShrink: 0,
                             }}
                           />
-                          <span
-                            style={{
-                              fontFamily: 'Poppins, sans-serif',
+                  <span
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
                               fontSize: '12px',
                               fontWeight: 600,
                               color: accent.numColor,
@@ -1061,7 +1061,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                             fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
                             fontWeight: 500,
                             fontStyle: 'normal',
-                            fontSize: '14px',
+                      fontSize: '14px',
                             lineHeight: '20px',
                             letterSpacing: '0%',
                             verticalAlign: 'middle',
@@ -1078,7 +1078,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                             style={{
                               fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
                               fontWeight: 400,
-                              fontStyle: 'normal',
+                      fontStyle: 'normal',
                               fontSize: '12px',
                               lineHeight: '19.5px',
                               letterSpacing: '0%',
@@ -1115,7 +1115,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                           }}
                         >
                           {card.stat || card.title.split(' ').slice(0, 2).join(' ')}
-                        </span>
+                  </span>
                         {/* Small arrow icon */}
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                           <path
@@ -1126,8 +1126,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                             strokeLinejoin="round"
                           />
                         </svg>
-                      </div>
-                    </div>
+                  </div>
+                </div>
                   );
                 })}
 
@@ -1154,8 +1154,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
 
           {/* ── 1. "AGENTS & MODEL POWERING" Label with left/right lines ── */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span
-              style={{
+                  <span
+                    style={{
                 width: '48px',
                 height: '1px',
                 backgroundColor: '#111827',
@@ -1165,8 +1165,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
             />
             <span
               style={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
+                      fontFamily: 'Poppins, sans-serif',
+                      fontWeight: 500,
                 fontStyle: 'normal',
                 fontSize: '12px',
                 lineHeight: '16px',
@@ -1178,7 +1178,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
             >
               AGENTS & MODEL POWERING
-            </span>
+                  </span>
             <span
               style={{
                 width: '48px',
@@ -1188,7 +1188,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
               aria-hidden
             />
-          </div>
+                  </div>
 
           {/* ── 3. Section Heading (gradient text) ── */}
           <h2
@@ -1250,7 +1250,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   Workflows & Automations
                 </span>
                 <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
+                </div>
               {/* Title at bottom */}
               <div style={{ marginTop: 'auto' }}>
                 <h3
@@ -1298,7 +1298,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   AI Research Prompts
                 </span>
                 <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
+            </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
                   style={{
@@ -1330,12 +1330,12 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 >
                   BY CRAYON DATA
                 </span>
-              </div>
-            </div>
+          </div>
+        </div>
 
             {/* Card 3: Sequences */}
             <div
-              style={{
+                    style={{
                 background: '#F5F5F5',
                 borderRadius: '8px',
                 padding: '20px 20px 24px',
@@ -1346,7 +1346,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <span
-                  style={{
+                    style={{
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 400,
                     fontStyle: 'normal',
@@ -1363,7 +1363,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
-                  style={{
+                      style={{
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 400,
                     fontStyle: 'normal',
@@ -1378,7 +1378,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   Congratulate on New Role
                 </h3>
                 <span
-                  style={{
+                          style={{
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 400,
                     fontStyle: 'normal',
@@ -1488,8 +1488,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
               </div>
               <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
+                              <h3
+                                style={{
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 400,
                     fontStyle: 'normal',
@@ -1549,12 +1549,12 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   }}
                 >
                   Assign as B2B or B2C
-                </h3>
+                              </h3>
                 <span
-                  style={{
+                                style={{
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 400,
-                    fontStyle: 'normal',
+                                  fontStyle: 'normal',
                     fontSize: '13.3px',
                     lineHeight: '14px',
                     letterSpacing: '0.17px',
@@ -1583,7 +1583,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 <span
                   style={{
                     fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
+                                  fontWeight: 400,
                     fontStyle: 'normal',
                     fontSize: '13.3px',
                     lineHeight: '14px',
@@ -1594,8 +1594,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 >
                   Sequences
                 </span>
-                <Image src="/img/agents/sequences-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
+                <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
+                            </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
                   style={{
@@ -1659,8 +1659,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 <Image src="/img/agents/conversations-icon.png" alt="" width={28} height={28} className="object-contain" />
               </div>
               <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
+                              <h3
+                                style={{
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 400,
                     fontStyle: 'normal',
@@ -1673,7 +1673,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   }}
                 >
                   Discovery Call Scorecard
-                </h3>
+                              </h3>
                 <span
                   style={{
                     fontFamily: 'Inter, sans-serif',
@@ -1710,10 +1710,10 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               aria-hidden
             />
             <span
-              style={{
-                fontFamily: 'Poppins, sans-serif',
+                                style={{
+                                  fontFamily: 'Poppins, sans-serif',
                 fontWeight: 500,
-                fontStyle: 'normal',
+                                  fontStyle: 'normal',
                 fontSize: '12px',
                 lineHeight: '16px',
                 letterSpacing: '1.2px',
@@ -1734,7 +1734,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               }}
               aria-hidden
             />
-          </div>
+                            </div>
 
           {/* ── 3. Section Heading (gradient text) ── */}
           <h2
@@ -1781,8 +1781,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               >
                 {/* Number */}
                 <span
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
+                              style={{
+                                fontFamily: 'Poppins, sans-serif',
                     fontSize: '12px',
                     fontWeight: 500,
                     color: '#D0D5DD',
@@ -1799,7 +1799,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
                       fontWeight: 500,
-                      fontStyle: 'normal',
+                                fontStyle: 'normal',
                       fontSize: '14px',
                       lineHeight: '20px',
                       letterSpacing: '0%',
@@ -1814,7 +1814,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   <div
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 400,
+                                fontWeight: 400,
                       fontStyle: 'normal',
                       fontSize: '12px',
                       lineHeight: '16px',
@@ -1824,7 +1824,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     }}
                   >
                     FastAPI · SQLAlchemy · Pydantic · PostgreSQL · MySQL · UltraDB
-                  </div>
+                        </div>
                 </div>
               </div>
 
@@ -1839,8 +1839,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 }}
               >
                 <span
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
+                          style={{
+                            fontFamily: 'Poppins, sans-serif',
                     fontSize: '12px',
                     fontWeight: 500,
                     color: '#D0D5DD',
@@ -1856,7 +1856,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
                       fontWeight: 500,
-                      fontStyle: 'normal',
+                            fontStyle: 'normal',
                       fontSize: '14px',
                       lineHeight: '20px',
                       letterSpacing: '0%',
@@ -1871,7 +1871,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   <div
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 400,
+                            fontWeight: 400,
                       fontStyle: 'normal',
                       fontSize: '12px',
                       lineHeight: '16px',
@@ -1896,8 +1896,8 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 }}
               >
                 <span
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
+                      style={{
+                        fontFamily: 'Poppins, sans-serif',
                     fontSize: '12px',
                     fontWeight: 500,
                     color: '#D0D5DD',
@@ -1913,7 +1913,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
                       fontWeight: 500,
-                      fontStyle: 'normal',
+                        fontStyle: 'normal',
                       fontSize: '14px',
                       lineHeight: '20px',
                       letterSpacing: '0%',
@@ -1928,7 +1928,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   <div
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 400,
+                        fontWeight: 400,
                       fontStyle: 'normal',
                       fontSize: '12px',
                       lineHeight: '16px',
@@ -1938,9 +1938,9 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     }}
                   >
                     Encrypted credentials · SSL/TLS · Audit logging · Role-based access
-                  </div>
-                </div>
-              </div>
+                                      </div>
+                                      </div>
+                                      </div>
 
               {/* ── Row 04: Deployment ── */}
               <div
@@ -1980,7 +1980,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                   >
                     <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
                     Deployment
-                  </div>
+                                    </div>
                   <div
                     style={{
                       fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
@@ -1994,9 +1994,9 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                     }}
                   >
                     On-premise · Docker · Hybrid · Container-ready architecture
-                  </div>
+                                </div>
                 </div>
-              </div>
+            </div>
 
             </div>
 
@@ -2068,12 +2068,30 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               fill="none"
               strokeLinecap="round"
             />
-            <path
-              d="M90 15 C 70 15, 30 35, 40 65 S 60 105, 90 115"
-              stroke="#E5E7EB"
-              strokeWidth="0.8"
-              fill="none"
-              strokeLinecap="round"
+            <span
+              style={{
+                fontFamily: 'Poppins, sans-serif',
+                fontWeight: 500,
+                fontStyle: 'normal',
+                fontSize: '12px',
+                lineHeight: '16px',
+                letterSpacing: '1.2px',
+                textAlign: 'center',
+                verticalAlign: 'middle',
+                textTransform: 'uppercase',
+                color: '#111827',
+              }}
+            >
+              GET STARTED
+                </span>
+            <span
+              style={{
+                width: '48px',
+                height: '1px',
+                backgroundColor: '#111827',
+                flexShrink: 0,
+              }}
+              aria-hidden
             />
           </svg>
 
@@ -2091,64 +2109,18 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               opacity: 0.5,
             }}
           >
-            <path
-              d="M80 10 C 60 10, 20 30, 30 60 S 50 100, 80 110"
-              stroke="#D0D5DD"
-              strokeWidth="1"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M90 15 C 70 15, 30 35, 40 65 S 60 105, 90 115"
-              stroke="#E5E7EB"
-              strokeWidth="0.8"
-              fill="none"
-              strokeLinecap="round"
-            />
-          </svg>
-
-          <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-
-            {/* ── 1. "GET STARTED" Label with left/right lines ── */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
-              <span
-                style={{
-                  width: '48px',
-                  height: '1px',
-                  backgroundColor: '#111827',
-                  flexShrink: 0,
-                }}
-                aria-hidden
-              />
-              <span
-                style={{
-                  fontFamily: 'Poppins, sans-serif',
-                  fontWeight: 500,
-                  fontStyle: 'normal',
-                  fontSize: '12px',
-                  lineHeight: '16px',
-                  letterSpacing: '1.2px',
-                  textAlign: 'center',
-                  verticalAlign: 'middle',
-                  textTransform: 'uppercase',
-                  color: '#111827',
-                }}
-              >
-                GET STARTED
-              </span>
-              <span
-                style={{
-                  width: '48px',
-                  height: '1px',
-                  backgroundColor: '#111827',
-                  flexShrink: 0,
-                }}
-                aria-hidden
-              />
-            </div>
-
-            {/* ── 3. Heading: first line gradient, second line normal ── */}
-            <h2
+            <span
+              style={{
+                background: 'linear-gradient(90deg, #0060FF 0%, #DC3DD5 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Ready to Transform Your
+                </span>
+            <br />
+            <span
               style={{
                 fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
                 fontWeight: 300,
@@ -2161,33 +2133,29 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 margin: '0 auto 20px',
               }}
             >
-              <span
-                style={{
-                  background: 'linear-gradient(90deg, #0060FF 0%, #DC3DD5 100%)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                }}
-              >
-                Ready to Transform Your
+              NPA Workflow?
               </span>
-              <br />
-              <span
-                style={{
-                  fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                  fontWeight: 500,
-                  fontStyle: 'normal',
-                  fontSize: '36px',
-                  lineHeight: '40px',
-                  letterSpacing: '0%',
-                  textAlign: 'center',
-                  verticalAlign: 'middle',
-                  color: '#091917',
-                }}
-              >
-                NPA Workflow?
-              </span>
-            </h2>
+          </h2>
+
+          {/* ── 4. Description ── */}
+          <p
+            style={{
+              fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+              fontWeight: 400,
+              fontStyle: 'normal',
+              fontSize: '16px',
+              lineHeight: '24px',
+              letterSpacing: '0%',
+              textAlign: 'center',
+              verticalAlign: 'middle',
+              color: '#737373',
+              maxWidth: '460px',
+              margin: '0 auto 32px',
+            }}
+          >
+            Join leading financial institutions leveraging AI to streamline asset recovery and
+            maximize returns
+          </p>
 
             {/* ── 4. Description ── */}
             <p
