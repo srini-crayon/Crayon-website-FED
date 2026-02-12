@@ -7,9 +7,9 @@ export function CTASection() {
   const [hoveredAction, setHoveredAction] = useState<number | null>(null)
 
   const actions = [
-    { label: "Talk to Our Team", href: "#", primary: true },
-    { label: "Explore Tangram", href: "#", primary: false },
-    { label: "Explore Catalyst", href: "#", primary: false },
+    { label: "Talk to Our AI Experts", href: "/contact", primary: true },
+    { label: "Explore Tangram", href: "/tangram-ai", primary: false },
+    { label: "See Catalyst in Action", href: "/catalyst", primary: false },
   ]
 
   return (
@@ -27,13 +27,13 @@ export function CTASection() {
           
           <h2 className="text-3xl md:text-4xl font-light mb-4 text-balance">
             <span className="bg-gradient-to-r from-[oklch(0.55_0.25_260)] to-[oklch(0.65_0.25_330)] bg-clip-text text-transparent">
-              Ready to move AI
+              AI is no longer optional.
             </span>
-            <span className="block font-medium text-foreground/70 dark:text-foreground/80">into production?</span>
+            <span className="block font-medium text-foreground/70 dark:text-foreground/80">But execution still is.</span>
           </h2>
           
           <p className="text-muted-foreground text-base max-w-md mx-auto">
-            Built for enterprise scale. Proven in production.
+            Crayon Data simplifies AI success — for enterprises that are ready to run.
           </p>
         </div>
 

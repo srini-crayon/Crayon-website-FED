@@ -34,28 +34,28 @@ export function WhyChooseSection() {
   const reasons = [
     {
       number: "01",
-      title: "Production Experience",
-      description: "Built on years of deploying AI in complex enterprise environments, not lab conditions.",
+      title: "Model-agnostic",
+      description: "We don't lock you into one model. Switch and evolve as the landscape changes.",
     },
     {
       number: "02",
-      title: "Proven at Scale",
-      description: "117M+ users served across banking, retail, and travel with measurable outcomes.",
+      title: "Vendor-agnostic",
+      description: "Integrate with your choice of providers. No single-vendor lock-in.",
     },
     {
       number: "03",
-      title: "Modular Architecture",
-      description: "Future-ready platform that adapts to your existing infrastructure seamlessly.",
+      title: "Open architecture",
+      description: "Built for interoperability and long-term flexibility.",
     },
     {
       number: "04",
-      title: "Clear Execution",
-      description: "Transparent roadmaps with defined milestones and accountability at every stage.",
+      title: "Built for modular upgrades",
+      description: "Evolve without rebuilding from scratch. Upgrade in place.",
     },
     {
       number: "05",
-      title: "Enterprise Trust",
-      description: "Backed by global banks and Fortune 500 companies with proven security.",
+      title: "Evolves with you",
+      description: "The world of AI moves fast. Tangram helps you evolve — without rebuilding.",
     },
   ]
 
@@ -68,15 +68,17 @@ export function WhyChooseSection() {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
               <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
-                Why Crayon Data
+                Technology That Evolves
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-light text-balance">
               <span className="bg-gradient-to-r from-[oklch(0.55_0.25_260)] to-[oklch(0.7_0.25_75)] bg-clip-text text-transparent">
-                We help enterprises run AI
+                With the world — and with you.
               </span>
-              <span className="font-medium text-foreground"> as a core capability.</span>
             </h2>
+            <p className="text-muted-foreground mt-4 max-w-lg">
+              Models change. Vendors change. Capabilities evolve. We don't lock you into yesterday's technology.
+            </p>
           </div>
           <a
             href="#contact"
