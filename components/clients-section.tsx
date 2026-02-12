@@ -9,14 +9,14 @@ export function ClientsSection() {
   const clients = [
     { name: "HDFC Bank", region: "India", logo: "/img/hdfc-logo.png" },
     { name: "ADIB", region: "UAE", logo: "/img/adib-logo.png" },
-    { name: "Riyadh Bank", region: "KSA", logo: "/img/riyadh-bank-logo.svg" },
+    { name: "Riyad Bank", region: "KSA", logo: "/img/riyadh-bank-logo.svg" },
     { name: "KBZ Bank", region: "Myanmar", logo: "/img/kbz-logo.png" },
     { name: "Mozark", region: "Global", logo: "/img/mozark-logo.png" },
     { name: "Gradiant", region: "Global", logo: "/img/gradiant-logo.png" },
     { name: "AMEX", region: "Global", logo: "/img/amex-logo.png" },
     { name: "Emirates", region: "UAE", logo: "/img/emirates-logo.png" },
-    { name: "Federal Bank", region: "India", logo: "/img/federal-bank-logo.png" },
-    { name: "Y9", region: "Africa", logo: "/img/y9-logo.png" },
+    { name: "HSBC", region: "Global", logo: "/img/hsbc-logo.png" },
+    { name: "VISA", region: "Global", logo: "/img/visa-logo.png" },
   ]
 
   return (
@@ -28,18 +28,18 @@ export function ClientsSection() {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
               <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
-                Proven Enterprise Trust
+                Success Sets Us Apart
               </span>
             </div>
             <h2 className="text-2xl md:text-3xl font-light">
               <span className="bg-gradient-to-r from-[oklch(0.55_0.3_260)] to-[oklch(0.7_0.3_75)] bg-clip-text text-transparent">
-                Trusted Globally by Industry
+                This isn't theory.
               </span>
-              <span className="font-medium text-foreground"> Leaders</span>
+              <span className="font-medium text-foreground"> Our systems support:</span>
             </h2>
           </div>
           <p className="text-sm text-muted-foreground max-w-xs">
-            Powering AI transformation across banking, retail, and enterprise
+            AI that runs inside regulated environments. AI that integrates with real systems. AI that delivers measurable outcomes. These are not pilots. They are production systems.
           </p>
         </div>
 
@@ -65,7 +65,18 @@ export function ClientsSection() {
                   {/* Logo */}
                   {client.logo ? (
                     <div className="mb-3 h-8 flex items-center">
-                      <div className="relative w-24 h-8">
+                      <div
+                        className={`relative w-24 h-8 flex items-center justify-center overflow-hidden ${
+                          client.name === "HSBC" || client.name === "VISA"
+                            ? "rounded min-w-[6rem] min-h-[2rem] px-2 py-1"
+                            : ""
+                        }`}
+                        style={
+                          client.name === "HSBC" || client.name === "VISA"
+                            ? { backgroundColor: "#ffffff" }
+                            : undefined
+                        }
+                      >
                         <Image
                           src={client.logo}
                           alt={client.name}
@@ -73,12 +84,12 @@ export function ClientsSection() {
                           height={32}
                           className="object-contain object-left transition-all duration-300"
                           style={{
-                            maxHeight: '32px',
-                            height: 'auto',
-                            width: 'auto'
+                            maxHeight: "32px",
+                            height: "auto",
+                            width: "auto",
                           }}
                           onError={(e) => {
-                            e.currentTarget.style.display = 'none'
+                            e.currentTarget.style.display = "none"
                           }}
                         />
                       </div>
@@ -102,6 +113,13 @@ export function ClientsSection() {
               </div>
             )
           })}
+        </div>
+
+        {/* Many more */}
+        <div className="mt-10 pt-8 border-t border-border text-center">
+          <p className="text-sm text-muted-foreground">
+            <span className="text-foreground/80 font-medium">+ Many More...</span>
+          </p>
         </div>
       </div>
     </section>

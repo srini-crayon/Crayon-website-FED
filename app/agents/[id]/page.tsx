@@ -386,7 +386,13 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
           {/* ── 1. Agent Name with Icon ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
             {/* Agent Icon - replace src with your actual icon */}
-            {data?.agent?.icon_url ? (
+            {(data?.agent?.agent_name === 'NPA Valuation Assistant' || !data?.agent?.agent_name) ? (
+              <img
+                src="/img/agents/research-icon.png"
+                alt="NPA Valuation Assistant"
+                style={{ width: 24, height: 24, borderRadius: '6px', objectFit: 'cover' }}
+              />
+            ) : data?.agent?.icon_url ? (
               <img
                 src={data.agent.icon_url}
                 alt={data?.agent?.agent_name || 'Agent'}
@@ -533,9 +539,15 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
               Just Ask AI
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {['/img/footer/icon-1.png', '/img/footer/icon-2.png', '/img/footer/gemini-color 1.png', '/img/footer/icon-4.png', '/img/footer/icon-5.png'].map((src) => (
-                <span key={src} className="flex items-center justify-center w-7 h-7 rounded-full bg-white border border-gray-200 shadow-sm overflow-hidden">
-                  <Image src={src} alt="" width={20} height={20} className="object-contain" />
+              {[
+                { src: '/img/footer/icon-1.png', style: { filter: 'brightness(0)' } },
+                { src: '/img/footer/icon-2.png', style: { filter: 'contrast(1.5) saturate(1.5) brightness(0.8)' } },
+                { src: '/img/footer/gemini-color 1.png', style: {} },
+                { src: '/img/footer/icon-4.png', style: { filter: 'brightness(0)' } },
+                { src: '/img/footer/icon-5.png', style: { filter: 'contrast(1.2)' } }
+              ].map((icon) => (
+                <span key={icon.src} className="flex items-center justify-center w-7 h-7 rounded-full bg-white border border-gray-200 shadow-sm overflow-hidden">
+                  <Image src={icon.src} alt="" width={20} height={20} className="object-contain" style={icon.style} />
                 </span>
               ))}
             </div>
@@ -1347,7 +1359,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 >
                   Sequences
                 </span>
-                <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
+                <Image src="/img/agents/sequences-icon.png" alt="" width={28} height={28} className="object-contain" />
               </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
@@ -1409,7 +1421,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 >
                   Conversations
                 </span>
-                <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
+                <Image src="/img/agents/conversations-icon.png" alt="" width={28} height={28} className="object-contain" />
               </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
@@ -1582,7 +1594,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 >
                   Sequences
                 </span>
-                <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
+                <Image src="/img/agents/sequences-icon.png" alt="" width={28} height={28} className="object-contain" />
               </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
@@ -1644,7 +1656,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
                 >
                   Conversations
                 </span>
-                <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
+                <Image src="/img/agents/conversations-icon.png" alt="" width={28} height={28} className="object-contain" />
               </div>
               <div style={{ marginTop: 'auto' }}>
                 <h3
@@ -2035,196 +2047,196 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
       <section className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF', position: 'relative' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
-        {/* ── Decorative curved line - LEFT side ── */}
-        <svg
-          width="120"
-          height="120"
-          viewBox="0 0 120 120"
-          fill="none"
-          style={{
-            position: 'absolute',
-            left: '8%',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            opacity: 0.5,
-          }}
-        >
-          <path
-            d="M80 10 C 60 10, 20 30, 30 60 S 50 100, 80 110"
-            stroke="#D0D5DD"
-            strokeWidth="1"
+          {/* ── Decorative curved line - LEFT side ── */}
+          <svg
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
             fill="none"
-            strokeLinecap="round"
-          />
-          <path
-            d="M90 15 C 70 15, 30 35, 40 65 S 60 105, 90 115"
-            stroke="#E5E7EB"
-            strokeWidth="0.8"
-            fill="none"
-            strokeLinecap="round"
-          />
-        </svg>
-
-        {/* ── Decorative curved line - RIGHT side ── */}
-        <svg
-          width="120"
-          height="120"
-          viewBox="0 0 120 120"
-          fill="none"
-          style={{
-            position: 'absolute',
-            right: '8%',
-            top: '50%',
-            transform: 'translateY(-50%) scaleX(-1)',
-            opacity: 0.5,
-          }}
-        >
-          <path
-            d="M80 10 C 60 10, 20 30, 30 60 S 50 100, 80 110"
-            stroke="#D0D5DD"
-            strokeWidth="1"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <path
-            d="M90 15 C 70 15, 30 35, 40 65 S 60 105, 90 115"
-            stroke="#E5E7EB"
-            strokeWidth="0.8"
-            fill="none"
-            strokeLinecap="round"
-          />
-        </svg>
-
-        <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-
-          {/* ── 1. "GET STARTED" Label with left/right lines ── */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span
-              style={{
-                width: '48px',
-                height: '1px',
-                backgroundColor: '#111827',
-                flexShrink: 0,
-              }}
-              aria-hidden
-            />
-            <span
-              style={{
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
-                fontStyle: 'normal',
-                fontSize: '12px',
-                lineHeight: '16px',
-                letterSpacing: '1.2px',
-                textAlign: 'center',
-                verticalAlign: 'middle',
-                textTransform: 'uppercase',
-                color: '#111827',
-              }}
-            >
-              GET STARTED
-            </span>
-            <span
-              style={{
-                width: '48px',
-                height: '1px',
-                backgroundColor: '#111827',
-                flexShrink: 0,
-              }}
-              aria-hidden
-            />
-          </div>
-
-          {/* ── 3. Heading: first line gradient, second line normal ── */}
-          <h2
             style={{
-              fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-              fontWeight: 300,
-              fontStyle: 'normal',
-              fontSize: '36px',
-              lineHeight: '40px',
-              letterSpacing: '0%',
-              textAlign: 'center',
-              verticalAlign: 'middle',
-              margin: '0 auto 20px',
+              position: 'absolute',
+              left: '8%',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              opacity: 0.5,
             }}
           >
-            <span
-              style={{
-                background: 'linear-gradient(90deg, #0060FF 0%, #DC3DD5 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              Ready to Transform Your
-            </span>
-            <br />
-            <span
+            <path
+              d="M80 10 C 60 10, 20 30, 30 60 S 50 100, 80 110"
+              stroke="#D0D5DD"
+              strokeWidth="1"
+              fill="none"
+              strokeLinecap="round"
+            />
+            <path
+              d="M90 15 C 70 15, 30 35, 40 65 S 60 105, 90 115"
+              stroke="#E5E7EB"
+              strokeWidth="0.8"
+              fill="none"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* ── Decorative curved line - RIGHT side ── */}
+          <svg
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
+            fill="none"
+            style={{
+              position: 'absolute',
+              right: '8%',
+              top: '50%',
+              transform: 'translateY(-50%) scaleX(-1)',
+              opacity: 0.5,
+            }}
+          >
+            <path
+              d="M80 10 C 60 10, 20 30, 30 60 S 50 100, 80 110"
+              stroke="#D0D5DD"
+              strokeWidth="1"
+              fill="none"
+              strokeLinecap="round"
+            />
+            <path
+              d="M90 15 C 70 15, 30 35, 40 65 S 60 105, 90 115"
+              stroke="#E5E7EB"
+              strokeWidth="0.8"
+              fill="none"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+
+            {/* ── 1. "GET STARTED" Label with left/right lines ── */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
+              <span
+                style={{
+                  width: '48px',
+                  height: '1px',
+                  backgroundColor: '#111827',
+                  flexShrink: 0,
+                }}
+                aria-hidden
+              />
+              <span
+                style={{
+                  fontFamily: 'Poppins, sans-serif',
+                  fontWeight: 500,
+                  fontStyle: 'normal',
+                  fontSize: '12px',
+                  lineHeight: '16px',
+                  letterSpacing: '1.2px',
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  textTransform: 'uppercase',
+                  color: '#111827',
+                }}
+              >
+                GET STARTED
+              </span>
+              <span
+                style={{
+                  width: '48px',
+                  height: '1px',
+                  backgroundColor: '#111827',
+                  flexShrink: 0,
+                }}
+                aria-hidden
+              />
+            </div>
+
+            {/* ── 3. Heading: first line gradient, second line normal ── */}
+            <h2
               style={{
                 fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                fontWeight: 500,
+                fontWeight: 300,
                 fontStyle: 'normal',
                 fontSize: '36px',
                 lineHeight: '40px',
                 letterSpacing: '0%',
                 textAlign: 'center',
                 verticalAlign: 'middle',
-                color: '#091917',
+                margin: '0 auto 20px',
               }}
             >
-              NPA Workflow?
-            </span>
-          </h2>
+              <span
+                style={{
+                  background: 'linear-gradient(90deg, #0060FF 0%, #DC3DD5 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                }}
+              >
+                Ready to Transform Your
+              </span>
+              <br />
+              <span
+                style={{
+                  fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+                  fontWeight: 500,
+                  fontStyle: 'normal',
+                  fontSize: '36px',
+                  lineHeight: '40px',
+                  letterSpacing: '0%',
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  color: '#091917',
+                }}
+              >
+                NPA Workflow?
+              </span>
+            </h2>
 
-          {/* ── 4. Description ── */}
-          <p
-            style={{
-              fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-              fontWeight: 400,
-              fontStyle: 'normal',
-              fontSize: '16px',
-              lineHeight: '24px',
-              letterSpacing: '0%',
-              textAlign: 'center',
-              verticalAlign: 'middle',
-              color: '#737373',
-              maxWidth: '460px',
-              margin: '0 auto 32px',
-            }}
-          >
-            Join leading financial institutions leveraging AI to streamline asset recovery and
-            maximize returns
-          </p>
-
-          {/* ── 5. CTA Button ── */}
-          <div style={{ textAlign: 'center' }}>
-            <a
-              href={data?.agent?.demo_link || data?.agent?.application_demo_url || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center bg-[#1A1A1A] no-underline cursor-pointer border-none transition-all duration-200 hover:bg-black hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)] hover:-translate-y-px"
+            {/* ── 4. Description ── */}
+            <p
               style={{
-                width: '228px',
-                height: '44px',
-                borderRadius: '4px',
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 500,
+                fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+                fontWeight: 400,
                 fontStyle: 'normal',
-                fontSize: '14px',
-                lineHeight: '100%',
-                letterSpacing: '0.5px',
+                fontSize: '16px',
+                lineHeight: '24px',
+                letterSpacing: '0%',
                 textAlign: 'center',
                 verticalAlign: 'middle',
-                textTransform: 'uppercase',
-                color: '#FFFFFF',
+                color: '#737373',
+                maxWidth: '460px',
+                margin: '0 auto 32px',
               }}
             >
-              GET STARTED TODAY
-            </a>
-          </div>
+              Join leading financial institutions leveraging AI to streamline asset recovery and
+              maximize returns
+            </p>
 
-        </div>
+            {/* ── 5. CTA Button ── */}
+            <div style={{ textAlign: 'center' }}>
+              <a
+                href={data?.agent?.demo_link || data?.agent?.application_demo_url || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-[#1A1A1A] no-underline cursor-pointer border-none transition-all duration-200 hover:bg-black hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)] hover:-translate-y-px"
+                style={{
+                  width: '228px',
+                  height: '44px',
+                  borderRadius: '4px',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontWeight: 500,
+                  fontStyle: 'normal',
+                  fontSize: '14px',
+                  lineHeight: '100%',
+                  letterSpacing: '0.5px',
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  textTransform: 'uppercase',
+                  color: '#FFFFFF',
+                }}
+              >
+                GET STARTED TODAY
+              </a>
+            </div>
+
+          </div>
         </div>
       </section>
     </>

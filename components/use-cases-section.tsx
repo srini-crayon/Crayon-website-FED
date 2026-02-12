@@ -13,48 +13,12 @@ import {
 import { cn } from "@/lib/utils"
 
 const useCases = [
-  {
-    id: "banking",
-    icon: CreditCard,
-    title: "Banking",
-    stat: "7%",
-    statLabel: "increase in customer spends for the largest private bank in India",
-  },
-  {
-    id: "travel",
-    icon: Plane,
-    title: "Travel",
-    stat: "80%",
-    statLabel: "reduction in booking time for a travel experience platform in the Middle East",
-  },
-  {
-    id: "bank-travel",
-    icon: Globe,
-    title: "Bank + Travel",
-    stat: "100M+",
-    statLabel: "customer genomes powering 1:1 personalization for Banks and Travel",
-  },
-  {
-    id: "neo-banking",
-    icon: Smartphone,
-    title: "Neo Banking",
-    stat: "8M",
-    statLabel: "Pay-day loans in less than 6 months for a Neo banking initiative in Tanzania",
-  },
-  {
-    id: "fintech",
-    icon: TrendingUp,
-    title: "FinTech",
-    stat: "126%",
-    statLabel: "increase in digital activation for a fast-scaling FinTech ecosystem in Myanmar",
-  },
-  {
-    id: "islamic-banking",
-    icon: Landmark,
-    title: "Islamic Banking",
-    stat: "10×",
-    statLabel: "ROI in customer value management for the largest Islamic bank in the Middle East",
-  },
+  { id: "personalization", icon: CreditCard, title: "Personalization & customer engagement", stat: "Live", statLabel: "Pre-built. Customizable. Deployable. Not experiments. Operational systems." },
+  { id: "risk", icon: Landmark, title: "Risk & compliance automation", stat: "Live", statLabel: "AI that runs inside regulated environments." },
+  { id: "financial", icon: TrendingUp, title: "Financial controls & reporting", stat: "Live", statLabel: "Real systems. Measurable outcomes." },
+  { id: "onboarding", icon: Smartphone, title: "Intelligent onboarding", stat: "Live", statLabel: "From ideation to governed, scaled deployment." },
+  { id: "sales", icon: Globe, title: "Sales acceleration", stat: "Live", statLabel: "Enterprise productivity at scale." },
+  { id: "productivity", icon: Plane, title: "Enterprise productivity & AI concierges", stat: "Live", statLabel: "Executive AI concierges. Data orchestration & test data generation." },
 ]
 
 export function UseCasesSection() {
@@ -68,26 +32,26 @@ export function UseCasesSection() {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
               <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
-                AI Results. At Scale.
+                Use Cases You Can Touch and Feel
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-light text-balance">
               <span className="bg-gradient-to-r from-[oklch(0.65_0.2_175)] to-[oklch(0.7_0.18_75)] bg-clip-text text-transparent">
-                Measurable Impact
+                AI should solve real problems
               </span>
-              <span className="font-medium text-foreground"> Across Markets</span>
+              <span className="font-medium text-foreground"> — not abstract possibilities.</span>
             </h2>
           </div>
           <a
-            href="#"
+            href="/tangram-ai"
             className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2 text-sm font-medium group"
           >
-            View all
+            Explore Live Use Cases
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-border overflow-hidden">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-border overflow-hidden">
           {useCases.map((useCase, index) => {
             const Icon = useCase.icon
             const isHovered = hoveredId === useCase.id

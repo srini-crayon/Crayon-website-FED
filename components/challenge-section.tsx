@@ -9,31 +9,38 @@ export function ChallengeSection() {
   const challenges = [
     {
       number: "01",
-      title: "Fragmented Data",
-      description: "Legacy systems and siloed data create integration complexity that stalls AI initiatives.",
-      stat: "73%",
-      statLabel: "of enterprises cite data silos as primary AI barrier"
+      title: "Fragmented data and legacy systems",
+      description: "Data silos and legacy systems create integration complexity that stalls AI initiatives.",
+      stat: "—",
+      statLabel: "Enterprises struggle with fragmented data"
     },
     {
-      number: "02", 
-      title: "Governance Gap",
+      number: "02",
+      title: "Governance, risk, and accuracy concerns",
       description: "Risk management, accuracy requirements, and regulatory compliance slow every deployment.",
-      stat: "18mo",
-      statLabel: "average time to production for enterprise AI"
+      stat: "—",
+      statLabel: "Governance gaps block production"
     },
     {
       number: "03",
-      title: "Execution Friction",
+      title: "Slow movement from idea to deployment",
       description: "The gap between AI capability and enterprise reality grows wider each quarter.",
-      stat: "87%",
-      statLabel: "of AI projects never reach production scale"
+      stat: "—",
+      statLabel: "Ideas stay in pilot mode"
     },
     {
       number: "04",
-      title: "Tool Mismatch",
+      title: "Tools that don't fit real-world complexity",
       description: "Generic solutions built for demos fail when facing real-world enterprise complexity.",
-      stat: "4.2x",
-      statLabel: "cost overrun on average AI implementation"
+      stat: "—",
+      statLabel: "Tool mismatch limits impact"
+    },
+    {
+      number: "05",
+      title: "Rapid evolution of AI technologies",
+      description: "Models and vendors change fast; enterprises need to evolve without rebuilding from scratch.",
+      stat: "—",
+      statLabel: "Keeping pace with AI evolution"
     }
   ]
 
@@ -46,29 +53,30 @@ export function ChallengeSection() {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
               <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
-                The Challenge
+                The Real Challenge
               </span>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
               <span className="bg-gradient-to-r from-[oklch(0.6_0.3_260)] to-[oklch(0.7_0.3_330)] bg-clip-text text-transparent">
-                AI is no longer
+                AI isn't the problem.
               </span>
-              <span className="block font-medium text-foreground">the problem.</span>
+              <span className="block font-medium text-foreground">Making it work inside enterprises is.</span>
             </h2>
           </div>
           <p className="text-sm text-muted-foreground max-w-xs">
-            Making it work inside enterprises is. Great demos. Limited impact.
+            The result? Meetings. Demos. Minimal enterprise impact.
           </p>
         </div>
 
         {/* Challenge Grid */}
-        <div className="grid md:grid-cols-4 gap-px bg-border overflow-hidden">
+        <div className="grid md:grid-cols-5 gap-px bg-border overflow-hidden">
           {challenges.map((challenge, index) => {
             const accentColors = [
               "oklch(0.55 0.2 260)", // Purple
               "oklch(0.65 0.2 175)", // Teal
               "oklch(0.65 0.2 330)", // Pink
               "oklch(0.7 0.18 75)",  // Orange
+              "oklch(0.55 0.2 260)", // Purple
             ]
             const accentColor = accentColors[index]
             
@@ -155,11 +163,15 @@ export function ChallengeSection() {
           })}
         </div>
 
-        {/* Bottom statement */}
-        <div className="mt-16 text-center">
-          <p className="text-muted-foreground">
-            The result? Enterprises stitching together vendors and tools — carrying all the risk themselves.
-          </p>
+        {/* Bottom CTA */}
+        <div className="mt-16 text-center flex flex-col items-center gap-4">
+          <a
+            href="/catalyst"
+            className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:opacity-80 transition-opacity"
+          >
+            See How We Break the Pilot Loop with Catalyst
+            <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>
