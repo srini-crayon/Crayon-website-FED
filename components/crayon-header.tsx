@@ -66,7 +66,6 @@ export function CrayonHeader() {
     { label: "Our Story", path: "/our-story" },
     { label: "Our Values", path: "/our-values" },
     { label: "Our Team", path: "/our-team" },
-    { label: "Our Investors", path: "/our-investors" },
     { label: "Careers", path: "/career" },
   ]
   
@@ -172,7 +171,7 @@ export function CrayonHeader() {
     {
       title: "About Us",
       icon: "/img/menu-about.png",
-      links: ["Vision", "Our Story", "Our Values", "Our Team", "Our Investors", "Career"]
+      links: ["Vision", "Our Story", "Our Values", "Our Team", "Career"]
     },
     {
       title: "Other links",

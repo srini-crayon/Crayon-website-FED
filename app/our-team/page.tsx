@@ -13,6 +13,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import ScrollToTopButton from "@/components/scroll-to-top-button";
 
+const CATEGORY_LABELS: Record<string, string> = {
+  founders: "Founders",
+  captains: "Our Captains",
+  leaders: "Our Leaders",
+};
+
 type TeamMember = {
   id: string;
   name: string;
@@ -23,85 +29,142 @@ type TeamMember = {
 };
 
 const teamMembers: TeamMember[] = [
+  // Founders
   {
-    id: "1",
+    id: "suresh",
     name: "Suresh Shankar",
-    title: "Founder and CEO",
+    title: "Founder & CEO",
     description:
       "Suresh is a second-time entrepreneur, and an evangelist of big data, analytics, and digital personalization. His first venture, RedPill Analytics, was acquired by IBM. With a background in sales, marketing, advertising, media, analytics and Big Data, Suresh has been in the industry for 35 years. Long enough to see the transformation of marketing from right-brain to a left-brain pursuit.",
     image: "https://crayondata.ai/wp-content/uploads/Suresh-1.png",
     category: "founders",
   },
   {
-    id: "2",
+    id: "ivk",
     name: "Vijaya Kumar Ivaturi",
-    title: "Co-Founder and CTO",
+    title: "Co-founder & CTO",
     description:
       "Vijaya Kumar (known as IVK) is a leading expert in innovation management and advanced technologies incubation in India. He consults in business strategy and transformation through new age technologies, covering areas like embedded systems, cloud services, big data analytics and mobility.",
     image: "https://crayondata.ai/wp-content/uploads/IVK.png",
     category: "founders",
   },
+  // Our Captains
   {
-    id: "4",
+    id: "ajoy",
     name: "Ajoy Krishnamurti",
-    title: "Chief Business Officer",
+    title: "CBO",
     description:
       "With 35+ years of experience leading companies and P&Ls, he still approaches every challenge like a learner. His current obsession: AI — what it can do, how enterprises will adopt it, and how we can all get AI-ready. A framework thinker who loves whiteboards, problem-solving, and strong Americanos, Ajoy thrives on turning complex ideas into action. A Husband, father, dog lover, and fountain-pen enthusiast. Currently Chief Business Officer at Crayon Data.",
     image: "https://crayondata.ai/wp-content/uploads/Ajoy-web.png",
     category: "captains",
   },
   {
-    id: "5",
+    id: "priyanshu",
     name: "Priyanshu Mishra",
-    title: "VP, Customer Success",
+    title: "VP – Customer Success",
     description:
-      "With 10+ years of experience, Priyanshu cut his teeth in strategy consulting and has been delivering AI-led analytics for banks over the past 8 years.",
+      "Priyanshu has over 15 years of experience across strategy consulting and enterprise AI. He has led AI-driven analytics initiatives for banks and regulated institutions, ensuring solutions move beyond pilots into secure, scalable production environments. With a strong foundation in structured problem-solving, he focuses on translating complex data systems into measurable business outcomes. At Crayon Data, he partners closely with enterprise clients to drive adoption, impact, and long-term success.",
     image: "https://crayondata.ai/wp-content/uploads/Priyanshu-Mishra.png",
     category: "captains",
   },
   {
-    id: "6",
+    id: "vinayak",
     name: "Vinayak Ganapuram",
-    title: "VP, Engineering",
+    title: "VP – Engineering",
     description:
       "Vinayak is a seasoned, hands-on tech leader, with a proven track record in building software products from 0 to 1 & scaling from x to 10x multiple times across finance, e-commerce, and travel. He loves working on products/companies with a steep learning curve and looks to push the boundaries.",
     image: "https://crayondata.ai/wp-content/uploads/Vinayak-Ganapuram.png",
     category: "captains",
   },
   {
-    id: "7",
-    name: "Sujee Shalini",
-    title: "Director, HR",
+    id: "grace",
+    name: "Grace Lee",
+    title: "Director – Finance & Operations",
     description:
-      "Sujee has 13+ years of experience in IT recruitment and operations. She is a specialist in talent acquisition across all levels in the tech industry vertical.",
+      "Grace, Director – Finance & Operations, brings over 15 years of experience driving financial and operational excellence. Based in Singapore, she is known for her clarity of thought, structured approach, and exceptional organisational discipline. She plays a critical role in aligning finance, operations, and governance to support sustainable growth. Beyond Crayon Data, Grace is also a respected voice and influencer in Singapore.",
+    image: "/placeholder-user.jpg",
+    category: "captains",
+  },
+  {
+    id: "sujee",
+    name: "Sujee Shalini",
+    title: "Director – People and Culture",
+    description:
+      "Sujee brings over 15 years of experience in IT recruitment and operations. She specializes in talent acquisition across all levels within the technology industry, building high-performing teams in fast-evolving environments. With a strong focus on aligning talent strategy to business goals, she ensures the right capabilities are in place to support scale and execution. At Crayon Data, she leads efforts to attract, develop, and retain the talent that powers our AI platforms and enterprise delivery.",
     image: "https://crayondata.ai/wp-content/uploads/Sujee-Shalini.png",
     category: "captains",
   },
   {
-    id: "8",
+    id: "tejeswini",
     name: "Tejeswini Kashyappan",
     title: "Chief of Staff",
     description:
-      "Tejeswini is a builder at heart. With 13+ years across PropTech and FinTech, she's shaped products, scaled teams, and now orchestrates the chaos as Chief of Staff to the CEO at Crayon Data. She loves turning vision into systems that work — connecting people, priorities, and plans with equal parts precision and empathy. A sharp mind for structure, a soft spot for stories, and a bias for getting things done. When she's not connecting dots, she's likely baking, hosting people, or at a round table.",
+      "Tejeswini, Chief of Staff to the CEO, is a builder at heart with 13+ years of experience across PropTech and FinTech. She has shaped products, scaled teams, and now orchestrates strategy and execution at Crayon Data — turning vision into systems that work. Known for connecting people, priorities, and plans with clarity and empathy, she brings structure to complexity and momentum to ideas. With a bias for action and a love for meaningful conversations, she thrives at the intersection of precision, storytelling, and getting things done.",
     image: "https://crayondata.ai/wp-content/uploads/Tejeswini-web.png",
     category: "captains",
   },
+  // Our Leaders
   {
-    id: "9",
+    id: "sethu",
     name: "Sethu Ramalingam",
-    title: "Director, Customer Success",
+    title: "Director – Customer Success",
     description:
-      "With over 9 years of multi-faceted experience across sales, business analytics, consulting and operations, Sethu's expertise lies in streamlining business processes using business intelligence. He strongly advocates that a process driven organization delivers value and efficiency.",
+      "With over 12 years of multi-faceted experience across sales, business analytics, consulting and operations, Sethu's expertise lies in streamlining business processes using business intelligence. He strongly advocates that a process driven organization delivers value and efficiency.",
     image: "https://crayondata.ai/wp-content/uploads/Sethu-Ramalingam.png",
     category: "leaders",
   },
   {
-    id: "11",
+    id: "jyotsna",
+    name: "Jyotsna Singh",
+    title: "Director – Customer Experience",
+    description:
+      "Jyotsna focuses on translating complex business needs into scalable, production-ready AI platforms. She works closely with engineering, data, and customer teams to ensure products are intuitive, resilient, and built for real-world impact. At the core of her approach is a commitment to clarity, usability, and delivering systems that don't just launch — but last.",
+    image: "/placeholder-user.jpg",
+    category: "leaders",
+  },
+  {
+    id: "karuna",
+    name: "Karunamoorthi",
+    title: "Director – Engineering",
+    description:
+      "Karuna, Director – Engineering, brings over 13 years of experience in building scalable, high-performance technology systems. Known for his calm demeanor and clarity of thought, he leads engineering with precision and steady execution. He combines architectural discipline with delivery speed, ensuring products are robust, reliable, and production-ready. At Crayon Data, he translates complex AI ambitions into enterprise-grade systems that run seamlessly at scale.",
+    image: "/placeholder-user.jpg",
+    category: "leaders",
+  },
+  {
+    id: "iyyappan",
     name: "Iyyappan S",
-    title: "Director - Data and AI",
+    title: "Director – Data and AI",
     description:
       "Iyyappan leads Data and AI at Crayon with 15+ years of experience and a deep passion for transforming data into meaningful intelligence. He brings empathy, clarity, and technical rigor to every problem — making complexity feel approachable and solvable. Outside work, he spends time as a guest lecturer, inspiring students to explore the world of data. A cricketer with a soft spot for sweets, he brings warmth and curiosity to everything he does.",
     image: "https://crayondata.ai/wp-content/uploads/Iyyappan-web.png",
+    category: "leaders",
+  },
+  {
+    id: "chinmoy",
+    name: "Chinmoy Rajurkar",
+    title: "Assistant Director – Data Solutions",
+    description:
+      "Chinmoy has over 8+ years of experience and brings a deeply analytical lens to building scalable AI systems. With strong experience in data science, machine learning, and data engineering, he bridges the gap between technical rigor and product clarity. He ensures that AI products are not only intelligent, but architected for performance, reliability, and scale.",
+    image: "/placeholder-user.jpg",
+    category: "leaders",
+  },
+  {
+    id: "bharath",
+    name: "Bharath G",
+    title: "Associate Director - Finance",
+    description:
+      "Bharath, Associate Director – Finance, brings strong financial discipline and operational rigor to Crayon Data. With deep experience in financial planning, controls, and compliance, he ensures clarity across cash flow, reporting, and governance. He partners closely with leadership to align financial strategy with business execution and growth. At Crayon Data, he plays a key role in strengthening financial resilience as the company scales.",
+    image: "/placeholder-user.jpg",
+    category: "leaders",
+  },
+  {
+    id: "vignesh",
+    name: "Vignesh Gurumohan",
+    title: "Associate Director – Sales Acceleration",
+    description:
+      "Vignesh, Associate Director, is known for building rapid prototypes and setting the execution bar across the company. With a strong bias for speed and experimentation, he turns ideas into working systems in record time. At Crayon Data, he leads the Sales Accelerator — the engine that powers high-velocity demos, proposals, and deal momentum. He operates at the intersection of product, sales, and AI execution, ensuring innovation translates directly into business impact.",
+    image: "/placeholder-user.jpg",
     category: "leaders",
   },
 ];
@@ -132,8 +195,14 @@ export default function OurTeamPage() {
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#FFFFFF" }}>
-      {/* Breadcrumb Section */}
-      <section className="pt-8 pb-4" style={{ backgroundColor: "#FFFFFF" }}>
+      {/* Breadcrumb Section - consistent spacing, clears header */}
+      <section
+        style={{
+          backgroundColor: "#FFFFFF",
+          paddingTop: "32px",
+          paddingBottom: "24px",
+        }}
+      >
         <div
           style={{
             width: "100%",
@@ -161,13 +230,13 @@ export default function OurTeamPage() {
         </div>
       </section>
 
-      {/* Hero Section */}
+      {/* Hero Section - extra top padding to prevent overlap with sub-nav */}
       <section
         className="relative overflow-hidden"
         style={{
           backgroundColor: "#FFFFFF",
-          paddingTop: "80px",
-          paddingBottom: "80px",
+          paddingTop: "120px",
+          paddingBottom: "64px",
         }}
       >
         <div
@@ -183,15 +252,16 @@ export default function OurTeamPage() {
           {/* Section Label */}
           <div
             style={{
-              color: "#06B6D4",
+              color: "#111827",
               fontFamily: "Poppins, sans-serif",
-              fontSize: "12px",
+              fontSize: "14px",
               fontStyle: "normal",
               fontWeight: 400,
               lineHeight: "21px",
               letterSpacing: "0.1em",
               textTransform: "uppercase",
-              marginBottom: "24px",
+              marginBottom: "16px",
+              marginTop: 0,
             }}
           >
             OUR TEAMS
@@ -231,8 +301,8 @@ export default function OurTeamPage() {
         </div>
       </section>
 
-      {/* Filter Buttons */}
-      <section style={{ backgroundColor: "#F8F8F8", paddingBottom: "40px" }}>
+      {/* Filter Buttons - consistent spacing */}
+      <section style={{ backgroundColor: "#F8F8F8", paddingTop: "40px", paddingBottom: "40px" }}>
         <div
           style={{
             width: "100%",
@@ -248,7 +318,7 @@ export default function OurTeamPage() {
         >
           {[
             { id: "all", label: "ALL" },
-            { id: "founders", label: "OUR FOUNDERS" },
+            { id: "founders", label: "FOUNDERS" },
             { id: "captains", label: "OUR CAPTAINS" },
             { id: "leaders", label: "OUR LEADERS" },
           ].map((filter) => (
@@ -288,8 +358,8 @@ export default function OurTeamPage() {
         </div>
       </section>
 
-      {/* Team Members Section */}
-      <section style={{ backgroundColor: "#F8F8F8", paddingTop: "40px", paddingBottom: "80px" }}>
+      {/* Team Members Section - consistent spacing */}
+      <section style={{ backgroundColor: "#F8F8F8", paddingTop: "48px", paddingBottom: "80px" }}>
         <div
           style={{
             width: "100%",
@@ -360,7 +430,7 @@ export default function OurTeamPage() {
                   >
                     <h3
                       style={{
-                        color: "#007BFF",
+                        color: "#111827",
                         fontFamily: "Poppins, sans-serif",
                         fontSize: "22px",
                         fontStyle: "normal",
@@ -373,16 +443,18 @@ export default function OurTeamPage() {
                     </h3>
                     <p
                       style={{
-                        color: "#6c757d",
+                        color: "#06B6D4",
                         fontFamily: "Poppins, sans-serif",
-                        fontSize: "16px",
+                        fontSize: "14px",
                         fontStyle: "normal",
-                        fontWeight: 400,
+                        fontWeight: 600,
                         lineHeight: "120%",
                         margin: 0,
+                        letterSpacing: "0.05em",
+                        textTransform: "uppercase",
                       }}
                     >
-                      {member.title}
+                      {CATEGORY_LABELS[member.category]} · {member.title}
                     </p>
                     <p
                       style={{
@@ -451,7 +523,7 @@ export default function OurTeamPage() {
           <div
             className="fade-in-blur"
             style={{
-              backgroundColor: "#1D8AD7",
+              backgroundColor: "#06B6D4",
               backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px)`,
               backgroundSize: "24px 24px",
               borderRadius: "16px 16px 0 0",
