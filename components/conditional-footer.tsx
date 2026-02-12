@@ -29,7 +29,6 @@ export function ConditionalFooter() {
     pathname === "/trust-center" ||
     pathname === "/privacy-civil-liberties" ||
     pathname === "/our-story" ||
-    pathname === "/our-investors" ||
     pathname === "/our-values" ||
     pathname === "/vision" ||
     pathname === "/our-team" ||

@@ -9,20 +9,14 @@ import {
   HeroSection,
   MaturityCoverageSection,
   ProblemStatementSection,
-  ReverseBuildSection,
-  TwinEngineSection,
   WhyExistsSection,
 } from "./sections/sections";
 import {
   definitionContent,
-  executionLoopContent,
   heroContent,
-  journeyPaths,
   maturityContent,
   modelTabsContent,
   problemContent,
-  reverseBuildContent,
-  twinEngineContent,
   whyExistsContent,
 } from "./sections/content";
 import { SchedulerDialog } from "./sections/scheduler-dialog";
@@ -79,9 +73,7 @@ export default function CatalystPage() {
         <WhyExistsSection data={whyExistsContent} />
         <DefinitionSection data={definitionContent} onTalkToExpert={handleTalkToExpert} />
         <CatalystModelTabsSection data={modelTabsContent} />
-        <ReverseBuildSection data={reverseBuildContent} />
         <MaturityCoverageSection data={maturityContent} />
-        <TwinEngineSection data={twinEngineContent} />
         <ProvenRealWorldSection />
         <CustomServicesSection onTalkToExpert={handleTalkToExpert} />
       </div>
