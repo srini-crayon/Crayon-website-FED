@@ -5,11 +5,12 @@ import { AgentSearchChat } from "../../components/agent-search-chat";
 import { AgentCard } from "../../components/agent-card";
 import { ModelCard } from "../../components/model-card";
 import { AgentCardSkeleton } from "../../components/agent-card-skeleton";
-import { ChevronDown, Filter, Search, MessageCircle } from "lucide-react";
+import { ChevronDown, Filter, Search, MessageCircle, ArrowUpRight, Landmark, Activity, HeartHandshake, ShoppingBag, GraduationCap, Zap } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useChatStore } from "../../lib/store/chat.store";
 import { useWishlistsStore } from "../../lib/store/wishlists.store";
@@ -242,6 +243,9 @@ export default function AgentLibraryPage() {
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 9;
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategoryTag, setSelectedCategoryTag] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<"Recommended" | "A-Z">("Recommended");
+  const [recommendedDropdownOpen, setRecommendedDropdownOpen] = useState(false);
   const [aiCurrentPage, setAiCurrentPage] = useState(1);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -251,6 +255,9 @@ export default function AgentLibraryPage() {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const pageContainerRef = useRef<HTMLDivElement>(null);
+  const browseCarouselRef = useRef<HTMLDivElement>(null);
+  const [browseCarouselPage, setBrowseCarouselPage] = useState(0);
+  const BROWSE_CAROUSEL_PAGES = 4;
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -685,6 +692,17 @@ export default function AgentLibraryPage() {
     return () => clearTimeout(timer);
   }, [allCapabilities]);
 
+  // Category tags for "All Agents" section (from agent tags + capabilities)
+  const allCategoryTags = useMemo(() => {
+    const set = new Set<string>();
+    agents.forEach(agent => {
+      agent.tags.forEach(t => t && set.add(t.trim()));
+      agent.capabilities.forEach(c => c && set.add(c.trim()));
+    });
+    const list = Array.from(set).filter(Boolean).sort();
+    return list.length > 0 ? list : ["Banking", "Retail", "Customer Experience", "Productivity", "HR", "Data Accelerator", "Fashion", "Consumer", "Tech Distribution"];
+  }, [agents]);
+
   const allPersonas = useMemo(() => {
     const personas = new Set<string>();
     agents.forEach(agent => {
@@ -795,6 +813,14 @@ export default function AgentLibraryPage() {
       }
     }
 
+    // Category tag filter (All Agents section)
+    if (selectedCategoryTag) {
+      filtered = filtered.filter(agent =>
+        agent.tags.some(t => t.trim() === selectedCategoryTag) ||
+        agent.capabilities.some(c => c.trim() === selectedCategoryTag)
+      );
+    }
+
     return filtered;
   };
 
@@ -859,10 +885,18 @@ export default function AgentLibraryPage() {
       const bOrder = b.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       return aOrder - bOrder;
     });
-  }, [agents, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, aiSearchedAgentIds, showFavoritesOnly, favorites, selectedWishlistId, wishlists]);
+  }, [agents, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, aiSearchedAgentIds, showFavoritesOnly, favorites, selectedWishlistId, wishlists, selectedCategoryTag]);
+
+  // Sorted list for All Agents (Recommended = order from API, A-Z = by title)
+  const sortedFilteredAgents = useMemo(() => {
+    if (sortBy === "A-Z") {
+      return [...allFilteredAgents].sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return allFilteredAgents;
+  }, [allFilteredAgents, sortBy]);
 
   const aiTotalPages = Math.max(1, Math.ceil(aiSearchedAgents.length / PAGE_SIZE));
-  const totalPages = Math.max(1, Math.ceil(allFilteredAgents.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(sortedFilteredAgents.length / PAGE_SIZE));
 
   const paginatedAiAgents = useMemo(() => {
     const start = (aiCurrentPage - 1) * PAGE_SIZE;
@@ -871,8 +905,8 @@ export default function AgentLibraryPage() {
 
   const paginatedAgents = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
-    return allFilteredAgents.slice(start, start + PAGE_SIZE);
-  }, [allFilteredAgents, currentPage, PAGE_SIZE]);
+    return sortedFilteredAgents.slice(start, start + PAGE_SIZE);
+  }, [sortedFilteredAgents, currentPage, PAGE_SIZE]);
 
   // Filtered models
   const filteredModels = useMemo(() => {
@@ -901,18 +935,18 @@ export default function AgentLibraryPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, selectedCapability]);
+  }, [search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, selectedCapability, selectedCategoryTag, sortBy]);
 
   useEffect(() => {
     setAiCurrentPage(1);
   }, [aiSearchedAgentIds, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, selectedCapability]);
 
   useEffect(() => {
-    const maxPages = Math.max(1, Math.ceil(allFilteredAgents.length / PAGE_SIZE));
+    const maxPages = Math.max(1, Math.ceil(sortedFilteredAgents.length / PAGE_SIZE));
     if (currentPage > maxPages) {
       setCurrentPage(maxPages);
     }
-  }, [allFilteredAgents.length, currentPage, PAGE_SIZE]);
+  }, [sortedFilteredAgents.length, currentPage, PAGE_SIZE]);
 
   useEffect(() => {
     const maxPages = Math.max(1, Math.ceil(aiSearchedAgents.length / PAGE_SIZE));
@@ -960,6 +994,9 @@ export default function AgentLibraryPage() {
     total: number,
     onChange: (page: number) => void
   ) => {
+    // Pagination section commented out (Previous / page numbers / Next)
+    return null;
+    /*
     if (total <= 1) return null;
     const pages = Array.from({ length: total }, (_, idx) => idx + 1);
     return (
@@ -1003,6 +1040,7 @@ export default function AgentLibraryPage() {
         </button>
       </div>
     );
+    */
   };
 
   return (
@@ -1071,147 +1109,585 @@ export default function AgentLibraryPage() {
                 minHeight: "100svh",
                 paddingTop: "120px",
                 paddingBottom: "80px",
+                background: "linear-gradient(180deg, #B8E2F0 0%, #D0ECF5 18%, #E5F5FA 35%, #FFFFFF 55%, #FFFFFF 100%)",
               }}
             >
               <div className="w-full px-8 md:px-12 lg:px-16">
                 <div className="mx-auto max-w-6xl text-center flex flex-col items-center">
-                  <div className="mt-20 flex justify-center mb-2">
-                    <span
-                      className="inline-block scale-in"
+                  {/* Chip: New + Introducing Tangram AI Store (reference pill style) */}
+                  <div className="mt-20 flex justify-center mb-6">
+                    <div
+                      className="inline-flex items-center scale-in overflow-hidden rounded-full"
                       style={{
-                        width: "115px",
-                        height: "32px",
-                        borderRadius: "50px",
-                        padding: "4px 16px",
-                        gap: "8px",
-                        opacity: 1,
-                        transform: "rotate(0.282deg)",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "#FFD0E6",
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "14px",
-                        lineHeight: "140%",
-                        letterSpacing: "0%",
-                        textAlign: "center",
-                        color: "#BD0159",
-                        willChange: "transform",
+                        background: "#EFEFF4",
+                        border: "none",
+                        padding: "6px 6px 6px 6px",
+                        borderRadius: "9999px",
                       }}
                     >
-                      Agent Store
-                    </span>
+                      <span
+                        style={{
+                          width: "40.39px",
+                          height: "26px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#4285F4",
+                          borderRadius: "9999px",
+                          opacity: 1,
+                          marginRight: "10px",
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 400,
+                          fontStyle: "normal",
+                          fontSize: "11.4px",
+                          lineHeight: "18px",
+                          letterSpacing: "0%",
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                          color: "#EFF6FF",
+                        }}
+                      >
+                        New
+                      </span>
+                      <span
+                        style={{
+                          padding: "5px 14px 6px 0",
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 400,
+                          fontStyle: "normal",
+                          fontSize: "12.9px",
+                          lineHeight: "21px",
+                          letterSpacing: "0%",
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                          color: "#1C1C1C",
+                        }}
+                      >
+                        Introducing Tangram AI Store
+                      </span>
+                    </div>
                   </div>
 
-                  <TypingHeading />
-                  <div style={{
-                    display: "flex",
-                    gap: "12px",
-                    justifyContent: "center",
-                    marginBottom: "64px",
-                    fontFamily: "Poppins, sans-serif",
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    color: "#091917"
-                  }}>
-                    <style>{`
-                      @keyframes fadeInUp {
-                        from { opacity: 0; transform: translateY(20px); }
-                        to { opacity: 1; transform: translateY(0); }
-                      }
-                    `}</style>
-                    {["Discover.", "Try.", "Deploy."].map((word, i) => (
-                      <span key={i} style={{
-                        opacity: 0,
-                        animation: `fadeInUp 0.5s ease forwards ${1.5 + i * 0.2}s`,
-                        display: "inline-block"
-                      }}>
-                        {word}
-                      </span>
-                    ))}
-                  </div>
+                  {/* Main title */}
+                  <h1
+                    className="mb-3 text-center max-w-4xl mx-auto"
+                    style={{
+                      fontFamily: "Poppins, sans-serif",
+                      fontWeight: 400,
+                      fontStyle: "normal",
+                      fontSize: "42px",
+                      lineHeight: "54px",
+                      letterSpacing: "0%",
+                      textAlign: "center",
+                      background: "linear-gradient(90deg, #091917 0%, #2E7F75 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      color: "transparent",
+                    }}
+                  >
+                    Ready-to-Use 200+ Powerful AI
+                    <br />
+                    agents built for real work.
+                  </h1>
+
+                  {/* Subtitle */}
+                  <p
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 400,
+                      fontStyle: "normal",
+                      fontSize: "18.3px",
+                      lineHeight: "25px",
+                      letterSpacing: "0%",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      color: "#1C1C1C",
+                      marginBottom: "48px",
+                    }}
+                  >
+                    Discover. Try. Deploy.
+                  </p>
 
                   {/* Search bar */}
-                  <div className="flex w-full justify-center scale-in mb-8">
+                  <div className="flex w-full justify-center scale-in mb-6">
                     <div className="w-full max-w-5xl" style={{ willChange: "transform" }}>
                       <AgentSearchChat
                         externalValue={agentSearchChatValue}
                         onExternalValueChange={setAgentSearchChatValue}
                         onEnterChat={handleEnterChat}
+                        variant="hero"
+                        placeholder="Describe your requirement and instantly discover enterprise AI agents built for that outcome"
                       />
                     </div>
                   </div>
 
-                  {/* Innovative Scroll Indicator */}
+                  {/* Decorative: data-flow image — top 10% tucked under search bar */}
                   <div
-                    onClick={() => {
-                      window.scrollBy({ top: 550, behavior: 'smooth' });
-                    }}
-                    className="group"
+                    className="flex justify-center mb-8 w-full"
                     style={{
-                      marginTop: "28px",
-                      cursor: "pointer",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: "10px",
+                      minHeight: "120px",
+                      marginTop: "calc(-1 * (min(520px, 100%) * 280 / 600 * 0.1))",
                     }}
                   >
-                    {/* <span
-                      style={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "11px",
-                        letterSpacing: "3px",
-                        textTransform: "uppercase",
-                        background: "linear-gradient(90deg, #6366F1, #EC4899)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        fontWeight: 700,
-                        opacity: showScrollIndicator ? 0.8 : 0,
-                        transition: "all 0.3s ease",
-                        transform: "translateY(0)",
-                      }}
-                      className="group-hover:opacity-100 group-hover:tracking-[4px]"
-                    >
-                      Explore
-                    </span> */}
-                    <div
-                      className="scroll-indicator"
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "50%",
-                        background: "rgba(255, 255, 255, 0.6)",
-                        backdropFilter: "blur(8px)",
-                        WebkitBackdropFilter: "blur(8px)",
-                        border: "1px solid rgba(255, 255, 255, 0.9)",
-                        boxShadow: "0 4px 20px rgba(99, 102, 241, 0.15), inset 0 0 0 1px rgba(255,255,255,0.5)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "#6366F1",
-                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        opacity: showScrollIndicator ? 1 : 0,
-                        transform: showScrollIndicator ? "scale(1)" : "scale(0.8)",
-                        pointerEvents: showScrollIndicator ? "auto" : "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(2px) scale(1.05)";
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.9)";
-                        e.currentTarget.style.boxShadow = "0 8px 30px rgba(99, 102, 241, 0.25)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "translateY(0) scale(1)";
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)";
-                        e.currentTarget.style.boxShadow = "0 4px 20px rgba(99, 102, 241, 0.15), inset 0 0 0 1px rgba(255,255,255,0.5)";
-                      }}
-                    >
-                      <ChevronDown size={28} strokeWidth={2.5} style={{ filter: "drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2))" }} />
-                    </div>
+                    <Image
+                      src="/img/hero-data-flow.png"
+                      alt=""
+                      role="presentation"
+                      width={600}
+                      height={280}
+                      className="object-contain w-full max-w-[520px] h-auto"
+                      priority
+                    />
                   </div>
 
+                  {/* Scroll to second section: two chevrons + label (reference) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById("browse-agents-section");
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                      else window.scrollBy({ top: 550, behavior: "smooth" });
+                    }}
+                    className="group flex flex-col items-center gap-2.5 cursor-pointer border-0 bg-transparent p-0"
+                    style={{
+                      marginTop: "-72px",
+                      opacity: showScrollIndicator ? 1 : 0,
+                      transition: "opacity 0.3s ease",
+                      pointerEvents: showScrollIndicator ? "auto" : "none",
+                    }}
+                    aria-label="Explore Our agent Catalogue"
+                  >
+                    <div className="flex flex-col items-center gap-0.5" style={{ color: "#374151" }}>
+                      <ChevronDown size={24} strokeWidth={2.5} aria-hidden />
+                      <ChevronDown size={24} strokeWidth={2.5} aria-hidden />
+                    </div>
+                    <span
+                      style={{
+                        fontFamily: "Poppins, sans-serif",
+                        fontWeight: 400,
+                        fontSize: "14px",
+                        color: "#374151",
+                        letterSpacing: "0%",
+                      }}
+                    >
+                      Explore Our agent Catalogue
+                    </span>
+                  </button>
+
+                </div>
+              </div>
+            </section>
+
+            {/* Browse 200+ Agents & Agentic Solutions — pink gradient + carousel */}
+            {(() => {
+              const defaultCardBackground = "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)";
+              const browseCards = [
+                {
+                  id: "campaign-agent",
+                  title: "Campaign Agent",
+                  description: "Smart AI powered personalised campaigns show runner",
+                  image: "/img/carousel-card-campaign.png",
+                  background: defaultCardBackground,
+                },
+                {
+                  id: "customer-support-agent",
+                  title: "Customer Support Agent",
+                  description: "Agent built to handle diverse customer and vendor interactions with emotional intelligence.",
+                  image: "/img/carousel-card-support.png",
+                  background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)",
+                },
+                {
+                  id: "earnings-agent",
+                  title: "Earnings Agent",
+                  description: "Agent built to produce financial insights and searchable summaries from earnings data.",
+                  image: "/img/carousel-card-campaign.png",
+                  background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)",
+                },
+                {
+                  id: "workflow-agent",
+                  title: "Workflow Agent",
+                  description: "Automate repetitive tasks and route work intelligently across your team.",
+                  image: "/img/carousel-card-support.png",
+                  background: defaultCardBackground,
+                },
+              ];
+              const cardWidth = 560;
+              const cardHeight = 270;
+              const gap = 24;
+              const goToPage = (page: number) => {
+                const p = Math.max(0, Math.min(page, BROWSE_CAROUSEL_PAGES - 1));
+                setBrowseCarouselPage(p);
+                const el = browseCarouselRef.current;
+                if (el) el.scrollTo({ left: p * (cardWidth + gap), behavior: "smooth" });
+              };
+              return (
+                <section
+                  id="browse-agents-section"
+                  className="w-full"
+                  style={{
+                    background: "radial-gradient(100% 100% at 50% 0%, #FFE5E5 0%, #FFFFFF 100%)",
+                    paddingTop: "64px",
+                    paddingBottom: "80px",
+                  }}
+                >
+                  <div className="mx-auto w-full" style={{ maxWidth: "1360px", paddingLeft: "24px", paddingRight: "24px" }}>
+                    <div className="text-center mb-12">
+                      <h2
+                        className="mb-4 text-center"
+                        style={{
+                          fontFamily: "Poppins, sans-serif",
+                          fontWeight: 400,
+                          fontStyle: "normal",
+                          fontSize: "42px",
+                          lineHeight: "54px",
+                          letterSpacing: "0%",
+                          textAlign: "center",
+                          background: "linear-gradient(90deg, #091917 0%, #2E7F75 100%)",
+                          WebkitBackgroundClip: "text",
+                          backgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          color: "transparent",
+                        }}
+                      >
+                        Browse through our growing{" "}
+                        <span>200+ Agents & Agentic Solutions</span>
+                      </h2>
+                      <p
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 400,
+                          fontStyle: "normal",
+                          fontSize: "16px",
+                          lineHeight: "24px",
+                          letterSpacing: "0.17px",
+                          textAlign: "center",
+                          color: "#000000DE",
+                          maxWidth: "640px",
+                          margin: "0 auto",
+                        }}
+                      >
+                        Explore AI-powered agents built to automate workflows — helping your team work smarter and faster every day.
+                      </p>
+                    </div>
+
+                    <div className="relative">
+                      <div
+                        ref={browseCarouselRef}
+                        className="flex gap-6 overflow-x-auto overflow-y-hidden scroll-smooth pb-2 scrollbar-hide"
+                        style={{
+                          scrollbarWidth: "none",
+                          msOverflowStyle: "none",
+                          scrollSnapType: "x mandatory",
+                        }}
+                        onScroll={() => {
+                          const el = browseCarouselRef.current;
+                          if (!el) return;
+                          const page = Math.round(el.scrollLeft / (cardWidth + gap));
+                          setBrowseCarouselPage(Math.min(page, BROWSE_CAROUSEL_PAGES - 1));
+                        }}
+                      >
+                        {browseCards.map((card) => (
+                          <div
+                            key={card.id}
+                            className="flex-shrink-0 overflow-hidden"
+                            style={{
+                              width: cardWidth,
+                              height: cardHeight,
+                              borderRadius: "24px",
+                              scrollSnapAlign: "start",
+                              boxShadow: "0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
+                              background: card.background,
+                              opacity: 1,
+                            }}
+                          >
+                            <Link
+                              href={`/agents/${card.id}`}
+                              className="block p-6 h-full min-h-0 flex flex-col"
+                              style={{ textDecoration: "none" }}
+                            >
+                              <div className="flex justify-between items-start gap-4">
+                                <div
+                                  className="min-w-0"
+                                  style={{
+                                    width: 255,
+                                    height: 106,
+                                    opacity: 1,
+                                  }}
+                                >
+                                  <h3
+                                    className="mb-2 align-middle"
+                                    style={{
+                                      fontFamily: "Inter, sans-serif",
+                                      fontWeight: 500,
+                                      fontStyle: "normal",
+                                      fontSize: "24px",
+                                      lineHeight: "32px",
+                                      letterSpacing: "0.17px",
+                                      verticalAlign: "middle",
+                                      color: "#FFFFFFDE",
+                                    }}
+                                  >
+                                    {card.title}
+                                  </h3>
+                                  <p
+                                    style={{
+                                      fontFamily: "Inter, sans-serif",
+                                      fontWeight: 400,
+                                      fontStyle: "normal",
+                                      fontSize: "14px",
+                                      lineHeight: "18px",
+                                      letterSpacing: "0.17px",
+                                      color: "#FFFFFFDE",
+                                    }}
+                                  >
+                                    {card.description}
+                                  </p>
+                                </div>
+                                <div
+                                  className="flex-shrink-0 relative overflow-hidden"
+                                  style={{
+                                    width: 199,
+                                    height: 246,
+                                    borderRadius: "18px",
+                                    opacity: 1,
+                                  }}
+                                >
+                                  <Image
+                                    src={card.image}
+                                    alt=""
+                                    role="presentation"
+                                    fill
+                                    className="object-contain object-right"
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="mt-4 flex items-center gap-1"
+                                style={{
+                                  fontFamily: "Poppins, sans-serif",
+                                  fontSize: "14px",
+                                  fontWeight: 500,
+                                  color: "#FFFFFF",
+                                }}
+                              >
+                                Know More <ArrowUpRight size={16} strokeWidth={2.5} />
+                              </div>
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div
+                        className="flex items-center justify-end gap-2 mt-6"
+                        style={{ fontFamily: "Poppins, sans-serif" }}
+                      >
+                        <span
+                          className="text-sm"
+                          style={{ color: "#6B7280" }}
+                        >
+                          [{browseCarouselPage + 1}/{BROWSE_CAROUSEL_PAGES}]
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => goToPage(browseCarouselPage - 1)}
+                          disabled={browseCarouselPage === 0}
+                          className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                          style={{ color: "#6B7280" }}
+                          aria-label="Previous"
+                        >
+                          <span style={{ fontSize: "16px", lineHeight: 1 }}>&lt;</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => goToPage(browseCarouselPage + 1)}
+                          disabled={browseCarouselPage >= BROWSE_CAROUSEL_PAGES - 1}
+                          className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                          style={{ color: "#4B5563" }}
+                          aria-label="Next"
+                        >
+                          <span style={{ fontSize: "16px", lineHeight: 1 }}>&gt;</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              );
+            })()}
+
+            {/* Browse by Industries & Sectors — grid of industry cards */}
+            <section className="w-full bg-white" style={{ paddingTop: "64px", paddingBottom: "80px" }}>
+              <div className="mx-auto w-full" style={{ maxWidth: "1360px", paddingLeft: "24px", paddingRight: "24px" }}>
+                <div className="text-center mb-12">
+                  <h2
+                    className="mb-4 text-center"
+                    style={{
+                      fontFamily: "Geist, var(--font-geist-sans), sans-serif",
+                      fontWeight: 300,
+                      fontStyle: "normal",
+                      fontSize: "28px",
+                      lineHeight: "40px",
+                      letterSpacing: "0%",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      background: "linear-gradient(90deg, #0023F6 0%, #008F59 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    Browse by Industries & Sectors
+                  </h2>
+                  <p
+                    className="text-center"
+                    style={{
+                      fontFamily: "Poppins, sans-serif",
+                      fontWeight: 400,
+                      fontStyle: "normal",
+                      fontSize: "14px",
+                      lineHeight: "24px",
+                      letterSpacing: "0px",
+                      textAlign: "center",
+                      color: "#091917",
+                      maxWidth: "640px",
+                      margin: "0 auto",
+                    }}
+                  >
+                    Streamline your non-performing asset workflow from email intake to valuation. Reduce processing.
+                  </p>
+                </div>
+
+                <div
+                  className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                >
+                  {[
+                    {
+                      id: "banking",
+                      title: "AI for Banking",
+                      description: "Conversational AI assistant tailored for banking, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      icon: Landmark,
+                      gradient: "linear-gradient(135deg, #FB923C 0%, #DC2626 100%)",
+                      gradientFromCorner: "linear-gradient(135deg, rgba(251,146,60,0.12) 0%, rgba(220,38,38,0.06) 40%, transparent 70%)",
+                      titleColor: "#EA580C",
+                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FFF7ED 97.78%)",
+                    },
+                    {
+                      id: "insurance",
+                      title: "AI for Insurance",
+                      description: "Conversational AI assistant tailored for insurance, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      icon: Activity,
+                      gradient: "linear-gradient(135deg, #86EFAC 0%, #15803D 100%)",
+                      gradientFromCorner: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(21,128,61,0.06) 40%, transparent 70%)",
+                      titleColor: "#15803D",
+                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F0FDF4 97.78%)",
+                    },
+                    {
+                      id: "healthcare",
+                      title: "AI for Healthcare",
+                      description: "Conversational AI assistant tailored for healthcare, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      icon: HeartHandshake,
+                      gradient: "linear-gradient(135deg, #F9A8D4 0%, #BE185D 100%)",
+                      gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.12) 0%, rgba(190,24,93,0.06) 40%, transparent 70%)",
+                      titleColor: "#BE185D",
+                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
+                    },
+                    {
+                      id: "retail",
+                      title: "AI for Retail",
+                      description: "Conversational AI assistant tailored for retail, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      icon: ShoppingBag,
+                      gradient: "linear-gradient(135deg, #C4B5FD 0%, #6D28D9 100%)",
+                      gradientFromCorner: "linear-gradient(135deg, rgba(196,181,253,0.12) 0%, rgba(109,40,217,0.06) 40%, transparent 70%)",
+                      titleColor: "#6D28D9",
+                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F5F3FF 97.78%)",
+                    },
+                    {
+                      id: "education",
+                      title: "AI for Educations",
+                      description: "Conversational AI assistant tailored for education, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      icon: GraduationCap,
+                      gradient: "linear-gradient(135deg, #F472B6 0%, #9D174D 100%)",
+                      gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.1) 0%, rgba(157,23,77,0.06) 40%, transparent 70%)",
+                      titleColor: "#9D174D",
+                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
+                    },
+                    {
+                      id: "government",
+                      title: "AI for Government",
+                      description: "Conversational AI assistant tailored for government, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      icon: Zap,
+                      gradient: "linear-gradient(135deg, #93C5FD 0%, #1D4ED8 100%)",
+                      gradientFromCorner: "linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(29,78,216,0.06) 40%, transparent 70%)",
+                      titleColor: "#1D4ED8",
+                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #EFF6FF 97.78%)",
+                    },
+                  ].map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.id}
+                        href={`/agents?industry=${item.id}`}
+                        className="block relative overflow-hidden text-left transition-shadow hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
+                        style={{
+                          width: "100%",
+                          minHeight: "194px",
+                          borderRadius: "8px",
+                          background: item.cardBackground,
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+                          textDecoration: "none",
+                        }}
+                      >
+                        <div className="relative p-6">
+                          <div className="flex justify-between items-start">
+                            <div
+                              className="flex items-center justify-center rounded-xl flex-shrink-0"
+                              style={{
+                                width: "36px",
+                                height: "36px",
+                              }}
+                            >
+                              <Icon size={22} strokeWidth={2} style={{ color: item.titleColor }} />
+                            </div>
+                            <ArrowUpRight
+                              size={18}
+                              className="flex-shrink-0 text-gray-400"
+                              strokeWidth={2}
+                              style={{ marginTop: "2px" }}
+                            />
+                          </div>
+                          <h3
+                            className="mt-4"
+                            style={{
+                              fontFamily: "Geist, var(--font-geist-sans), sans-serif",
+                              fontWeight: 500,
+                              fontStyle: "normal",
+                              fontSize: "16px",
+                              lineHeight: "100%",
+                              letterSpacing: "0%",
+                              verticalAlign: "middle",
+                              color: item.titleColor,
+                            }}
+                          >
+                            {item.title}
+                          </h3>
+                          <p
+                            className="mt-2"
+                            style={{
+                              fontFamily: "Inter, sans-serif",
+                              fontWeight: 400,
+                              fontStyle: "normal",
+                              fontSize: "14px",
+                              lineHeight: "20px",
+                              letterSpacing: "0%",
+                              color: "#475467",
+                            }}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             </section>
@@ -1283,255 +1759,140 @@ export default function AgentLibraryPage() {
                 </div>
               )}
 
-              {/* Capability Tabs Section - Centered */}
-              <div
-                className="w-full section-fade-in"
-                style={{
-                  width: "100%",
-                  backgroundColor: "#FFFFFF",
-                  paddingTop: "40px",
-                  paddingBottom: "20px",
-                  animationDelay: "0.2s",
-                }}
-              >
-                <div className="w-full mx-auto" style={{ maxWidth: "1360px", paddingLeft: "12px", paddingRight: "12px" }}>
-                  {/* Capability Segment Tabs - Centered */}
-                  {allCapabilities.length > 0 && (
-                    <div className="relative w-full flex justify-center items-center">
-                      <div
-                        ref={tabsContainerRef}
-                        className="relative flex gap-8 flex-wrap justify-center"
-                        style={{
-                          position: "relative",
-                        }}
-                      >
-                        {/* Base grey line - always visible under all tabs */}
-                        {greyLineStyle && (
-                          <div
-                            style={{
-                              position: "absolute",
-                              bottom: "-1px",
-                              left: `${greyLineStyle.left}px`,
-                              width: `${greyLineStyle.width}px`,
-                              height: "2px",
-                              backgroundColor: "#E5E7EB",
-                              pointerEvents: "none",
-                              zIndex: 0,
-                            }}
-                          />
-                        )}
-
-                        {/* Animated sliding black indicator - overlaps grey line */}
-                        {indicatorStyle && (
-                          <div
-                            className="tab-indicator"
-                            style={{
-                              position: "absolute",
-                              bottom: "-1px",
-                              left: `${indicatorStyle.left}px`,
-                              width: `${indicatorStyle.width}px`,
-                              height: "2px",
-                              backgroundColor: "#000",
-                              willChange: "left, width",
-                              transform: "translateZ(0)",
-                              backfaceVisibility: "hidden",
-                              WebkitBackfaceVisibility: "hidden",
-                              pointerEvents: "none",
-                              zIndex: 1,
-                            }}
-                          />
-                        )}
-
-                        {/* All option */}
-                        <button
-                          key="All"
-                          ref={(el) => {
-                            if (el) {
-                              tabRefs.current.set("All", el);
-                            } else {
-                              tabRefs.current.delete("All");
-                            }
-                          }}
-                          onClick={() => setSelectedCapability("All")}
-                          className="relative pb-2 px-4"
-                          style={{
-                            fontFamily: "Poppins",
-                            fontSize: "14px",
-                            fontWeight: selectedCapability === "All" ? 600 : 500,
-                            color: selectedCapability === "All" ? "#000" : "#344054",
-                            paddingBottom: "12px",
-                            whiteSpace: "nowrap",
-                            opacity: 1,
-                            cursor: "pointer",
-                            display: "inline-block",
-                            visibility: "visible",
-                            transition: "color 0.3s cubic-bezier(0.4, 0, 0.2, 1), font-weight 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                            willChange: "transform",
-                            backfaceVisibility: "hidden",
-                            WebkitBackfaceVisibility: "hidden",
-                            transform: "translateZ(0)",
-                          }}
-                        >
-                          All ({agents.length})
-                        </button>
-
-                        {/* Capability tabs */}
-                        {allCapabilities.map((capability) => {
-                          const count = capabilityCounts[capability] || 0;
-                          const isSelected = selectedCapability === capability;
-
-                          return (
-                            <button
-                              key={capability}
-                              ref={(el) => {
-                                if (el) {
-                                  tabRefs.current.set(capability, el);
-                                } else {
-                                  tabRefs.current.delete(capability);
-                                }
-                              }}
-                              onClick={() => setSelectedCapability(capability)}
-                              className="relative pb-2 px-4"
-                              style={{
-                                fontFamily: "Poppins",
-                                fontSize: "14px",
-                                fontWeight: isSelected ? 600 : 500,
-                                color: isSelected ? "#000" : "#344054",
-                                paddingBottom: "12px",
-                                whiteSpace: "nowrap",
-                                opacity: 1,
-                                cursor: "pointer",
-                                display: "inline-block",
-                                visibility: "visible",
-                                transition: "color 0.3s cubic-bezier(0.4, 0, 0.2, 1), font-weight 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                                willChange: "transform",
-                                backfaceVisibility: "hidden",
-                                WebkitBackfaceVisibility: "hidden",
-                                transform: "translateZ(0)",
-                              }}
-                            >
-                              {capability} ({count})
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+              {/* All Agents Section - Header (reference style) */}
+              <div className="w-full" style={{ paddingTop: "48px", paddingBottom: "16px", backgroundColor: "#FFFFFF" }}>
+                <div className="w-full mx-auto text-center" style={{ maxWidth: "1360px", paddingLeft: "24px", paddingRight: "24px" }}>
+                  <h2
+                    className="text-center"
+                    style={{
+                      fontFamily: "Geist, var(--font-geist-sans), sans-serif",
+                      fontWeight: 300,
+                      fontStyle: "normal",
+                      fontSize: "28px",
+                      lineHeight: "40px",
+                      letterSpacing: "0%",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      marginBottom: "8px",
+                      background: "linear-gradient(90deg, #0023F6 0%, #008F59 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    All Agents
+                  </h2>
+                  <p
+                    className="text-center"
+                    style={{
+                      fontFamily: "Poppins, sans-serif",
+                      fontWeight: 400,
+                      fontStyle: "normal",
+                      fontSize: "14px",
+                      lineHeight: "24px",
+                      letterSpacing: "0px",
+                      textAlign: "center",
+                      color: "#091917",
+                      maxWidth: "560px",
+                      margin: "0 auto",
+                    }}
+                  >
+                    Streamline your non-performing asset workflow from email intake to valuation. Reduce processing.
+                  </p>
                 </div>
               </div>
 
-              {/* Search Bar Section - Full Width with Filter Integrated */}
-              <div
-                id="agent-filters"
-                className="w-full"
-                style={{
-                  width: "100%",
-                  backgroundColor: "#FFFFFF",
-                  paddingTop: "20px",
-                  paddingBottom: "24px",
-                }}
-              >
-                <div className="w-full mx-auto" style={{ maxWidth: "1360px", paddingLeft: "12px", paddingRight: "12px" }}>
-                  <div className="w-full relative">
-                    <Search
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none"
+              {/* Search + Category Tags + Recommended */}
+              <div id="agent-filters" className="w-full" style={{ paddingBottom: "24px", backgroundColor: "#FFFFFF" }}>
+                <div className="w-full mx-auto" style={{ maxWidth: "1360px", paddingLeft: "24px", paddingRight: "24px" }}>
+                  {/* Search bar + Recommended on one row (reference layout) */}
+                  <div className="flex items-center gap-3 mb-6 w-full">
+                    <div
+                      className="relative flex-1 min-w-0 rounded-lg overflow-hidden"
                       style={{
-                        zIndex: 1,
-                        color: "#9CA3AF",
-                      }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Search over 100+ Agents and Solutions Available"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="search-input-enhanced"
-                      style={{
-                        width: "100%",
-                        padding: "12px 140px 12px 40px",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "14px",
-                        border: "none",
-                        borderBottom: "1px solid #E5E7EB",
-                        borderRadius: "0",
-                        outline: "none",
-                        backgroundColor: "transparent",
-                      }}
-                    />
-                    {/* Filter Button - Inside Search Bar */}
-                    <button
-                      onClick={() => {
-                        // Smooth transition: Scroll first, then open sidebar
-                        const filterSection = document.getElementById('agent-filters');
-                        if (filterSection) {
-                          const navbarHeight = 80; // Account for fixed navbar
-                          const elementPosition = filterSection.getBoundingClientRect().top + window.scrollY;
-                          const offsetPosition = elementPosition - navbarHeight;
-
-                          // Only scroll and delay if we are not already close to the position
-                          if (Math.abs(window.scrollY - offsetPosition) > 20) {
-                            window.scrollTo({
-                              top: offsetPosition,
-                              behavior: 'smooth'
-                            });
-                            // Wait for scroll to visually settle before opening slide-over
-                            setTimeout(() => {
-                              setIsFilterPanelOpen(true);
-                            }, 400);
-                          } else {
-                            // If already positioned, open immediately
-                            setIsFilterPanelOpen(true);
-                          }
-                        } else {
-                          setIsFilterPanelOpen(true);
-                        }
-                      }}
-                      style={{
-                        position: "absolute",
-                        right: "4px",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "14px",
-                        color: "#344054",
-                        background: "transparent",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: "8px 12px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        whiteSpace: "nowrap",
-                        height: "36px",
-                        transition: "all 0.2s",
-                        borderRadius: "6px",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#F9FAFB";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "transparent";
+                        height: "40px",
+                        borderRadius: "8px",
+                        background: "#F8F8F8",
                       }}
                     >
-                      <div style={{ position: "relative", display: "inline-flex" }}>
-                        <Filter className="h-4 w-4" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" style={{ color: "#9CA3AF" }} />
+                      <input
+                        type="text"
+                        placeholder="Search agents..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full h-full pl-10 pr-4 bg-transparent outline-none placeholder:text-[#828282]"
+                        style={{
+                          fontFamily: "Arial, sans-serif",
+                          fontWeight: 400,
+                          fontStyle: "normal",
+                          fontSize: "16px",
+                          lineHeight: "100%",
+                          letterSpacing: "0%",
+                          verticalAlign: "middle",
+                          color: "#828282",
+                        }}
+                      />
+                    </div>
+                    <div className="relative flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setRecommendedDropdownOpen(!recommendedDropdownOpen)}
+                        className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 h-10 px-4"
+                        style={{ fontFamily: "Poppins, sans-serif", minHeight: "40px" }}
+                      >
+                        {sortBy} <ChevronDown size={16} />
+                      </button>
+                      {recommendedDropdownOpen && (
+                        <>
+                          <div className="fixed inset-0 z-10" onClick={() => setRecommendedDropdownOpen(false)} aria-hidden />
+                          <div className="absolute right-0 top-full mt-1 py-1 rounded-lg border border-gray-200 bg-white shadow-lg z-20 min-w-[140px]">
+                            <button type="button" className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50" style={{ fontFamily: "Poppins, sans-serif" }} onClick={() => { setSortBy("Recommended"); setRecommendedDropdownOpen(false); }}>Recommended</button>
+                            <button type="button" className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50" style={{ fontFamily: "Poppins, sans-serif" }} onClick={() => { setSortBy("A-Z"); setRecommendedDropdownOpen(false); }}>A-Z</button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3 justify-between">
+                    <div className="flex gap-[10px] overflow-x-auto scrollbar-hide pb-1" style={{ flex: "1 1 auto", minWidth: 0 }}>
+                      {allCategoryTags.slice(0, 12).map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => setSelectedCategoryTag(selectedCategoryTag === tag ? null : tag)}
+                          className="flex-shrink-0 text-sm font-medium transition-colors rounded-full"
+                          style={{
+                            fontFamily: "Poppins, sans-serif",
+                            paddingTop: "11px",
+                            paddingRight: "18px",
+                            paddingBottom: "11px",
+                            paddingLeft: "18px",
+                            border: "1px solid #EAECF0",
+                            borderRadius: "999px",
+                            backgroundColor: selectedCategoryTag === tag ? "#1E3A8A" : "#FFFFFF",
+                            color: selectedCategoryTag === tag ? "#FFFFFF" : "#374151",
+                          }}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                      {allCategoryTags.length > 12 && (
+                        <span className="flex-shrink-0 px-4 py-2 text-sm text-gray-500" style={{ fontFamily: "Poppins, sans-serif" }}>More...</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setIsFilterPanelOpen(true)}
+                        className="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5"
+                        style={{ fontFamily: "Poppins, sans-serif", backgroundColor: "#F3F4F6", color: "#4B5563" }}
+                      >
+                        <Filter className="h-3.5 w-3.5" />
+                        Filters
                         {(byCapabilityFilter.length > 0 || personaFilter.length > 0) && (
-                          <span
-                            style={{
-                              position: "absolute",
-                              top: "-2px",
-                              right: "-2px",
-                              width: "6px",
-                              height: "6px",
-                              borderRadius: "50%",
-                              backgroundColor: "#EF4444",
-                              border: "1px solid #FFFFFF",
-                            }}
-                          />
+                          <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#EF4444" }} />
                         )}
-                      </div>
-                      <span>Filters</span>
-                    </button>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1556,6 +1917,7 @@ export default function AgentLibraryPage() {
                   setSearch("");
                   setShowFavoritesOnly(false);
                   setSelectedWishlistId(null);
+                  setSelectedCategoryTag(null);
                 }}
                 hasActiveFilters={
                   capabilityFilter !== "All" ||
@@ -1563,7 +1925,8 @@ export default function AgentLibraryPage() {
                   personaFilter.length > 0 ||
                   search !== "" ||
                   showFavoritesOnly ||
-                  selectedWishlistId !== null
+                  selectedWishlistId !== null ||
+                  selectedCategoryTag !== null
                 }
                 showFavoritesOnly={showFavoritesOnly}
                 setShowFavoritesOnly={setShowFavoritesOnly}
@@ -1595,271 +1958,152 @@ export default function AgentLibraryPage() {
 
                 {!loading && !error && (
                   <>
-                    {/* All Agents Section */}
                     <div className={aiSearchedAgentIds && aiSearchedAgentIds.length > 0 ? "border-t pt-12" : ""}>
-                      <div
-                        className="grid gap-4 md:gap-6 lg:gap-10"
-                        style={{
-                          gridTemplateColumns: "repeat(3, 1fr)",
-                        }}
-                      >
-                        {paginatedAgents.map((agent, index) => (
-                          <div key={agent.id} className="agent-card-stagger">
-                            <AgentCard {...agent} assetType={agent.assetType} demoPreview={agent.demoPreview} />
-                          </div>
-                        ))}
+                      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                        {paginatedAgents.map((agent, index) => {
+                          const isFirstCard = index === 0 && currentPage === 1;
+                          const categoryLabel = agent.assetType === "Solution" ? "Agentic AI Solution" : agent.assetType === "Use case" || (agent as any).deploymentType === "Use case" ? "Agentic AI Use case" : "AI Agent";
+                          const isUseCase = categoryLabel === "Agentic AI Use case";
+                          return (
+                            <Link
+                              key={agent.id}
+                              href={`/agents/${agent.id}`}
+                              scroll
+                              className="group block relative rounded-xl overflow-hidden transition-shadow hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
+                              style={{
+                                width: "100%",
+                                minHeight: "257px",
+                                background: "#F5F5F5",
+                                boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+                                textDecoration: "none",
+                              }}
+                            >
+                              {/* Gradient overlay visible only on hover */}
+                              <div
+                                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                                style={{
+                                  background: "linear-gradient(132.48deg, #F7F7F7 60.17%, #FF757B 94.82%), linear-gradient(246.59deg, rgba(247, 247, 247, 0.6) 58.7%, rgba(255, 232, 232, 0.6) 99.81%)",
+                                }}
+                                aria-hidden
+                              />
+                              <div className="relative z-10 p-6 flex flex-col min-h-[257px]">
+                                <div className="flex justify-between items-start">
+                                  <span
+                                    style={{
+                                      fontFamily: "Inter, sans-serif",
+                                      fontWeight: 400,
+                                      fontStyle: "normal",
+                                      fontSize: "13.3px",
+                                      lineHeight: "14px",
+                                      letterSpacing: "0.17px",
+                                      verticalAlign: "middle",
+                                      color: "rgba(0, 0, 0, 0.87)",
+                                    }}
+                                  >
+                                    {categoryLabel}
+                                  </span>
+                                  <div className="flex items-center justify-center rounded-full flex-shrink-0" style={{ width: "36px", height: "36px" }}>
+                                    <img
+                                      src="/img/agents/research-icon.png"
+                                      alt=""
+                                      width={28}
+                                      height={28}
+                                      className="object-contain"
+                                    />
+                                  </div>
+                                </div>
+                                {/* Middle block: title + description at bottom of block, just above BY CRAYON DATA */}
+                                <div className="flex-1 flex flex-col justify-end min-h-0 mt-3">
+                                  <h3
+                                    className="transition-all duration-200"
+                                    style={{
+                                      fontFamily: "Poppins, sans-serif",
+                                      fontWeight: 400,
+                                      fontStyle: "normal",
+                                      fontSize: "24px",
+                                      lineHeight: "32px",
+                                      letterSpacing: "0.17px",
+                                      color: "rgba(0, 0, 0, 0.87)",
+                                    }}
+                                  >
+                                    {agent.title}
+                                  </h3>
+                                  {agent.description && (
+                                    <p
+                                      className="mt-2 line-clamp-3 max-h-0 overflow-hidden opacity-0 group-hover:max-h-[100px] group-hover:opacity-100 transition-all duration-200"
+                                      style={{
+                                        fontFamily: "Inter, sans-serif",
+                                        fontWeight: 400,
+                                        fontStyle: "normal",
+                                        fontSize: "12px",
+                                        lineHeight: "18px",
+                                        letterSpacing: "0%",
+                                        color: "#475467",
+                                      }}
+                                    >
+                                      {agent.description}
+                                    </p>
+                                  )}
+                                </div>
+                                {/* Fixed at bottom (reference non-hover state) */}
+                                <p
+                                  className="mt-auto pt-4 uppercase flex-shrink-0"
+                                  style={{
+                                    fontFamily: "Inter, sans-serif",
+                                    fontWeight: 400,
+                                    fontStyle: "normal",
+                                    fontSize: "10px",
+                                    lineHeight: "15px",
+                                    letterSpacing: "0.5px",
+                                    verticalAlign: "middle",
+                                    textTransform: "uppercase",
+                                    color: "rgba(0, 0, 0, 0.87)",
+                                  }}
+                                >
+                                  BY CRAYON DATA
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
                       </div>
 
-                      {allFilteredAgents.length === 0 && (
+                      {sortedFilteredAgents.length === 0 && (
                         <div className="text-center py-12">
-                          <div className="text-muted-foreground">No agents found matching your criteria.</div>
+                          <div className="text-muted-foreground" style={{ fontFamily: "Poppins, sans-serif" }}>No agents found matching your criteria.</div>
                         </div>
                       )}
 
                       {totalPages > 1 && renderPaginationControls(currentPage, totalPages, setCurrentPage)}
+
+                      <div className="flex justify-center mt-10" style={{ marginBottom: "260px" }}>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          className="inline-flex items-center justify-center gap-1 px-5 hover:bg-gray-50 transition-colors"
+                          style={{
+                            fontFamily: "Inter, sans-serif",
+                            fontWeight: 500,
+                            fontStyle: "normal",
+                            fontSize: "14px",
+                            lineHeight: "16px",
+                            letterSpacing: "0%",
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                            color: "#344054",
+                            height: "40px",
+                            borderRadius: "8px",
+                            border: "1px solid #D0D5DD",
+                            background: "#FFFFFF",
+                          }}
+                        >
+                          See All +
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}
               </div>
-            </section>
-
-            {/* Custom Services CTA Section */}
-            <section
-              className="py-10 px-4 md:py-[50px] md:px-5 lg:py-20 lg:px-0"
-              style={{
-                width: "100%",
-                background: "#FFFFFF",
-                position: "relative",
-                margin: "0 auto",
-                textRendering: "optimizeLegibility",
-                WebkitFontSmoothing: "antialiased",
-                boxSizing: "border-box",
-                overflow: "visible",
-                display: "block",
-                visibility: "visible",
-                minHeight: "400px",
-              }}
-            >
-              {/* Pattern Background */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  top: 0,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  backgroundImage: "url('/img/bgpattern.svg')",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center center",
-                  backgroundSize: "contain",
-                  opacity: 1,
-                  zIndex: 0,
-                  pointerEvents: "none",
-                  width: "100%",
-                  maxWidth: "1356px",
-                  height: "100%",
-                }}
-              />
-
-              {/* Outer Container */}
-              <div
-                className="p-10 px-6 md:p-[60px] md:px-8 lg:p-[70px] lg:px-12"
-                style={{
-                  width: "100%",
-                  maxWidth: "1232px",
-                  margin: "0 auto",
-                  position: "relative",
-                  border: "none",
-                  borderRadius: 0,
-                  background: "transparent",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 0,
-                  boxSizing: "border-box",
-                  zIndex: 1,
-                  opacity: 1,
-                  visibility: "visible",
-                }}
-              >
-                {/* Header Section */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "12px",
-                    width: "100%",
-                    marginBottom: "32px",
-                    boxSizing: "border-box",
-                    position: "relative",
-                    zIndex: 2,
-                  }}
-                >
-                  {/* Top Pill Badge */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "auto",
-                      height: "28px",
-                      minWidth: "fit-content",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        padding: "5.8px 8px 6.79px 8px",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "12px",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        lineHeight: "14.4px",
-                        letterSpacing: "0%",
-                        textAlign: "center",
-                        verticalAlign: "middle",
-                        color: "#0b2b70",
-                        background: "#d0dff7",
-                        backdropFilter: "blur(3px)",
-                        WebkitBackdropFilter: "blur(3px)",
-                        border: "none",
-                        borderRadius: "20px",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxSizing: "border-box",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Enquire Now
-                    </div>
-                  </div>
-
-                  {/* Main Heading */}
-                  <h1
-                    className="md:text-[28px] md:leading-[39.2px] md:tracking-[-0.56px] md:px-20 md:whitespace-normal text-[24px] leading-[33.6px] tracking-[-0.48px] px-4 whitespace-normal lg:text-[32px] lg:leading-[44.8px] lg:tracking-[-0.64px] lg:px-[165px] lg:pl-[171.34px] lg:whitespace-nowrap"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      fontWeight: 600,
-                      fontStyle: "normal",
-                      textAlign: "center",
-                      verticalAlign: "middle",
-                      background: "linear-gradient(to left, #0082c0 0%, #3b60af 100%)",
-                      WebkitBackgroundClip: "text",
-                      backgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      color: "#0082c0",
-                      margin: 0,
-                      width: "100%",
-                      maxWidth: "100%",
-                      overflow: "visible",
-                      boxSizing: "border-box",
-                    }}
-                  >
-                    Want a Custom Workflow?
-                  </h1>
-
-                  {/* Subtitle */}
-                  <p
-                    className="text-sm leading-[21px] md:text-[15px] md:leading-[22.5px] lg:text-base lg:leading-6"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      fontWeight: 400,
-                      fontStyle: "normal",
-                      letterSpacing: "0%",
-                      textAlign: "center",
-                      verticalAlign: "middle",
-                      color: "#6b7280",
-                      margin: 0,
-                      width: "100%",
-                      maxWidth: "880px",
-                      position: "relative",
-                    }}
-                  >
-                    Tangram agents can be chained into complete, composable solutions. Tell us what outcome you want — we'll build the right flow.
-                  </p>
-                </div>
-
-                {/* Button Group */}
-                <div
-                  className="flex-col gap-3 w-full md:flex-row md:gap-4"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    paddingTop: 0,
-                    boxSizing: "border-box",
-                    position: "relative",
-                    zIndex: 2,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      position: "relative",
-                      background: "rgba(121, 133, 171, 0.05)",
-                      borderRadius: "4px",
-                      padding: "2px",
-                      boxSizing: "border-box",
-                    }}
-                  >
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: "-2px",
-                        background: "rgba(121, 133, 171, 0.05)",
-                        borderRadius: "4px",
-                        filter: "blur(7.5px)",
-                        zIndex: -1,
-                      }}
-                    />
-                    <button
-                      onClick={() => openModal("auth", { mode: "signup", role: "client" })}
-                      style={{
-                        position: "relative",
-                        height: "44px",
-                        padding: "0 28px",
-                        zIndex: 1,
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 500,
-                        fontStyle: "normal",
-                        fontSize: "14px",
-                        lineHeight: "21px",
-                        letterSpacing: "0%",
-                        color: "#FFFFFF",
-                        background: "black",
-                        border: "none",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        whiteSpace: "nowrap",
-                        boxSizing: "border-box",
-                        borderRadius: "4px",
-                        textDecoration: "none",
-                        cursor: "pointer",
-                        pointerEvents: "auto",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.opacity = "0.9";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.opacity = "1";
-                      }}
-                    >
-                      Talk to Solution Architect
-                    </button>
-                  </div>
-
-                </div>
-              </div>
-
-
             </section>
           </>
         </div>
