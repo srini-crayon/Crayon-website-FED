@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import ChatDialog from "../../components/chat-dialog";
-import { CrayonFooter } from "../../components/crayon-footer";
 
 export default function CrayondataPage() {
   const [chatOpen, setChatOpen] = useState(false);
@@ -168,8 +167,6 @@ export default function CrayondataPage() {
       </section>
 
       <div className="flex-grow"></div>
-
-      <CrayonFooter />
 
       <ChatDialog open={chatOpen} onOpenChange={setChatOpen} initialMode="create" />
     </div>
