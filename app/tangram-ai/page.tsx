@@ -68,11 +68,13 @@ function renderTag(item: PillItem, key: string) {
 }
 
 export default function TangramAIPage() {
-  const phrases = useMemo(() => ["Data Activation", "Faster Deployment", "Smarter Outcomes"], []);
-  const phraseColors = useMemo(() => ["#F97316", "#22C55E", "#EC4899"], []); // orange, green, pink
-  const [phraseIdx, setPhraseIdx] = useState(0);
-  const [typed, setTyped] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const DEPLOY_PART1 = "Built to integrate and govern";
+  const DEPLOY_PART2 = "Scale across the enterprise.";
+  const deployColorGreen = "#22C55E";
+  const deployColorPink = "#EC4899";
+  // deployPhase: 0 = typing green, 1 = deleting green, 2 = typing pink, 3 = deleting pink
+  const [deployPhase, setDeployPhase] = useState(0);
+  const [deployTyped, setDeployTyped] = useState("");
   const [whatYouGetExpanded, setWhatYouGetExpanded] = useState<string>("01");
 
   // Rotate gradient animation for hero CTA button (match ISV page)
@@ -90,30 +92,44 @@ export default function TangramAIPage() {
     return () => animationFrameId != null && cancelAnimationFrame(animationFrameId);
   }, []);
 
+  // Deploy line: green part types then deletes to empty, then pink part types then deletes; repeat
   useEffect(() => {
-    const current = phrases[phraseIdx] ?? "";
-    const doneTyping = typed === current && !isDeleting;
-    const doneDeleting = typed === "" && isDeleting;
+    const isGreen = deployPhase === 0 || deployPhase === 1;
+    const target = isGreen ? DEPLOY_PART1 : DEPLOY_PART2;
+    const doneTyping = deployTyped === target && deployPhase === 0;
+    const doneDeletingGreen = deployTyped === "" && deployPhase === 1;
+    const doneTypingPink = deployTyped === target && deployPhase === 2;
+    const doneDeletingPink = deployTyped === "" && deployPhase === 3;
 
     const timeout = window.setTimeout(
       () => {
         if (doneTyping) {
-          setIsDeleting(true);
+          setDeployPhase(1); // start deleting green
           return;
         }
-        if (doneDeleting) {
-          setIsDeleting(false);
-          setPhraseIdx((v) => (v + 1) % phrases.length);
+        if (doneDeletingGreen) {
+          setDeployPhase(2); // start typing pink
           return;
         }
-        const next = isDeleting ? current.slice(0, Math.max(0, typed.length - 1)) : current.slice(0, typed.length + 1);
-        setTyped(next);
+        if (doneTypingPink) {
+          setDeployPhase(3); // start deleting pink
+          return;
+        }
+        if (doneDeletingPink) {
+          setDeployPhase(0); // start typing green again
+          return;
+        }
+        const next =
+          deployPhase === 1 || deployPhase === 3
+            ? deployTyped.slice(0, Math.max(0, deployTyped.length - 1))
+            : target.slice(0, deployTyped.length + 1);
+        setDeployTyped(next);
       },
-      doneTyping ? 900 : isDeleting ? 35 : 65
+      doneTyping || doneTypingPink ? 1200 : doneDeletingGreen || doneDeletingPink ? 0 : deployPhase === 1 || deployPhase === 3 ? 25 : 45
     );
 
     return () => window.clearTimeout(timeout);
-  }, [isDeleting, phraseIdx, phrases, typed]);
+  }, [deployPhase, deployTyped]);
 
   const capabilityPills: PillItem[] = useMemo(
     () => [
@@ -199,7 +215,7 @@ export default function TangramAIPage() {
               color: "#0B1B1A",
             }}
           >
-            Simplify AI Success.
+            Accelerate AI Success
           </h1>
 
           <p
@@ -212,11 +228,11 @@ export default function TangramAIPage() {
               color: "#0B1B1A",
             }}
           >
-            With the Tangram Generative + Agentic AI platform that
+            From idea to impact — without rebuilding from scratch.
           </p>
 
           <p
-            className="mx-auto mt-2"
+            className="mx-auto mt-2 max-w-3xl"
             style={{
               fontFamily: "Poppins, sans-serif",
               fontWeight: 600,
@@ -225,19 +241,22 @@ export default function TangramAIPage() {
               color: "#0B1B1A",
             }}
           >
-            Delivers 7X{" "}
-            <span
-              style={{
-                display: "inline-block",
-                minWidth: "18ch",
-                textAlign: "left",
-                color: phraseColors[phraseIdx % phraseColors.length],
-                fontWeight: 600,
-              }}
-            >
-              {typed}
-              <span aria-hidden="true" className="stream-cursor" style={{ background: phraseColors[phraseIdx % phraseColors.length] }} />
-            </span>
+            Deploy modular, production-grade AI agents —{" "}
+            {deployPhase === 0 || deployPhase === 1 ? (
+              <>
+                <span style={{ display: "inline", fontWeight: 600, color: deployColorGreen }}>
+                  {deployTyped}
+                </span>
+                <span aria-hidden="true" className="stream-cursor" style={{ background: deployColorGreen }} />
+              </>
+            ) : (
+              <>
+                <span style={{ display: "inline", fontWeight: 600, color: deployColorPink }}>
+                  {deployTyped}
+                </span>
+                <span aria-hidden="true" className="stream-cursor" style={{ background: deployColorPink }} />
+              </>
+            )}
           </p>
 
           <div className="mx-auto mt-10 flex max-w-5xl flex-col gap-3">
@@ -317,6 +336,181 @@ export default function TangramAIPage() {
                 See Tangram in Action
               </span>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Tangram Is Already in Production */}
+      <section
+        className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center fade-in-visible"
+        style={{ background: "#F9FAFB" }}
+      >
+        <div className="w-full px-8 md:px-12 lg:px-16">
+          <div className="max-w-7xl mx-auto text-center">
+            <h2
+              className="text-balance fade-in-blur fade-in-blur-visible"
+              style={{
+                textAlign: "center",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "28px",
+                fontStyle: "normal",
+                fontWeight: 600,
+                lineHeight: "39.2px",
+                letterSpacing: "-0.56px",
+                marginBottom: "16px",
+                background: "linear-gradient(270deg, #3B60AF 0%, #0082C0 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
+              }}
+            >
+              Tangram Is Already in Production
+            </h2>
+            <p
+              className="fade-in-section fade-in-visible mx-auto max-w-3xl"
+              style={{
+                color: "#111827",
+                textAlign: "center",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "24px",
+              }}
+            >
+              This isn&apos;t a beta. Tangram is live, running, and delivering impact inside large enterprises.
+            </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
+              <div className="p-0">
+                <Image src="/img/deployment1.svg" alt="" width={920} height={420} unoptimized className="w-full h-auto" />
+              </div>
+              <div
+                className="px-6 pb-6 pt-5"
+                style={{
+                  color: "#111827",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                }}
+              >
+                LIVE in Production and 12+ POCs in flight across banking, Retail, commerce, and operations.
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
+              <div className="p-0">
+                <Image src="/Section_6_2.png" alt="" width={920} height={420} className="w-full h-auto" />
+              </div>
+              <div
+                className="px-6 pb-6 pt-5"
+                style={{
+                  color: "#111827",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                }}
+              >
+                15–22% uplift in customer experience through personalization
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
+              <div className="p-0">
+                <Image src="/Section_6_3.png" alt="" width={920} height={420} className="w-full h-auto" />
+              </div>
+              <div
+                className="px-6 pb-6 pt-5"
+                style={{
+                  color: "#111827",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                }}
+              >
+                40% lower drop-offs through agent-driven onboarding
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
+              <div className="p-0">
+                <Image src="/Section_6_4.png" alt="" width={920} height={420} className="w-full h-auto" />
+              </div>
+              <div
+                className="px-6 pb-6 pt-5"
+                style={{
+                  color: "#111827",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                }}
+              >
+                60% reduction in manual effort with chained agents
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 border-t border-[#E5E7EB] pt-12">
+            <h3
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 600,
+                fontSize: "24px",
+                lineHeight: "32px",
+                letterSpacing: "-0.48px",
+                textAlign: "center",
+                color: "#111827",
+                marginBottom: 12,
+              }}
+            >
+              Built for Real-World Load
+            </h3>
+            <p
+              className="mx-auto max-w-3xl"
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 400,
+                fontSize: "16px",
+                lineHeight: "24px",
+                textAlign: "center",
+                color: "#6B7280",
+              }}
+            >
+              These aren&apos;t sandbox experiments — they&apos;re high-volume journeys, complex workflows, and mission-critical operations now
+              running on Tangram.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              {[
+                { t: "High-Volume Journeys", bg: "#EAF2FF", c: "#2563EB" },
+                { t: "Complex Workflows", bg: "#EEF2FF", c: "#4F46E5" },
+                { t: "Mission-Critical Operations", bg: "#F5F3FF", c: "#7C3AED" },
+              ].map((p) => (
+                <span
+                  key={p.t}
+                  className="rounded-full border border-[#E5E7EB] px-4 py-2"
+                  style={{
+                    background: p.bg,
+                    color: p.c,
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 500,
+                    fontSize: 13,
+                  }}
+                >
+                  {p.t}
+                </span>
+              ))}
+            </div>
+          </div>
           </div>
         </div>
       </section>
@@ -447,102 +641,6 @@ export default function TangramAIPage() {
                 </Card>
               </span>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* AI Catalyst */}
-      <section
-        className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center relative fade-in-visible"
-        style={{
-          background: "linear-gradient(180deg, #FFFFFF 0%, #E8F7F4 76.44%, #FAFAFA 100%)",
-        }}
-      >
-        <div className="mx-auto w-full max-w-[1100px] px-6 text-center">
-          <h2
-            style={{
-              fontFamily: "Poppins, sans-serif",
-              fontWeight: 600,
-              fontSize: 28,
-              lineHeight: "36px",
-              background: "linear-gradient(90deg, #002E84 0%, #1157D9 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              color: "transparent",
-            }}
-          >
-            Accelerate Deployment of Your Own Agents using AI Catalyst
-          </h2>
-          <p
-            className="mx-auto mt-3 max-w-3xl"
-            style={{
-              fontFamily: "Poppins, sans-serif",
-              fontWeight: 400,
-              fontSize: 16,
-              lineHeight: "24px",
-              color: "#111827",
-            }}
-          >
-            <span style={{ fontWeight: 700 }}>Reduce risks. Accelerate adoption.</span> Your data, your guardrails, our agents, our
-            models. Worried about hallucinations? Or data security? Catalyst is designed to address them.
-          </p>
-
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[
-              { title: "Labs", subtitle: "Use case discovery & rapid prototyping", img: "/card1.png", tint: "#FDE8EF" },
-              { title: "Foundry", subtitle: "Pilots integrated with your systems", img: "/card2.png", tint: "#EEF2FF" },
-              { title: "Factory", subtitle: "Governed, production-grade rollouts", img: "/card3.png", tint: "#FFF7DB" },
-            ].map((c) => (
-              <Card key={c.title} className="overflow-hidden rounded-[8px] border border-[#E5E7EB] bg-white py-0 shadow-none flex flex-col gap-0">
-                <div className="p-3 overflow-hidden flex items-center justify-center" style={{ background: c.tint }}>
-                  <Image src={c.img} alt="" width={860} height={520} className="w-full h-auto" />
-                </div>
-                <CardContent className="px-5 pb-4 pt-3 text-left">
-                  <div
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      fontWeight: 600,
-                      fontSize: 18,
-                      color: "#111827",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {c.title}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      fontWeight: 400,
-                      fontSize: 15,
-                      lineHeight: "22px",
-                      color: "#374151",
-                    }}
-                  >
-                    {c.subtitle}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <p
-            className="mx-auto mt-10 max-w-2xl"
-            style={{
-              fontFamily: "Poppins, sans-serif",
-              fontWeight: 400,
-              fontSize: 16,
-              lineHeight: "24px",
-              color: "#111827",
-            }}
-          >
-            Delivered by cross-functional squads with GenAI, data, domain, and engineering expertise.
-          </p>
-
-          <div className="mt-6 flex justify-center">
-            <Button asChild className="h-10 rounded-[4px] bg-black text-white hover:bg-black/90" style={{ fontFamily: "Poppins, sans-serif" }}>
-              <Link href="/ai-catalyst">Learn More</Link>
-            </Button>
           </div>
         </div>
       </section>
@@ -753,181 +851,6 @@ export default function TangramAIPage() {
                 );
               })()}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Production */}
-      <section
-        className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center fade-in-visible"
-        style={{ background: "#F9FAFB" }}
-      >
-        <div className="w-full px-8 md:px-12 lg:px-16">
-          <div className="max-w-7xl mx-auto text-center">
-            <h2
-              className="text-balance fade-in-blur fade-in-blur-visible"
-              style={{
-                textAlign: "center",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "28px",
-                fontStyle: "normal",
-                fontWeight: 600,
-                lineHeight: "39.2px",
-                letterSpacing: "-0.56px",
-                marginBottom: "16px",
-                background: "linear-gradient(270deg, #3B60AF 0%, #0082C0 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                color: "transparent",
-              }}
-            >
-              Tangram Is Already in Production
-            </h2>
-            <p
-              className="fade-in-section fade-in-visible mx-auto max-w-3xl"
-              style={{
-                color: "#111827",
-                textAlign: "center",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "24px",
-              }}
-            >
-              This isn't a beta. Tangram is live, running, and delivering impact inside large enterprises.
-            </p>
-
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
-              <div className="p-0">
-                <Image src="/img/deployment1.svg" alt="" width={920} height={420} unoptimized className="w-full h-auto" />
-              </div>
-              <div
-                className="px-6 pb-6 pt-5"
-                style={{
-                  color: "#111827",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "24px",
-                }}
-              >
-                LIVE in Production and 12+ POCs in flight across banking, Retail, commerce, and operations.
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
-              <div className="p-0">
-                <Image src="/Section_6_2.png" alt="" width={920} height={420} className="w-full h-auto" />
-              </div>
-              <div
-                className="px-6 pb-6 pt-5"
-                style={{
-                  color: "#111827",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "24px",
-                }}
-              >
-                15–22% uplift in customer experience through personalization
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
-              <div className="p-0">
-                <Image src="/Section_6_3.png" alt="" width={920} height={420} className="w-full h-auto" />
-              </div>
-              <div
-                className="px-6 pb-6 pt-5"
-                style={{
-                  color: "#111827",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "24px",
-                }}
-              >
-                40% lower drop-offs through agent-driven onboarding
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white text-left">
-              <div className="p-0">
-                <Image src="/Section_6_4.png" alt="" width={920} height={420} className="w-full h-auto" />
-              </div>
-              <div
-                className="px-6 pb-6 pt-5"
-                style={{
-                  color: "#111827",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "24px",
-                }}
-              >
-                60% reduction in manual effort with chained agents
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 border-t border-[#E5E7EB] pt-12">
-            <h3
-              style={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 600,
-                fontSize: "24px",
-                lineHeight: "32px",
-                letterSpacing: "-0.48px",
-                textAlign: "center",
-                color: "#111827",
-                marginBottom: 12,
-              }}
-            >
-              Built for Real-World Load
-            </h3>
-            <p
-              className="mx-auto max-w-3xl"
-              style={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 400,
-                fontSize: "16px",
-                lineHeight: "24px",
-                textAlign: "center",
-                color: "#6B7280",
-              }}
-            >
-              These aren't sandbox experiments — they're high-volume journeys, complex workflows, and mission-critical operations now
-              running on Tangram.
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              {[
-                { t: "High-Volume Journeys", bg: "#EAF2FF", c: "#2563EB" },
-                { t: "Complex Workflows", bg: "#EEF2FF", c: "#4F46E5" },
-                { t: "Mission-Critical Operations", bg: "#F5F3FF", c: "#7C3AED" },
-              ].map((p) => (
-                <span
-                  key={p.t}
-                  className="rounded-full border border-[#E5E7EB] px-4 py-2"
-                  style={{
-                    background: p.bg,
-                    color: p.c,
-                    fontFamily: "Poppins, sans-serif",
-                    fontWeight: 500,
-                    fontSize: 13,
-                  }}
-                >
-                  {p.t}
-                </span>
-              ))}
-            </div>
-          </div>
           </div>
         </div>
       </section>
