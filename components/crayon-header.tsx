@@ -1,17 +1,62 @@
 'use client'
 
-import { useState, Fragment, useEffect } from "react"
+import { useState, Fragment, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { X } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { X, ChevronDown, ExternalLink, User, LayoutDashboard, LogOut, Heart } from "lucide-react"
 import { useModal } from "../hooks/use-modal"
+import { useAuthStore } from "../lib/store/auth.store"
+import { useWishlistsStore } from "../lib/store/wishlists.store"
+import { useCurrentAgentStore } from "../lib/store/current-agent.store"
+import { WishlistPickerModal } from "./wishlist-picker-modal"
+import { Avatar, AvatarFallback } from "./ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu"
 
 export function CrayonHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [headerVisible, setHeaderVisible] = useState(true)
+  const [isWishlistPickerOpen, setIsWishlistPickerOpen] = useState(false)
+  const lastScrollY = useRef(0)
   const pathname = usePathname()
+  const router = useRouter()
   const { openModal } = useModal()
+  const { isAuthenticated, user, logout } = useAuthStore()
+  const { isInAnyWishlist, loadAllWishlists } = useWishlistsStore()
+  const { agentId: currentAgentId, agentName: currentAgentName } = useCurrentAgentStore()
+  const scrollThreshold = 8
+
+  const isAgentDetailPage = pathname.startsWith('/agents/') && pathname !== '/agents' && pathname !== '/agents-store'
+  const agentIdFromPath = isAgentDetailPage ? pathname.replace(/^\/agents\//, '').split('/')[0] || null : null
+  const headerAgentId = agentIdFromPath || currentAgentId
+  const headerAgentName = currentAgentName ?? undefined
+  const isWishlisted = headerAgentId ? isInAnyWishlist(headerAgentId) : false
+
+  useEffect(() => {
+    if (isAuthenticated && headerAgentId) loadAllWishlists()
+  }, [isAuthenticated, headerAgentId, loadAllWishlists])
+
+  const handleHeaderWishlistClick = () => {
+    if (!isAuthenticated) {
+      openModal("auth", { mode: "login", role: "client" })
+      return
+    }
+    setIsWishlistPickerOpen(true)
+  }
+
+  const getInitials = (email: string) => {
+    if (!email) return "U"
+    const part = email.split("@")[0]
+    if (part.length >= 2) return (part[0] + part[1]).toUpperCase()
+    return part[0].toUpperCase()
+  }
 
   type SecondaryItem = { label: string; path: string; external?: boolean; disabled?: boolean }
   
@@ -21,7 +66,6 @@ export function CrayonHeader() {
     { label: "Our Story", path: "/our-story" },
     { label: "Our Values", path: "/our-values" },
     { label: "Our Team", path: "/our-team" },
-    { label: "Our Investors", path: "/our-investors" },
     { label: "Careers", path: "/career" },
   ]
   
@@ -79,6 +123,24 @@ export function CrayonHeader() {
     setMounted(true)
   }, [])
 
+  // Hide header on scroll down, show on scroll up so it doesn't cover content
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isMenuOpen) return
+      const y = window.scrollY
+      if (y <= scrollThreshold) {
+        setHeaderVisible(true)
+      } else if (y > lastScrollY.current) {
+        setHeaderVisible(false)
+      } else {
+        setHeaderVisible(true)
+      }
+      lastScrollY.current = y
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [isMenuOpen])
+
   type MenuLink = string | { label: string; href: string; disabled?: boolean }
   const megaMenuSections: { title: string; icon: string; links: MenuLink[] }[] = [
     {
@@ -109,7 +171,7 @@ export function CrayonHeader() {
     {
       title: "About Us",
       icon: "/img/menu-about.png",
-      links: ["Vision", "Our Story", "Our Values", "Our Team", "Our Investors", "Career"]
+      links: ["Vision", "Our Story", "Our Values", "Our Team", "Career"]
     },
     {
       title: "Other links",
@@ -139,18 +201,17 @@ export function CrayonHeader() {
         />
       )}
 
-      {/* Floating Header */}
+      {/* Sticky header: hides on scroll down, shows on scroll up so it doesn't cover content */}
       <header 
-        className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white transition-[top] duration-150 ease-out header-with-banner"
+        className={`fixed top-0 left-0 right-0 z-50 bg-white header-with-banner border-b border-gray-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out ${
+          headerVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
         style={{
           display: 'flex',
           flexDirection: 'column',
-          width: 'calc(100% - 40px)',
-          maxWidth: '1472px',
+          width: '100%',
           padding: isMenuOpen ? '0 25px' : '0 25px',
-          borderRadius: '4px',
           overflow: 'hidden',
-          boxShadow: '0 6px 16px rgba(17, 24, 39, 0.05)',
         }}
       >
         {/* Main Header Row */}
@@ -163,193 +224,216 @@ export function CrayonHeader() {
             padding: '9px 0',
           }}
         >
-        {/* Left Section - Logo & Tagline/Menu */}
-        <div className="flex items-center" style={{ gap: '18px' }}>
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link 
-              href="/"
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                cursor: 'pointer',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              aria-label="Go to home page"
-            >
-              <Image
-                src="/img/crayon-header-logo.png"
-                alt="Crayon Logo"
-                width={100}
-                height={28}
-                className="h-auto"
-                priority
-              />
-            </Link>
-          </div>
-
-          {/* Vertical Separator - Only show when there's a secondary menu */}
-          {(isAboutUsPage || isLegalPage || isServicesPage || isPlatformPage || isCommunityPage) && (
-            <div
-              style={{
-                width: '1px',
-                height: '20px',
-                backgroundColor: '#E5E7EB',
-              }}
+        {/* Left Section - Logo */}
+        <div className="flex items-center shrink-0">
+          <Link 
+            href="/"
+            onClick={() => setIsMenuOpen(false)}
+            style={{
+              cursor: 'pointer',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            aria-label="Go to home page"
+          >
+            <Image
+              src="/img/crayon-header-logo.png"
+              alt="Crayon Logo"
+              width={100}
+              height={28}
+              className="h-auto"
+              priority
             />
-          )}
-
-          {/* Tagline or Menu text */}
-          {isMenuOpen ? (
-            <span
-              style={{
-                color: '#1F2937',
-                fontFamily: 'Poppins',
-                fontSize: '16px',
-                fontStyle: 'normal',
-                fontWeight: 400,
-                lineHeight: '24px',
-              }}
-            >
-              Menu
-            </span>
-          ) : (
-            <>
-              {isAboutUsPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  About Us
-                </span>
-              )}
-              {isLegalPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Legal
-                </span>
-              )}
-              {isPlatformPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Platform
-                </span>
-              )}
-              {isServicesPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Services
-                </span>
-              )}
-              {isCommunityPage && (
-                <span
-                  style={{
-                    color: '#4A4A4A',
-                    fontFamily: 'Poppins',
-                    fontSize: '16px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Community
-                </span>
-              )}
-            </>
-          )}
+          </Link>
         </div>
 
-        {/* Right Section - Button & Menu */}
-        <div className="flex items-center gap-6">
-          {/* Enquiry Now Button */}
+        {/* Separator "/" between logo and nav - desktop only */}
+        <span
+          className="hidden lg:inline-flex items-center px-4 text-[15px] font-medium text-[#9CA3AF] select-none"
+          aria-hidden
+        >
+          /
+        </span>
+
+        {/* Center - Main navigation (Platform, Services, Community, About Us, Pricing, Resources) - left aligned */}
+        <nav
+          className="hidden lg:flex items-center justify-start gap-6 flex-1"
+          aria-label="Main navigation"
+        >
+          <Link
+            href="/tangram-ai"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Platform
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/catalyst"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Services
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/blog"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Community
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/vision"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            About Us
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="#pricing"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Pricing
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+          <Link
+            href="/blog"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-1 text-[15px] font-medium text-[#091917] hover:text-[#0d2522] transition-colors"
+          >
+            Resources
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden />
+          </Link>
+        </nav>
+
+        {/* Right Section - Wishlist (on agent detail), Enquire Now, User profile or Get started */}
+        <div className="flex items-center gap-[24px]">
+          {/* Wishlist button - top navbar right, same as AgentActionButtons (only on agent detail page) */}
+          {isAgentDetailPage && headerAgentId && (
+            <button
+              type="button"
+              onClick={handleHeaderWishlistClick}
+              className="flex items-center justify-center w-12 h-12 rounded border border-gray-200 bg-gray-100 text-[#111827] hover:bg-gray-200 transition-all duration-200 shadow-sm hover:shadow"
+              style={{ minWidth: 48, minHeight: 48 }}
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart
+                size={20}
+                fill={isWishlisted ? "#EF4444" : "none"}
+                stroke={isWishlisted ? "#EF4444" : "#111827"}
+                strokeWidth={2}
+              />
+            </button>
+          )}
+
+          {/* Enquire Now */}
           <Link
             href="/enquiry"
             onClick={() => setIsMenuOpen(false)}
+            className="inline-flex items-center gap-2 text-[#091917] hover:text-[#0d2522] font-medium text-sm py-2 px-4 rounded-md transition-colors"
             style={{
-              backgroundColor: '#1A1A1A',
-              color: '#FFFFFF',
               fontFamily: 'Poppins',
-              fontSize: '14px',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              padding: '8px 16px',
-              borderRadius: '6px',
-              textDecoration: 'none',
-              transition: 'opacity 0.2s',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             aria-label="Go to enquiry page"
           >
             Enquire Now
+            <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
           </Link>
 
-          {/* Hamburger Menu Icon */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px',
-            }}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X size={24} color="#4A4A4A" />
-            ) : (
-              <>
-                <div
-                  style={{
-                    width: '25px',
-                    height: '2px',
-                    backgroundColor: '#4A4A4A',
+          {/* User profile dropdown - on platform/agent store when logged in */}
+          {isPlatformPage && isAuthenticated && user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center rounded-full border border-gray-200 bg-white text-[#091917] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+                  aria-label="User menu"
+                >
+                  <Avatar className="h-8 w-8 border border-gray-200">
+                    <AvatarFallback
+                      className="bg-[#181818] text-white text-xs font-medium"
+                      style={{ fontFamily: 'Poppins' }}
+                    >
+                      {getInitials(user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={8} className="min-w-[180px]">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 cursor-pointer">
+                    <User className="h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                {(user.role === 'isv' || user.role === 'reseller') && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 cursor-pointer">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                {user.role === 'admin' && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 cursor-pointer">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Admin
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  className="cursor-pointer"
+                  onClick={() => {
+                    logout()
+                    setIsMenuOpen(false)
+                    router.push('/agents')
                   }}
-                />
-                <div
-                  style={{
-                    width: '25px',
-                    height: '2px',
-                    backgroundColor: '#4A4A4A',
-                  }}
-                />
-              </>
-            )}
-          </button>
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
+          {/* Get started - only on platform pages when not logged in; opens login/signup */}
+          {isPlatformPage && !isAuthenticated && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                setIsMenuOpen(false)
+                openModal("auth", { mode: "login", role: "client" })
+              }}
+              className="inline-flex items-center justify-center gap-2.5 rounded hover:opacity-90 transition-opacity"
+              style={{
+                width: 96,
+                height: 32,
+                padding: '7px 14px',
+                borderRadius: 4,
+                backgroundColor: '#181818',
+                fontFamily: 'Poppins',
+                fontWeight: 400,
+                fontSize: '12px',
+                lineHeight: '100%',
+                letterSpacing: '0px',
+                verticalAlign: 'middle',
+                color: '#FFFFFF',
+              }}
+              aria-label="Get started - Login or Sign up"
+            >
+              Get started
+            </button>
+          )}
         </div>
         </div>
 
@@ -455,25 +539,23 @@ export function CrayonHeader() {
                       href={item.path}
                       onClick={() => setIsMenuOpen(false)}
                       style={{
-                        color: isActive ? '#007BFF' : 'var(--Interface-Color-Neutral-700, #374151)',
+                        color: isActive ? '#004BEC' : '#374151',
                         fontFamily: 'Poppins',
                         fontSize: '14px',
                         fontStyle: 'normal',
                         fontWeight: isActive ? 500 : 400,
                         lineHeight: '24px',
+                        letterSpacing: '0px',
+                        verticalAlign: 'middle',
                         textDecoration: 'none',
                         transition: 'color 0.2s',
                         whiteSpace: 'nowrap',
                       }}
                       onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                        }
+                        if (!isActive) e.currentTarget.style.color = '#374151'
                       }}
                       onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                        }
+                        if (!isActive) e.currentTarget.style.color = '#374151'
                       }}
                     >
                       {item.label}
@@ -481,72 +563,6 @@ export function CrayonHeader() {
                   )
                 })}
               </div>
-
-              {/* Platform-only: Login / Signup on right end */}
-              {isPlatformPage && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '20px',
-                  }}
-                >
-                  <Link
-                    href="/auth/login"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsMenuOpen(false)
-                      openModal("auth", { mode: "login", role: "client" })
-                    }}
-                    style={{
-                      color: 'var(--Interface-Color-Neutral-700, #374151)',
-                      fontFamily: 'Poppins',
-                      fontSize: '14px',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      lineHeight: '24px',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#007BFF'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                    }}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsMenuOpen(false)
-                      openModal("auth", { mode: "signup", role: "client" })
-                    }}
-                    style={{
-                      color: 'var(--Interface-Color-Neutral-700, #374151)',
-                      fontFamily: 'Poppins',
-                      fontSize: '14px',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      lineHeight: '24px',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#007BFF'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--Interface-Color-Neutral-700, #374151)'
-                    }}
-                  >
-                    Signup
-                  </Link>
-                </div>
-              )}
             </div>
           </>
         )}
@@ -691,6 +707,14 @@ export function CrayonHeader() {
           )}
         </div>
       </header>
+      {headerAgentId && (
+        <WishlistPickerModal
+          isOpen={isWishlistPickerOpen}
+          onClose={() => setIsWishlistPickerOpen(false)}
+          agentId={headerAgentId}
+          agentName={headerAgentName}
+        />
+      )}
     </Fragment>
   )
 }

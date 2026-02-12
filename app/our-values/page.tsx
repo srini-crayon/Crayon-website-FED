@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -18,36 +17,50 @@ const companyValues = [
     id: 1,
     name: "The mission is the boss",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/The-mission-is-the-boss-.svg.svg#883",
+    description:
+      "At Crayon Data, the mission comes first — always. Titles, hierarchy, and roles matter less than doing what's right for the mission. The best idea wins, regardless of where it comes from. We align decisions around impact, not authority.",
   },
   {
     id: 2,
     name: "Responsibility with freedom",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/Responsibility-with-freedom-.svg.svg#882",
+    description:
+      "We give people the freedom to think independently, challenge assumptions, and take ownership. With that freedom comes responsibility — to be honest, to deliver on commitments, and to own outcomes. Trust is earned through execution.",
   },
   {
     id: 3,
     name: "Get shit done",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/Get-shit-done-.svg-fill.svg#881",
+    description:
+      "We value action over perfection. When you're clear enough to move forward, you move. We think deeply, act quickly, and learn continuously. Progress matters — and momentum compounds.",
   },
   {
     id: 4,
     name: "Be the benchmark",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/Be-the-benchmark-.svg.svg#880",
+    description:
+      "\"Good enough\" isn't good enough. We don't chase competitors — we set standards. Whether it's our thinking, our work, or our outcomes, we aim to raise the bar for ourselves and for the industry.",
   },
   {
     id: 5,
-    name: "Practice constructive candor",
+    name: "Practice constructive candour",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/Practice-constructive-candor-.svg-fill.svg#879",
+    description:
+      "We believe honest conversations build stronger teams. We speak openly, listen actively, and give feedback with empathy and intent to help. Candour isn't about being blunt — it's about being constructive.",
   },
   {
     id: 6,
     name: "Think data, craft experiences",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/Think-data-craft-experiences-.svg-fill.svg#878",
+    description:
+      "Data is the foundation, but experience is the outcome. We use data to inform decisions, guide intelligence, and shape systems — always with the end user in mind. Insight only matters when it creates a better experience.",
   },
   {
     id: 7,
     name: "Simplicity is sophistication",
     icon: "https://crayondata.ai/wp-content/uploads/2024/04/Simplicity-is-sophistication-.svg-fill.svg#877",
+    description:
+      "Complex problems deserve clear solutions. We believe true sophistication lies in clarity of thought and simplicity of output — even when the systems behind them are complex. If it's not easy to understand, it's not done yet.",
   },
 ];
 
@@ -71,6 +84,12 @@ const peopleValues = [
 ];
 
 export default function OurValuesPage() {
+  const [expandedValue, setExpandedValue] = useState<number | null>(null);
+
+  const toggleValue = (id: number) => {
+    setExpandedValue((prev) => (prev === id ? null : id));
+  };
+
   // Scroll animations with IntersectionObserver
   useEffect(() => {
     const scheduleObservation = (callback: () => void) => {
@@ -330,8 +349,8 @@ export default function OurValuesPage() {
               }}
             >
               {/* Dotted C Background */}
-              <div 
-                style={{ 
+              <div
+                style={{
                   position: "absolute",
                   left: "-100px",
                   top: "-50px",
@@ -394,58 +413,164 @@ export default function OurValuesPage() {
               </div>
             </div>
 
-            {/* Values Grid */}
-            <div style={{ width: "100%" }}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {companyValues.map((value, index) => (
+            {/* Values Tiles Grid */}
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              style={{ gap: "20px", width: "100%" }}
+            >
+              {companyValues.map((value, index) => {
+                const isExpanded = expandedValue === value.id;
+                return (
                   <div
                     key={value.id}
                     className="stagger-item scale-in"
+                    onClick={() => toggleValue(value.id)}
                     style={{
-                      padding: "24px",
+                      transitionDelay: `${index * 80}ms`,
                       backgroundColor: "#F8F8F8",
-                      borderRadius: "12px",
-                      textAlign: "center",
+                      borderRadius: "16px",
+                      border: isExpanded ? "2px solid #ED2E7E" : "2px solid transparent",
+                      cursor: "pointer",
+                      overflow: "hidden",
+                      transition: "border-color 0.35s ease, box-shadow 0.35s ease, transform 0.2s ease",
+                      boxShadow: isExpanded
+                        ? "0 6px 24px rgba(237, 46, 126, 0.12)"
+                        : "0 1px 3px rgba(0, 0, 0, 0.04)",
                       display: "flex",
                       flexDirection: "column",
-                      alignItems: "center",
-                      gap: "16px",
-                      transitionDelay: `${index * 100}ms`,
-                      minHeight: "180px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = isExpanded
+                        ? "0 8px 28px rgba(237, 46, 126, 0.16)"
+                        : "0 4px 16px rgba(0, 0, 0, 0.08)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = isExpanded
+                        ? "0 6px 24px rgba(237, 46, 126, 0.12)"
+                        : "0 1px 3px rgba(0, 0, 0, 0.04)";
+                      e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
-                    <div style={{ width: "80px", height: "80px", position: "relative", flexShrink: 0 }}>
-                      <Image
-                        src={value.icon}
-                        alt={value.name}
-                        fill
-                        style={{
-                          objectFit: "contain",
-                        }}
-                        unoptimized
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = "none";
-                        }}
-                      />
-                    </div>
-                    <p
+                    {/* Tile Top: Icon + Title + Arrow */}
+                    <div
                       style={{
-                        color: "#111827",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "16px",
-                        fontStyle: "normal",
-                        fontWeight: 600,
-                        lineHeight: "120%",
-                        margin: 0,
+                        padding: "28px 24px 20px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: "16px",
                         textAlign: "center",
                       }}
                     >
-                      {value.name}
-                    </p>
+                      {/* Icon */}
+                      <div
+                        style={{
+                          width: "64px",
+                          height: "64px",
+                          position: "relative",
+                          flexShrink: 0,
+                          transition: "transform 0.35s ease",
+                          transform: isExpanded ? "scale(1.1)" : "scale(1)",
+                        }}
+                      >
+                        <Image
+                          src={value.icon}
+                          alt={value.name}
+                          fill
+                          style={{ objectFit: "contain" }}
+                          unoptimized
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = "none";
+                          }}
+                        />
+                      </div>
+
+                      {/* Title */}
+                      <h3
+                        style={{
+                          color: isExpanded ? "#ED2E7E" : "#111827",
+                          fontFamily: "Poppins, sans-serif",
+                          fontSize: "17px",
+                          fontWeight: 600,
+                          lineHeight: "140%",
+                          margin: 0,
+                          transition: "color 0.35s ease",
+                        }}
+                      >
+                        {value.name}
+                      </h3>
+
+                      {/* Expand indicator */}
+                      <div
+                        style={{
+                          width: "28px",
+                          height: "28px",
+                          borderRadius: "50%",
+                          backgroundColor: isExpanded ? "#ED2E7E" : "#E5E7EB",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          transition: "all 0.35s ease",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          style={{
+                            transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.35s ease",
+                          }}
+                        >
+                          <path
+                            d="M4 6L8 10L12 6"
+                            stroke={isExpanded ? "#FFFFFF" : "#6B7280"}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Expandable Description */}
+                    <div
+                      style={{
+                        maxHeight: isExpanded ? "300px" : "0px",
+                        opacity: isExpanded ? 1 : 0,
+                        overflow: "hidden",
+                        transition:
+                          "max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease 0.05s",
+                      }}
+                    >
+                      <div
+                        style={{
+                          padding: "0 24px 28px",
+                          borderTop: "1px solid #E5E7EB",
+                          paddingTop: "16px",
+                        }}
+                      >
+                        <p
+                          style={{
+                            color: "#4B5563",
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            lineHeight: "24px",
+                            margin: 0,
+                          }}
+                        >
+                          {value.description}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -551,12 +676,9 @@ export default function OurValuesPage() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       </section>
-
-
 
       {/* Scroll to Top Button */}
       <ScrollToTopButton />

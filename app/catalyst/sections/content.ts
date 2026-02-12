@@ -1,6 +1,6 @@
 export const heroContent = {
   eyebrow: "Catalyst",
-  title: "Enterprise AI Adoption & Execution Engine",
+  title: "Move Enterprise AI from Pilots to Production",
   subtitle: "",
   description:
     "Turn AI experiments into scalable, production-ready impact. Catalyst is Crayon Data’s structured execution engine that moves enterprises from pilots to production and into governed, enterprise-wide AI adoption.",

@@ -13,99 +13,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import ScrollToTopButton from "@/components/scroll-to-top-button";
 
-const perks = [
-  {
-    id: 1,
-    title: "We've got you and your family covered with our insurance policies",
-    icon: "https://crayondata.ai/wp-content/uploads/Group-39719.svg",
-  },
-  {
-    id: 2,
-    title: "Work from home or from the Box. We're flexible like that",
-    icon: "https://crayondata.ai/wp-content/uploads/Frame-4.svg",
-  },
-  {
-    id: 3,
-    title: "We celebrate everything – festivals, birthdays, and more",
-    icon: "https://crayondata.ai/wp-content/uploads/Frame-5.svg",
-  },
-  {
-    id: 4,
-    title: "A generous sabbatical and leave policy for those much-needed breaks",
-    icon: "https://crayondata.ai/wp-content/uploads/Frame-6.svg",
-  },
-  {
-    id: 5,
-    title: "Win bonuses for successful referrals",
-    icon: "https://crayondata.ai/wp-content/uploads/Frame-7.svg",
-  },
-  {
-    id: 6,
-    title: "Awards, rewards, and recognition for the star in you",
-    icon: "https://crayondata.ai/wp-content/uploads/Frame-8.svg",
-  },
-  {
-    id: 7,
-    title: "Sports and wellness meet-ups for the mind, body, and soul",
-    icon: "https://crayondata.ai/wp-content/uploads/Group-39718.svg",
-  },
-];
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Karan Bakshi",
-    role: "Pre-Sales",
-    quote: "Everyone truly gets along and pitches in to get the job done - even if its not written in their job descriptions",
-    image: "https://crayondata.ai/wp-content/uploads/DSC_9080-2-3.png",
-  },
-  {
-    id: 2,
-    name: "Maadhusri Ulaganathan",
-    role: "Customer Science",
-    quote: "Crayons are highly talented and experts in the domains they handle. They are helpful and always willing to share their knowledge. I've also felt that one's voice or opinions will never be unheard. You will feel like you are being recognized and have visibility.",
-    image: "https://crayondata.ai/wp-content/uploads/2nd-image.png",
-  },
-  {
-    id: 3,
-    name: "Sundara Raghavan",
-    role: "Technology",
-    quote: "Crayon Data opened the doors for growth and has been supporting me in my curiosity for learning. I get the opportunity to wear multiple hats which makes it all the more interestinglarger group virtual events. Proud to be a Crayon!",
-    image: "https://crayondata.ai/wp-content/uploads/Mask-group-9.png",
-  },
-  {
-    id: 4,
-    name: "Devaki Gopalan",
-    role: "Program Management",
-    quote: "For anyone curious about working at Crayon, I would say join because of the people. They're skilled, curious, innovative, and fun...The intelligence and passion with which they talk about AI is very refrehing. The exchange of thoughts and ideas keeps you challenged and interested.",
-    image: "https://crayondata.ai/wp-content/uploads/Mask-group-10.png",
-  },
-  {
-    id: 5,
-    name: "Akshaya Sreedhar",
-    role: "Sales Enablement",
-    quote: "One of the coolest things we've worked on is cracking down on some very specific pain points of a major client. We went beyond just delivering the product. We were invovled in adoption and value delivery. The focus is on driving customer elation, not just customer satisfaction.",
-    image: "https://crayondata.ai/wp-content/uploads/DSC_9080-2-3.png",
-  },
-  {
-    id: 6,
-    name: "Malvika Elango",
-    role: "Customer Success",
-    quote: "Crayons live and breathe our value, \"The mission is the boss.\" It gives you an opportunity to step up, express opinions, and take charge, irrespective of how young you may be.",
-    image: "https://crayondata.ai/wp-content/uploads/2nd-image.png",
-  },
-  {
-    id: 7,
-    name: "Suresh Karthik",
-    role: "Marketing",
-    quote: "The world of Crayon is not just one; rather, it is a place where ideas from different backgrounds can flourish. It doesn't matter if you're shy, outgoing, or disabled. Just be yourself, because we adore you that way.",
-    image: "https://crayondata.ai/wp-content/uploads/Mask-group-9.png",
-  },
-];
-
 export default function CareerPage() {
   const [expandedAccordions, setExpandedAccordions] = useState<Set<string>>(new Set());
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const toggleAccordion = (id: string) => {
     const newExpanded = new Set(expandedAccordions);
@@ -116,14 +25,6 @@ export default function CareerPage() {
     }
     setExpandedAccordions(newExpanded);
   };
-
-  // Auto-rotate testimonials
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Scroll animations
   useEffect(() => {
@@ -178,8 +79,15 @@ export default function CareerPage() {
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: "#FFFFFF" }}>
-      {/* Breadcrumb Section */}
-      <section className="pt-8 pb-4 fade-in-section" style={{ backgroundColor: "#FFFFFF" }}>
+      {/* Breadcrumb Section - consistent gap below header */}
+      <section
+        className="fade-in-section"
+        style={{
+          backgroundColor: "#FFFFFF",
+          paddingTop: "32px",
+          paddingBottom: "24px",
+        }}
+      >
         <div
           style={{
             width: "100%",
@@ -207,13 +115,13 @@ export default function CareerPage() {
         </div>
       </section>
 
-      {/* Hero Section */}
+      {/* Hero Section - generous gap below nav, aligned two-column layout */}
       <section
         className="relative overflow-hidden"
         style={{
           backgroundColor: "#FFFFFF",
-          paddingTop: "80px",
-          paddingBottom: "0",
+          paddingTop: "120px",
+          paddingBottom: "64px",
         }}
       >
         <div
@@ -226,7 +134,7 @@ export default function CareerPage() {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: "64px",
+            gap: "80px",
           }}
         >
           {/* Left Side - Text Content */}
@@ -235,14 +143,15 @@ export default function CareerPage() {
               flex: "1 1 0%",
               display: "flex",
               flexDirection: "column",
-              gap: "24px",
+              gap: "28px",
+              alignItems: "flex-start",
             }}
           >
             {/* Section Label */}
             <div
               className="fade-in-section"
               style={{
-                color: "#06B6D4",
+                color: "#111827",
                 fontFamily: "Poppins, sans-serif",
                 fontSize: "14px",
                 fontStyle: "normal",
@@ -250,6 +159,7 @@ export default function CareerPage() {
                 lineHeight: "21px",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
+                margin: 0,
               }}
             >
               LIFE AT CRAYON
@@ -289,7 +199,7 @@ export default function CareerPage() {
             </p>
 
             {/* CTA Button */}
-            <div className="fade-in-section" style={{ marginTop: "8px" }}>
+            <div className="fade-in-section">
               <button
                 style={{
                   padding: "16px 32px",
@@ -362,7 +272,7 @@ export default function CareerPage() {
       </section>
 
       {/* We are Crayon Data Section */}
-      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "24px", paddingBottom: "48px" }}>
+      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "0", paddingBottom: "48px" }}>
         <div
           style={{
             width: "100%",
@@ -422,6 +332,21 @@ export default function CareerPage() {
               textAlign: "center",
             }}
           >
+            <div
+              className="fade-in-section"
+              style={{
+                color: "#06B6D4",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "14px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "21px",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+              }}
+            >
+              ABOUT US
+            </div>
             <h2
               className="fade-in-blur"
               style={{
@@ -518,6 +443,21 @@ export default function CareerPage() {
               gap: "32px",
             }}
           >
+            <div
+              className="fade-in-section"
+              style={{
+                color: "#06B6D4",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "14px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "21px",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+              }}
+            >
+              CAREER GROWTH
+            </div>
             <h3
               className="fade-in-section"
               style={{
@@ -689,77 +629,6 @@ export default function CareerPage() {
                   </div>
                 )}
               </div>
-
-              {/* Accordion 2 */}
-              <div
-                style={{
-                  border: "1px solid #E5E7EB",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                }}
-              >
-                <button
-                  onClick={() => toggleAccordion("workspace")}
-                  style={{
-                    width: "100%",
-                    padding: "20px",
-                    backgroundColor: "#FFFFFF",
-                    border: "none",
-                    textAlign: "left",
-                    cursor: "pointer",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    fontFamily: "Poppins, sans-serif",
-                    fontSize: "20px",
-                    fontWeight: 600,
-                    color: "#111827",
-                  }}
-                >
-                  <span>+ A bright and open workspace</span>
-                  <span style={{ fontSize: "24px", color: "#06B6D4" }}>
-                    {expandedAccordions.has("workspace") ? "−" : "+"}
-                  </span>
-                </button>
-                {expandedAccordions.has("workspace") && (
-                  <div style={{ padding: "0 20px 20px 20px", backgroundColor: "#FFFFFF" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      {[
-                        "An open seating plan with collaborative spaces",
-                        "A designated chill corner, where great ideas are born!",
-                        "A pantry that's always stocked with delicious and healthy treats",
-                        "A fun recreation corner to de-stress with carrom or TT",
-                      ].map((item, index) => (
-                        <div key={index} style={{ display: "flex", flexDirection: "row", gap: "12px", alignItems: "flex-start" }}>
-                          <div
-                            style={{
-                              width: "6px",
-                              height: "6px",
-                              borderRadius: "50%",
-                              backgroundColor: "#06B6D4",
-                              marginTop: "8px",
-                              flexShrink: 0,
-                            }}
-                          />
-                          <p
-                            style={{
-                              color: "#111827",
-                              fontFamily: "Poppins, sans-serif",
-                              fontSize: "16px",
-                              fontStyle: "normal",
-                              fontWeight: 400,
-                              lineHeight: "24px",
-                              margin: 0,
-                            }}
-                          >
-                            {item}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         </div>
@@ -777,6 +646,22 @@ export default function CareerPage() {
             textAlign: "center",
           }}
         >
+          <div
+            className="fade-in-section"
+            style={{
+              color: "#06B6D4",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "14px",
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "21px",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              marginBottom: "8px",
+            }}
+          >
+            JOIN OUR TEAM
+          </div>
           <h2
             className="fade-in-blur"
             style={{
@@ -841,263 +726,6 @@ export default function CareerPage() {
         </div>
       </section>
 
-      {/* The Perks Of Being A Crayon Section */}
-      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px", position: "relative" }}>
-        {/* Dotted C Background */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: "400px",
-            height: "100%",
-            opacity: 0.1,
-            backgroundImage: "radial-gradient(circle, #9CA3AF 1px, transparent 1px)",
-            backgroundSize: "20px 20px",
-            pointerEvents: "none",
-          }}
-        />
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1420px",
-            margin: "0 auto",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: "24px",
-              marginBottom: "48px",
-            }}
-          >
-            <div
-              style={{
-                width: "8px",
-                height: "32px",
-                backgroundColor: "#EA186D",
-                flexShrink: 0,
-              }}
-            />
-            <h2
-              className="fade-in-blur"
-              style={{
-                color: "#111827",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "36px",
-                fontStyle: "normal",
-                fontWeight: 700,
-                lineHeight: "120%",
-                margin: 0,
-                willChange: "opacity, transform, filter",
-              }}
-            >
-              The Perks Of Being A Crayon
-            </h2>
-          </div>
-
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
-            style={{
-              gap: "16px",
-            }}
-          >
-            {perks.map((perk, index) => (
-              <div
-                key={perk.id}
-                className="stagger-item"
-                style={{
-                  backgroundColor: "#F7F8FA",
-                  borderRadius: "8px",
-                  padding: "24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "16px",
-                  border: "1px solid #E5E7EB",
-                  transitionDelay: `${index * 100}ms`,
-                }}
-              >
-                <div
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#FFFFFF",
-                    borderRadius: "8px",
-                  }}
-                >
-                  <Image
-                    src={perk.icon}
-                    alt={perk.title}
-                    width={60}
-                    height={60}
-                    style={{
-                      objectFit: "contain",
-                    }}
-                    unoptimized
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                    }}
-                  />
-                </div>
-                <p
-                  style={{
-                    color: "#111827",
-                    fontFamily: "Poppins, sans-serif",
-                    fontSize: "16px",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "24px",
-                    textAlign: "center",
-                    margin: 0,
-                  }}
-                >
-                  {perk.title}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why We Love Crayon Section - Marquee */}
-      <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "80px" }}>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1420px",
-            margin: "0 auto",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-          }}
-        >
-          <h2
-            className="fade-in-blur"
-            style={{
-              color: "#111827",
-              fontFamily: "Poppins, sans-serif",
-              fontSize: "36px",
-              fontStyle: "normal",
-              fontWeight: 700,
-              lineHeight: "120%",
-              marginBottom: "48px",
-              marginTop: 0,
-              textAlign: "center",
-              willChange: "opacity, transform, filter",
-            }}
-          >
-            Why We Love Crayon
-          </h2>
-
-          {/* Marquee Container */}
-          <div
-            style={{
-              overflow: "hidden",
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            {/* Marquee Animation Wrapper */}
-            <div
-              className="marquee-track"
-              style={{
-                display: "flex",
-                gap: "16px",
-                width: "fit-content",
-                animation: "marquee 30s linear infinite",
-              }}
-            >
-              {/* First set of testimonials */}
-              {testimonials.map((testimonial) => (
-                <div
-                  key={`first-${testimonial.id}`}
-                  style={{
-                    minWidth: "400px",
-                    width: "400px",
-                    flexShrink: 0,
-                    position: "relative",
-                    aspectRatio: "4/3",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    backgroundColor: "#F9FAFB",
-                  }}
-                >
-                  <Image
-                    src={testimonial.image}
-                    alt={`${testimonial.name} - ${testimonial.role}`}
-                    fill
-                    style={{
-                      objectFit: "cover",
-                    }}
-                    unoptimized
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                    }}
-                  />
-                </div>
-              ))}
-              {/* Duplicate set for seamless loop */}
-              {testimonials.map((testimonial) => (
-                <div
-                  key={`second-${testimonial.id}`}
-                  style={{
-                    minWidth: "400px",
-                    width: "400px",
-                    flexShrink: 0,
-                    position: "relative",
-                    aspectRatio: "4/3",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    backgroundColor: "#F9FAFB",
-                  }}
-                >
-                  <Image
-                    src={testimonial.image}
-                    alt={`${testimonial.name} - ${testimonial.role}`}
-                    fill
-                    style={{
-                      objectFit: "cover",
-                    }}
-                    unoptimized
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Marquee CSS Animation */}
-          <style jsx>{`
-            @keyframes marquee {
-              0% {
-                transform: translateX(0);
-              }
-              100% {
-                transform: translateX(-50%);
-              }
-            }
-            .marquee-track:hover {
-              animation-play-state: paused;
-            }
-          `}</style>
-        </div>
-      </section>
-
       {/* Get to Know Us Better Section */}
       <section style={{ backgroundColor: "#FFFFFF", paddingTop: "80px", paddingBottom: "0" }}>
         <div
@@ -1114,7 +742,7 @@ export default function CareerPage() {
           <div
             className="fade-in-blur"
             style={{
-              backgroundColor: "#1D8AD7",
+              backgroundColor: "#06B6D4",
               backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px)`,
               backgroundSize: "24px 24px",
               borderRadius: "16px 16px 0 0",
