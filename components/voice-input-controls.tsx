@@ -6,6 +6,21 @@ import { cn } from "../lib/utils"
 import { Mic, MicOff } from "lucide-react"
 import { useSpeechRecognition } from "../hooks/use-speech-recognition"
 
+/** Exact voice/sound wave logo (4 bars, white on transparent) – no background, no layout change */
+function VoiceInputLogo() {
+  return (
+    <img
+      src="/img/voice-input-icon.png"
+      alt=""
+      role="presentation"
+      width={16}
+      height={16}
+      className="h-4 w-4 object-contain"
+      style={{ display: "block" }}
+    />
+  )
+}
+
 // Innovative Soundwave Animation Component
 function SoundWaveAnimation() {
   return (
@@ -40,6 +55,8 @@ interface VoiceInputControlsProps {
   buttonSize?: "icon" | "sm"
   compact?: boolean
   ariaLabel?: string
+  /** When true, use the sound-wave style voice icon instead of the mic icon */
+  useCustomVoiceIcon?: boolean
 }
 
 export function VoiceInputControls({
@@ -50,6 +67,7 @@ export function VoiceInputControls({
   buttonSize = "icon",
   compact = false,
   ariaLabel = "Start voice input",
+  useCustomVoiceIcon = false,
 }: VoiceInputControlsProps) {
   const typedBaseRef = useRef(value.trim())
   const voiceTranscriptRef = useRef("")
@@ -104,8 +122,12 @@ export function VoiceInputControls({
       return <SoundWaveAnimation />
     }
 
+    if (useCustomVoiceIcon) {
+      return <VoiceInputLogo />
+    }
+
     return <Mic className="h-4 w-4" />
-  }, [isListening, isSupported])
+  }, [isListening, isSupported, useCustomVoiceIcon])
 
   const handleToggle = () => {
     if (!isSupported) {
