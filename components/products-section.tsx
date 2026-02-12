@@ -1,14 +1,15 @@
 "use client"
 
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Layers, Factory, Store, Database, Shield, Plug, Zap, Code, Settings, CheckCircle, Calendar, CalendarDays, CalendarRange } from "lucide-react"
 import { useState } from "react"
 
 const products = {
   tangram: {
-    title: "Tangram",
-    subtitle: "The Product Engine",
-    description: "A modular GenAI platform and Agent Store with pre-built enterprise AI agents ready for deployment.",
+    title: "Tangram AI",
+    subtitle: "The Platform",
+    description: "An army of production-grade, agentic and generative AI solutions. Pre-built. Modular. Enterprise-ready. Model-agnostic. Vendor-agnostic. Open architecture.",
     features: [
       { text: "Pre-built AI agent marketplace", icon: Store },
       { text: "Unified data orchestration", icon: Database },
@@ -17,20 +18,31 @@ const products = {
     ]
   },
   catalyst: {
-    title: "Catalyst", 
-    subtitle: "The Execution Engine",
-    description: "A proven path from AI ideas to enterprise-scale systems through Labs, Foundry, and Factory methodology.",
+    title: "Catalyst",
+    subtitle: "Productised Execution",
+    description: "AI doesn't deploy itself. Catalyst ensures structured adoption through: Labs → Foundry → Factory. From ideation to governed, scaled deployment.",
     features: [
       { text: "Rapid use case validation", icon: Zap },
       { text: "Production-ready AI builds", icon: Code },
       { text: "Governed deployments at scale", icon: Settings },
       { text: "Enterprise-grade reliability", icon: CheckCircle }
     ]
+  },
+  store: {
+    title: "Tangram AI Store",
+    subtitle: "The Ecosystem",
+    description: "We don't believe we have all the answers. ISVs, startups, SIs, and distributors build and distribute on Tangram — accelerating scale.",
+    features: [
+      { text: "ISV & partner ecosystem", icon: Store },
+      { text: "Build and distribute on Tangram", icon: Layers },
+      { text: "Accelerate scale together", icon: Zap },
+      { text: "Open for innovation", icon: Plug }
+    ]
   }
 }
 
 export function ProductsSection() {
-  const [activeProduct, setActiveProduct] = useState<"tangram" | "catalyst">("tangram")
+  const [activeProduct, setActiveProduct] = useState<"tangram" | "catalyst" | "store">("tangram")
   const product = products[activeProduct]
 
   return (
@@ -41,22 +53,24 @@ export function ProductsSection() {
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
             <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
-              Product + Execution
+              Built for Scale. Built for Speed.
             </span>
             <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-light text-balance">
+          <h2 className="text-3xl md:text-4xl font-light text-balance mb-4">
             <span className="bg-gradient-to-r from-[oklch(0.45_0.3_260)] to-[oklch(0.5_0.3_175)] bg-clip-text text-transparent">
-              Enterprise AI scales when product and execution
+              The Triple-Engine Model.
             </span>
-            <span className="font-medium text-foreground"> move together</span>
           </h2>
+          <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
+            Enterprise AI works only when platform and execution move together. Platform. Execution. Ecosystem. Together.
+          </p>
         </div>
 
         {/* Product Toggle */}
         <div className="flex justify-center mb-12">
-          <div className="inline-flex border-b border-border">
-            {(["tangram", "catalyst"] as const).map((key) => (
+          <div className="inline-flex border-b border-border flex-wrap justify-center">
+            {(["tangram", "catalyst", "store"] as const).map((key) => (
               <button
                 key={key}
                 onClick={() => setActiveProduct(key)}
@@ -66,7 +80,7 @@ export function ProductsSection() {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {key.charAt(0).toUpperCase() + key.slice(1)}
+                {key === "tangram" ? "Tangram AI" : key === "catalyst" ? "Catalyst" : "Tangram AI Store"}
                 {activeProduct === key && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground" />
                 )}
@@ -86,7 +100,9 @@ export function ProductsSection() {
                   style={{
                     backgroundColor: activeProduct === "tangram" 
                       ? "oklch(0.55 0.2 260)" 
-                      : "oklch(0.65 0.2 175)"
+                      : activeProduct === "catalyst" 
+                        ? "oklch(0.65 0.2 175)" 
+                        : "oklch(0.65 0.2 330)"
                   }}
                 />
                 <span 
@@ -94,7 +110,9 @@ export function ProductsSection() {
                   style={{
                     color: activeProduct === "tangram" 
                       ? "oklch(0.55 0.2 260)" 
-                      : "oklch(0.65 0.2 175)"
+                      : activeProduct === "catalyst" 
+                        ? "oklch(0.65 0.2 175)" 
+                        : "oklch(0.65 0.2 330)"
                   }}
                 >
                   {product.subtitle}
@@ -109,9 +127,11 @@ export function ProductsSection() {
               {product.description}
             </p>
 
-            <Button className="bg-foreground text-background hover:bg-foreground/90">
-              Explore {product.title}
-              <ArrowRight className="ml-2 w-4 h-4" />
+            <Button asChild className="bg-foreground text-background hover:bg-foreground/90">
+              <Link href={activeProduct === "tangram" ? "/tangram-ai" : activeProduct === "catalyst" ? "/catalyst" : "/agents-store"} className="inline-flex items-center">
+                Discover the Triple-Engine Model
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
             </Button>
           </div>
 

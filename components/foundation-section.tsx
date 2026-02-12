@@ -10,27 +10,27 @@ export function FoundationSection() {
   const milestones = [
     {
       number: "01",
-      title: "Patented Innovation",
+      title: "Patented AI innovations",
       description: "3 proprietary AI patents powering enterprise systems",
       metric: "3 Patents",
     },
     {
       number: "02",
-      title: "Domain Expertise",
-      description: "Banking, fintech, travel, and operations at scale",
-      metric: "4 Industries",
+      title: "Customer genomes built",
+      description: "Personalization and recommendation at scale",
+      metric: "200M+ Genomes",
     },
     {
       number: "03",
-      title: "Regulated Environments",
-      description: "Full compliance with enterprise security standards",
-      metric: "100% Compliant",
+      title: "Production deployments",
+      description: "Global enterprises across regulated environments",
+      metric: "Live in Production",
     },
     {
       number: "04",
-      title: "Global Reach",
-      description: "Serving millions across continents in real-time",
-      metric: "117M+ Users",
+      title: "Regulated environments",
+      description: "Systems operating in regulated environments",
+      metric: "Enterprise-Ready",
     },
   ]
 
@@ -49,14 +49,16 @@ export function FoundationSection() {
             
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight mb-8">
               <span className="bg-gradient-to-r from-[oklch(0.5_0.3_175)] to-[oklch(0.65_0.3_330)] bg-clip-text text-transparent">
-                Built from real
+                Reimagined. Not
               </span>
-              <span className="block font-medium text-foreground">enterprise execution</span>
+              <span className="block font-medium text-foreground">Reinvented.</span>
             </h2>
             
+            <p className="text-muted-foreground text-lg leading-relaxed mb-6 max-w-md">
+              When GenAI and agentic AI reshaped the landscape, we didn't bolt new models onto old systems. We rebuilt. We sunset maya.ai. We redesigned our core architecture. We restructured the company around platform + execution. This wasn't cosmetic. It was structural.
+            </p>
             <p className="text-muted-foreground text-lg leading-relaxed mb-12 max-w-md">
-              Not pilots. Production systems at scale serving millions of users
-              across regulated environments.
+              And this isn't our first gig. We've been building enterprise AI since 2012. We know what it takes to move from pilot to production. We've done it before. Now we've redesigned for what's next.
             </p>
 
             {/* Stats */}

@@ -38,48 +38,6 @@ const campaigns = [
     date: "2d ago",
     tags: ["Tribute", "Tim Kobe", "Design"],
   },
-  {
-    id: 2,
-    platform: "linkedin" as const,
-    type: "Reflection",
-    title: "The Republic stands for trust, rights, and duty",
-    description: "At Crayon Data, we try to live that every day — the freedom to think independently, make decisions, and own the outcomes. This Republic Day, we're celebrating that everyday responsibility — to act with integrity, build with intent, and grow together.",
-    image: "/img/republic-day-post.png",
-    link: "https://www.linkedin.com/feed/update/urn:li:activity:7421378879229071360",
-    author: {
-      name: "Crayon Data",
-      handle: "@crayondata",
-      avatar: "C",
-    },
-    stats: {
-      likes: "28",
-      comments: "5",
-      shares: "2",
-    },
-    date: "1w ago",
-    tags: ["Republic Day", "Values", "Culture"],
-  },
-  {
-    id: 3,
-    platform: "linkedin" as const,
-    type: "Reflection",
-    title: "What did this year really take from us — and what did it give back?",
-    description: "2025 wasn't easy. There were moments of uncertainty, moments of fatigue, and moments where the path ahead wasn't obvious. But it was also a year of showing up — for our customers, for each other, and for the work. As we step into 2026, we do so with more belief.",
-    image: "/img/new-year-2026.png",
-    link: "https://www.linkedin.com/feed/update/urn:li:activity:7412092696451911680",
-    author: {
-      name: "Crayon Data",
-      handle: "@crayondata",
-      avatar: "C",
-    },
-    stats: {
-      likes: "53",
-      comments: "1",
-      shares: "3",
-    },
-    date: "1mo ago",
-    tags: ["Reflection", "2025", "Team"],
-  },
 ]
 
 export function SocialSection() {
@@ -129,8 +87,8 @@ export function SocialSection() {
           </div>
         </div>
 
-        {/* Campaign Cards - Vertical Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Campaign Card - small rectangle: captions left, image right */}
+        <div className="flex justify-center">
             {campaigns.map((campaign, index) => {
               const accentColors = [
                 "oklch(0.55 0.2 260)", // Purple
@@ -147,7 +105,7 @@ export function SocialSection() {
                 rel="noopener noreferrer"
                 onMouseEnter={() => setHoveredId(campaign.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="group relative bg-background border transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)]"
+                className="group relative flex w-full max-w-2xl bg-background border transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_-16px_rgba(0,0,0,0.1)]"
                 style={{
                   borderColor: hoveredId === campaign.id ? accentColor : undefined
                 }}
@@ -160,124 +118,95 @@ export function SocialSection() {
                     backgroundColor: accentColor
                   }}
                 />
-              
-              {/* Image Area */}
-              <div className="relative aspect-[16/10] bg-muted/30 overflow-hidden">
-                {campaign.image && campaign.image !== "/api/placeholder/400/240" ? (
-                  <Image
-                    src={campaign.image}
-                    alt={campaign.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent" />
-                )}
-                
-                {/* Platform Badge */}
-                <div className="absolute top-3 left-3 flex items-center gap-2 px-3 py-1.5 bg-background/90 backdrop-blur-sm border border-border/50 z-10">
-                  {campaign.platform === "linkedin" ? <LinkedInIcon /> : <XIcon />}
-                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
-                    {campaign.type}
-                  </span>
-                </div>
 
-                {/* External Link Icon */}
-                <div 
-                  className={`absolute top-3 right-3 p-2 bg-background/90 backdrop-blur-sm border border-border/50 transition-all duration-300 z-10 ${
-                    hoveredId === campaign.id ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"
-                  }`}
-                >
-                  <ExternalLink className="w-3 h-3 text-foreground" />
-                </div>
-
-                {/* Decorative Grid */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
-                  backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
-                  backgroundSize: '20px 20px'
-                }} />
-              </div>
-
-              {/* Content */}
-              <div className="p-5">
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4 opacity-100">
-                  {campaign.tags.map((tag, i) => (
-                    <span 
-                      key={i}
-                      className="text-[10px] font-mono px-2 py-1 border border-border text-muted-foreground opacity-100"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Title */}
-                <h3 
-                  className="text-base font-medium text-foreground mb-2 transition-colors duration-300"
-                  style={{
-                    color: hoveredId === campaign.id ? accentColor : undefined
-                  }}
-                >
-                  {campaign.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed mb-5 line-clamp-2">
-                  {campaign.description}
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3 mb-5 pb-5 border-b border-border/50">
-                  <div className="w-8 h-8 bg-muted flex items-center justify-center text-xs font-medium text-foreground">
-                    {campaign.author.avatar}
+                {/* Left - Captions */}
+                <div className="flex-1 min-w-0 p-4 md:p-5 flex flex-col justify-center">
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-2 opacity-100">
+                    {campaign.tags.map((tag, i) => (
+                      <span 
+                        key={i}
+                        className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground opacity-100"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{campaign.author.name}</p>
-                    <p className="text-xs text-muted-foreground">{campaign.author.handle}</p>
-                  </div>
-                  <span className="ml-auto text-xs text-muted-foreground">{campaign.date}</span>
-                </div>
 
-                {/* Engagement Stats */}
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-1.5 text-muted-foreground group/stat">
-                    <Heart 
-                      className="w-3.5 h-3.5 transition-colors"
-                      style={{
-                        color: hoveredId === campaign.id ? accentColor : undefined
-                      }}
-                    />
-                    <span className="text-xs">{campaign.stats.likes}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground group/stat">
-                    <MessageCircle 
-                      className="w-3.5 h-3.5 transition-colors"
-                      style={{
-                        color: hoveredId === campaign.id ? accentColor : undefined
-                      }}
-                    />
-                    <span className="text-xs">{campaign.stats.comments}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground group/stat">
-                    <Repeat2 
-                      className="w-3.5 h-3.5 transition-colors"
-                      style={{
-                        color: hoveredId === campaign.id ? accentColor : undefined
-                      }}
-                    />
-                    <span className="text-xs">{campaign.stats.shares}</span>
-                  </div>
-                  <Bookmark 
-                    className="w-3.5 h-3.5 ml-auto transition-all duration-300"
+                  {/* Title */}
+                  <h3 
+                    className="text-sm font-medium text-foreground mb-1.5 transition-colors duration-300 line-clamp-2"
                     style={{
                       color: hoveredId === campaign.id ? accentColor : undefined
                     }}
-                  />
+                  >
+                    {campaign.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                    {campaign.description}
+                  </p>
+
+                  {/* Author + Date */}
+                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border/50">
+                    <div className="w-6 h-6 bg-muted flex items-center justify-center text-[10px] font-medium text-foreground">
+                      {campaign.author.avatar}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-foreground truncate">{campaign.author.name}</p>
+                      <p className="text-[10px] text-muted-foreground truncate">{campaign.author.handle}</p>
+                    </div>
+                    <span className="ml-auto text-[10px] text-muted-foreground shrink-0">{campaign.date}</span>
+                  </div>
+
+                  {/* Engagement Stats */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <Heart className="w-3 h-3" style={{ color: hoveredId === campaign.id ? accentColor : undefined }} />
+                      <span className="text-[10px]">{campaign.stats.likes}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <MessageCircle className="w-3 h-3" style={{ color: hoveredId === campaign.id ? accentColor : undefined }} />
+                      <span className="text-[10px]">{campaign.stats.comments}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <Repeat2 className="w-3 h-3" style={{ color: hoveredId === campaign.id ? accentColor : undefined }} />
+                      <span className="text-[10px]">{campaign.stats.shares}</span>
+                    </div>
+                    <Bookmark className="w-3 h-3 ml-auto" style={{ color: hoveredId === campaign.id ? accentColor : undefined }} />
+                  </div>
                 </div>
-              </div>
-            </a>
+
+                {/* Right - Image */}
+                <div className="relative w-32 sm:w-40 md:w-44 shrink-0 aspect-[4/3] bg-muted/30 overflow-hidden">
+                  {campaign.image && campaign.image !== "/api/placeholder/400/240" ? (
+                    <Image
+                      src={campaign.image}
+                      alt={campaign.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 176px"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent" />
+                  )}
+                  {/* Platform Badge */}
+                  <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-1 bg-background/90 backdrop-blur-sm border border-border/50 z-10">
+                    {campaign.platform === "linkedin" ? <LinkedInIcon /> : <XIcon />}
+                    <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
+                      {campaign.type}
+                    </span>
+                  </div>
+                  <div 
+                    className={`absolute top-2 right-2 p-1.5 bg-background/90 backdrop-blur-sm border border-border/50 transition-all duration-300 z-10 ${
+                      hoveredId === campaign.id ? "opacity-100 translate-x-0" : "opacity-0 translate-x-1"
+                    }`}
+                  >
+                    <ExternalLink className="w-2.5 h-2.5 text-foreground" />
+                  </div>
+                </div>
+              </a>
               )
             })}
         </div>

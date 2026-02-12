@@ -6,10 +6,10 @@ export function StatsBar() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const stats = [
-    { value: "117M+", label: "User Experiences Powered", prefix: "01", color: "oklch(0.65 0.2 175)" },
-    { value: "13B+", label: "Transactions Data Processed", prefix: "02", color: "oklch(0.55 0.2 260)" },
-    { value: "100s", label: "AI Agents for Production", prefix: "03", color: "oklch(0.65 0.2 330)" },
-    { value: "2012", label: "Building Data & AI Since", prefix: "04", color: "oklch(0.7 0.18 75)" },
+    { value: "117M+", label: "Users", prefix: "01", color: "oklch(0.65 0.2 175)" },
+    { value: "13B+", label: "Transactions Processed", prefix: "02", color: "oklch(0.55 0.2 260)" },
+    { value: "100s", label: "Live Enterprise Workflows", prefix: "03", color: "oklch(0.65 0.2 330)" },
+    { value: "2012", label: "Building Enterprise AI Since", prefix: "04", color: "oklch(0.7 0.18 75)" },
   ]
 
   return (

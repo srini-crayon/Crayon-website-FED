@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
 import { cn } from "@/lib/utils"
-import { SlideIllustration as SlideIllustrationComponent } from "@/components/slide-illustration" // Import SlideIllustration component
+import { SlideIllustration as SlideIllustrationComponent } from "@/components/slide-illustration"
 
 const slides = [
   {
-    tag: "AI Transformation",
-    headline: ["Accelerate Your", "AI Transformation", ""],
+    tag: "AI Success",
+    headline: ["Accelerate Your", "Journey to AI Success", ""],
     highlightLine: 1,
     gradientColors: {
       from: "oklch(0.5 0.35 260)",
@@ -27,12 +27,13 @@ const slides = [
       secondary: "oklch(0.65 0.2 175/0.12)",
     },
     description:
-      "Crayon Data's full-stack, AI-native platform helps enterprises accelerate their AI transformation journey. Leverage Crayon Data's deep expertise to get AI ready data, deploy models effectively, and transform your operating models for AI success!",
-    primaryCta: { label: "Discover AI COE", href: "#catalyst" },
+      "AI is easy to demo. It's brutally hard to run. Enterprises don't struggle with ambition. They struggle with execution. Crayon Data exists to simplify and accelerate AI success — moving you from pilots and proofs-of-concept to production-grade systems that run securely, responsibly, and at scale.",
+    primaryCta: { label: "Explore Tangram", href: "/tangram-ai" },
+    secondaryCta: { label: "See How Catalyst Works", href: "/catalyst" },
   },
   {
-    tag: "Introducing New Store",
-    headline: ["Tangram AI", "Our GenAI Platform", ""],
+    tag: "We help you",
+    headline: ["Discover. Deploy.", "Govern. Scale.", ""],
     highlightLine: 0,
     gradientColors: {
       from: "oklch(0.6 0.35 330)",
@@ -43,8 +44,9 @@ const slides = [
       secondary: "oklch(0.5 0.25 260/0.12)",
     },
     description:
-      "Crayon Data powers Tangram.ai — a composable GenAI platform built for scale. With 100+ agents, 20+ models, and 15+ solutions, Tangram is designed to plug into real workflows and deliver 7× enterprise impact.",
-    primaryCta: { label: "Explore Tangram AI", href: "#tangram" },
+      "We help you: discover real business use cases; deploy AI inside messy enterprise stacks; govern and scale intelligently; move from conversation to capability. AI shouldn't sit in slide decks. It should run inside your enterprise.",
+    primaryCta: { label: "Explore Tangram", href: "/tangram-ai" },
+    secondaryCta: { label: "See How Catalyst Works", href: "/catalyst" },
   },
   {
     tag: "Enterprise GenAI Partner",
@@ -60,7 +62,8 @@ const slides = [
     },
     description:
       "Crayon Data helps enterprises move from GenAI pilots to production. With AI Catalyst and the Tangram.ai platform, we deliver results fast, real, and measurable.",
-    primaryCta: { label: "Get Started", href: "#contact" },
+    primaryCta: { label: "Explore Tangram", href: "/tangram-ai" },
+    secondaryCta: { label: "See Catalyst in Action", href: "/catalyst" },
   },
   {
     tag: "7X Impact",
@@ -239,7 +242,7 @@ export function HeroSection() {
               <CarouselItem key={index} className="pl-0 w-full">
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:mt-12">
                   {/* Left - Content */}
-                  <div className="max-w-xl">
+                  <div className={cn("max-w-xl", index === 0 && "lg:max-w-2xl")}>
                     <div className="inline-flex items-center gap-2 mb-6">
                       <span className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/60" />
                       <p className="text-foreground/90 dark:text-foreground font-medium tracking-wide text-xs uppercase">
@@ -272,9 +275,10 @@ export function HeroSection() {
                     </p>
 
                     <div className="mt-8 flex flex-col sm:flex-row gap-3 items-center">
-                      <button
+                      <a
+                        href={slide.primaryCta.href}
                         ref={(el) => {
-                          buttonRefs.current[index] = el
+                          if (el) buttonRefs.current[index] = el as unknown as HTMLButtonElement
                         }}
                         className="border-gradient animate-button-glow-gradient relative text-white rounded-[4px] px-8 py-3 h-12 flex items-center justify-center gap-2 font-medium transition-all hover:opacity-90"
                         style={{
@@ -284,14 +288,25 @@ export function HeroSection() {
                       >
                         <span className="relative z-10">{slide.primaryCta.label}</span>
                         <ArrowRight className="relative z-10 w-4 h-4" />
-                      </button>
+                      </a>
+                      {"secondaryCta" in slide && slide.secondaryCta && (
+                        <a
+                          href={slide.secondaryCta.href}
+                          className="border border-border hover:bg-muted/50 rounded-[4px] px-8 py-3 h-12 flex items-center justify-center gap-2 font-medium text-foreground transition-all"
+                        >
+                          <span>{slide.secondaryCta.label}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </a>
+                      )}
                     </div>
                   </div>
 
-                  {/* Right - Animated Illustration */}
-                  <div className="hidden lg:flex items-center justify-center">
-                    <SlideIllustrationComponent slideIndex={index} isActive={current === index} />
-                  </div>
+                  {/* Right - Animated Illustration (hidden only for slide 1 "Accelerate Your Journey to AI Success") */}
+                  {index !== 0 && (
+                    <div className="hidden lg:flex items-center justify-center">
+                      <SlideIllustrationComponent slideIndex={index} isActive={current === index} />
+                    </div>
+                  )}
                 </div>
               </CarouselItem>
             ))}
