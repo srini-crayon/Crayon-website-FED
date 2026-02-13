@@ -1099,7 +1099,7 @@ export default function AgentLibraryPage() {
                 zIndex: -1,
               }}
             />
-            {/* Hero Section */}
+            {/* Hero Section — content aligned closer to top below header */}
             <section
               className="fade-in-section flex items-center justify-center"
               style={{
@@ -1107,7 +1107,7 @@ export default function AgentLibraryPage() {
                 willChange: "scroll-position",
                 contain: "layout style paint",
                 minHeight: "100svh",
-                paddingTop: "120px",
+                paddingTop: "clamp(54px, 4vh, 54px)",
                 paddingBottom: "80px",
                 background: "linear-gradient(180deg, #B8E2F0 0%, #D0ECF5 18%, #E5F5FA 35%, #FFFFFF 55%, #FFFFFF 100%)",
               }}
@@ -1115,9 +1115,9 @@ export default function AgentLibraryPage() {
               <div className="w-full px-8 md:px-12 lg:px-16">
                 <div className="mx-auto max-w-6xl text-center flex flex-col items-center">
                   {/* Chip: New + Introducing Tangram AI Store (reference pill style) */}
-                  <div className="mt-20 flex justify-center mb-6">
+                  <div className="mt-2 md:mt-4 flex justify-center mb-4 md:mb-6">
                     <div
-                      className="inline-flex items-center scale-in overflow-hidden rounded-full"
+                      className="hero-chip-interactive inline-flex items-center scale-in overflow-hidden rounded-full cursor-default"
                       style={{
                         background: "#EFEFF4",
                         border: "none",
@@ -1210,14 +1210,14 @@ export default function AgentLibraryPage() {
                   </p>
 
                   {/* Search bar */}
-                  <div className="flex w-full justify-center scale-in mb-6">
+                  <div className="hero-search-interactive flex w-full justify-center scale-in mb-6">
                     <div className="w-full max-w-5xl" style={{ willChange: "transform" }}>
                       <AgentSearchChat
                         externalValue={agentSearchChatValue}
                         onExternalValueChange={setAgentSearchChatValue}
                         onEnterChat={handleEnterChat}
                         variant="hero"
-                        placeholder="Describe your requirement and instantly discover enterprise AI agents built for that outcome"
+                        placeholder="Describe your requirements and instantly discover enterprise AI agents built for that outcome"
                       />
                     </div>
                   </div>
@@ -1258,7 +1258,7 @@ export default function AgentLibraryPage() {
                     }}
                     aria-label="Explore Our agent Catalogue"
                   >
-                    <div className="flex flex-col items-center gap-0.5" style={{ color: "#374151" }}>
+                    <div className={`flex flex-col items-center gap-0.5 ${showScrollIndicator ? "scroll-indicator-bounce" : ""}`} style={{ color: "#374151" }}>
                       <ChevronDown size={24} strokeWidth={2.5} aria-hidden />
                       <ChevronDown size={24} strokeWidth={2.5} aria-hidden />
                     </div>
@@ -1390,7 +1390,7 @@ export default function AgentLibraryPage() {
                         {browseCards.map((card) => (
                           <div
                             key={card.id}
-                            className="flex-shrink-0 overflow-hidden"
+                            className="browse-card-interactive flex-shrink-0 overflow-hidden"
                             style={{
                               width: cardWidth,
                               height: cardHeight,
@@ -1471,7 +1471,7 @@ export default function AgentLibraryPage() {
                                   color: "#FFFFFF",
                                 }}
                               >
-                                Know More <ArrowUpRight size={16} strokeWidth={2.5} />
+                                Know More <span className="browse-card-arrow"><ArrowUpRight size={16} strokeWidth={2.5} /></span>
                               </div>
                             </Link>
                           </div>
@@ -1627,7 +1627,7 @@ export default function AgentLibraryPage() {
                       <Link
                         key={item.id}
                         href={`/agents?industry=${item.id}`}
-                        className="block relative overflow-hidden text-left transition-shadow hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
+                        className="industry-card-interactive block relative overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
                         style={{
                           width: "100%",
                           minHeight: "194px",
@@ -1978,9 +1978,9 @@ export default function AgentLibraryPage() {
                                 textDecoration: "none",
                               }}
                             >
-                              {/* Gradient overlay visible only on hover */}
+                              {/* Gradient overlay visible only on hover — smooth transition */}
                               <div
-                                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out pointer-events-none"
                                 style={{
                                   background: "linear-gradient(132.48deg, #F7F7F7 60.17%, #FF757B 94.82%), linear-gradient(246.59deg, rgba(247, 247, 247, 0.6) 58.7%, rgba(255, 232, 232, 0.6) 99.81%)",
                                 }}
@@ -2015,7 +2015,7 @@ export default function AgentLibraryPage() {
                                 {/* Middle block: title + description at bottom of block, just above BY CRAYON DATA */}
                                 <div className="flex-1 flex flex-col justify-end min-h-0 mt-3">
                                   <h3
-                                    className="transition-all duration-200"
+                                    className="transition-colors duration-300 ease-out"
                                     style={{
                                       fontFamily: "Poppins, sans-serif",
                                       fontWeight: 400,
@@ -2030,7 +2030,7 @@ export default function AgentLibraryPage() {
                                   </h3>
                                   {agent.description && (
                                     <p
-                                      className="mt-2 line-clamp-3 max-h-0 overflow-hidden opacity-0 group-hover:max-h-[100px] group-hover:opacity-100 transition-all duration-200"
+                                      className="mt-2 line-clamp-3 max-h-0 overflow-hidden opacity-0 group-hover:max-h-[100px] group-hover:opacity-100 transition-all duration-300 ease-out"
                                       style={{
                                         fontFamily: "Inter, sans-serif",
                                         fontWeight: 400,

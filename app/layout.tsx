@@ -58,7 +58,7 @@ export default function RootLayout({
           <DynamicFavicon />
           <LocalAuthInit />
           <ConditionalNavbar />
-          <main className="min-h-screen pt-[52px]">{children}</main>
+          <main className="min-h-screen" style={{ paddingTop: 'var(--header-height, 52px)' }}>{children}</main>
           <ConditionalFooter />
           <ModalProvider />
         </Suspense>

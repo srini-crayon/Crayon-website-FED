@@ -225,21 +225,50 @@ export function AgentCard({ id, title, description, tags, assetType, demoPreview
               flex: "1 1 auto",
             }}
           >
-            {/* Title with Badge */}
+            {/* Title with Badge — smooth crossfade between solid and gradient text on hover */}
             <div className="flex items-center justify-between gap-2" style={{ paddingTop: "16px" }}>
-              <h3 className="line-clamp-2 flex-1 transition-all duration-300" style={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 600,
-                fontStyle: "normal",
-                fontSize: "16px",
-                lineHeight: "normal",
-                color: isHovered ? "transparent" : "#101828",
-                background: isHovered ? "linear-gradient(90deg, #0013A2 0%, #D00004 100%)" : "none",
-                backgroundClip: isHovered ? "text" : "unset",
-                WebkitBackgroundClip: isHovered ? "text" : "unset",
-                WebkitTextFillColor: isHovered ? "transparent" : "unset",
-              }}>
-                {title}
+              <h3
+                className="line-clamp-2 flex-1 relative overflow-hidden"
+                style={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: 600,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "normal",
+                }}
+              >
+                {/* Solid color layer — fades out on hover */}
+                <span
+                  className="transition-opacity duration-300 ease-out"
+                  style={{
+                    color: "#101828",
+                    opacity: isHovered ? 0 : 1,
+                  }}
+                >
+                  {title}
+                </span>
+                {/* Gradient layer — fades in on hover (overlaid for smooth transition) */}
+                <span
+                  className="absolute inset-0 transition-opacity duration-300 ease-out pointer-events-none line-clamp-2"
+                  style={{
+                    background: "linear-gradient(90deg, #0013A2 0%, #D00004 100%)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    opacity: isHovered ? 1 : 0,
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 600,
+                    fontStyle: "normal",
+                    fontSize: "16px",
+                    lineHeight: "normal",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical" as any,
+                    overflow: "hidden",
+                  }}
+                >
+                  {title}
+                </span>
               </h3>
               {assetType && (
                 <span

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Plus, ArrowUp, X, ChevronDown } from "lucide-react"
+import { ArrowUp, X, ChevronDown, Plus } from "lucide-react"
 import { useChatStore } from "../lib/store/chat.store"
 import { cn } from "../lib/utils"
 import { VoiceInputControls } from "./voice-input-controls"
@@ -149,26 +149,6 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
           />
           <div className="flex-1 flex items-start gap-2">
             <div className="relative w-full">
-              {/* Plus sign component - merged with textarea */}
-              <div
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  top: "30%",
-                  transform: "translateY(-50%)",
-                  color: isHero ? "#9CA3AF" : "#6B7280",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: "18px",
-                  lineHeight: "1.5",
-                  pointerEvents: "none",
-                  zIndex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                +
-              </div>
               <textarea
                 ref={textInputRef}
                 placeholder={placeholder}
@@ -194,7 +174,7 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
                   lineHeight: isHero ? "22px" : undefined,
                   letterSpacing: isHero ? "0%" : undefined,
                   verticalAlign: isHero ? "middle" : undefined,
-                  paddingLeft: "30px",
+                  paddingLeft: "12px",
                   color: isHero ? "#C5C1BA" : undefined,
                 }}
                 onFocus={(e) => {
@@ -225,10 +205,27 @@ export function AgentSearchChat({ externalValue, onExternalValueChange, onEnterC
           </div>
         </div>
 
-        {/* Lower section: Buttons and controls */}
+        {/* Lower section: Buttons and controls — Plus (upload) aligned with upper text, then Explore */}
         <div className="flex items-center justify-between gap-4">
-          {/* Left side: Mode dropdown (reference: Explore + caret) */}
-          <div className="flex items-center gap-4" ref={modeDropdownRef}>
+          {/* Left side: Attachment (Plus) then Mode dropdown (Explore + caret) */}
+          <div className="flex items-center gap-[0px]" ref={modeDropdownRef}>
+            {/* Plus: upload doc / attachments — plain icon, no border */}
+            <button
+              type="button"
+              onClick={handleAttachmentClick}
+              className="inline-flex items-center justify-center rounded-lg transition-colors hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#C5C1BA]/50"
+              style={{
+                width: 40,
+                height: 40,
+                border: "none",
+                ...(isHero
+                  ? { background: "transparent", color: "#C5C1BA" }
+                  : { background: "transparent", color: "#374151" }),
+              }}
+              aria-label="Upload file or attachment"
+            >
+              <Plus size={20} strokeWidth={2} />
+            </button>
             <div className="relative">
               <button
                 type="button"

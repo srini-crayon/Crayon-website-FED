@@ -31,7 +31,9 @@ export function CrayonHeader() {
   const { isAuthenticated, user, logout } = useAuthStore()
   const { isInAnyWishlist, loadAllWishlists } = useWishlistsStore()
   const { agentId: currentAgentId, agentName: currentAgentName } = useCurrentAgentStore()
-  const scrollThreshold = 8
+  const scrollThreshold = 60
+  const scrollDeltaMin = 50
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   const isAgentDetailPage = pathname.startsWith('/agents/') && pathname !== '/agents' && pathname !== '/agents-store'
   const agentIdFromPath = isAgentDetailPage ? pathname.replace(/^\/agents\//, '').split('/')[0] || null : null
@@ -123,23 +125,52 @@ export function CrayonHeader() {
     setMounted(true)
   }, [])
 
-  // Hide header on scroll down, show on scroll up so it doesn't cover content
   useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReducedMotion(mq.matches)
+    const listener = () => setPrefersReducedMotion(mq.matches)
+    mq.addEventListener('change', listener)
+    return () => mq.removeEventListener('change', listener)
+  }, [])
+
+  // Sync --header-height so main content padding matches (avoids content under sub-nav)
+  const showSubBar = mounted && (isAboutUsPage || isLegalPage || isServicesPage || isPlatformPage || isCommunityPage) && !isMenuOpen
+  useEffect(() => {
+    const height = showSubBar ? '101px' : '52px'
+    document.documentElement.style.setProperty('--header-height', height)
+    return () => {
+      document.documentElement.style.setProperty('--header-height', '52px')
+    }
+  }, [showSubBar])
+
+  // Hide header on scroll down, show on scroll up (web-standard behavior); respect reduced motion
+  useEffect(() => {
+    let rafId: number
     const handleScroll = () => {
       if (isMenuOpen) return
-      const y = window.scrollY
-      if (y <= scrollThreshold) {
+      if (prefersReducedMotion) {
         setHeaderVisible(true)
-      } else if (y > lastScrollY.current) {
-        setHeaderVisible(false)
-      } else {
-        setHeaderVisible(true)
+        return
       }
-      lastScrollY.current = y
+      rafId = requestAnimationFrame(() => {
+        const y = window.scrollY
+        const delta = y - lastScrollY.current
+        if (y <= scrollThreshold) {
+          setHeaderVisible(true)
+        } else if (delta > scrollDeltaMin) {
+          setHeaderVisible(false)
+        } else if (delta < -scrollDeltaMin) {
+          setHeaderVisible(true)
+        }
+        lastScrollY.current = y
+      })
     }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [isMenuOpen])
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [isMenuOpen, prefersReducedMotion])
 
   type MenuLink = string | { label: string; href: string; disabled?: boolean }
   const megaMenuSections: { title: string; icon: string; links: MenuLink[] }[] = [
@@ -201,16 +232,16 @@ export function CrayonHeader() {
         />
       )}
 
-      {/* Sticky header: hides on scroll down, shows on scroll up so it doesn't cover content */}
+      {/* Sticky header: hides on scroll down, shows on scroll up; respects prefers-reduced-motion */}
       <header 
-        className={`fixed top-0 left-0 right-0 z-50 bg-white header-with-banner border-b border-gray-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out ${
+        className={`crayon-header-transition fixed top-0 left-0 right-0 z-50 bg-white header-with-banner border-b border-gray-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out ${
           headerVisible ? "translate-y-0" : "-translate-y-full"
         }`}
         style={{
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          padding: isMenuOpen ? '0 25px' : '0 25px',
+          padding: '0 25px',
           overflow: 'hidden',
         }}
       >
@@ -448,21 +479,21 @@ export function CrayonHeader() {
                 marginTop: '0px',
               }}
             />
-            <div
+            <nav
+              aria-label="Section navigation"
+              className="header-sub-nav scrollbar-hide overflow-x-auto"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '12px 0',
-                height: '48px',
+                minHeight: '48px',
+                width: '100%',
               }}
             >
               <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '32px',
-                }}
+                className="flex items-center gap-6 md:gap-8 shrink-0"
+                style={{ minWidth: 'min-content' }}
               >
                 {(isAboutUsPage
                   ? secondaryMenuItems
@@ -563,7 +594,7 @@ export function CrayonHeader() {
                   )
                 })}
               </div>
-            </div>
+            </nav>
           </>
         )}
 

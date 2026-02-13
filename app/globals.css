@@ -7,6 +7,7 @@
 
 /* Updated color scheme to match Tangram.ai brand with purple primary and gradient backgrounds */
 :root {
+  --header-height: 52px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -1282,6 +1283,30 @@ nextjs-portal {
   /* Chrome, Safari, Opera */
 }
 
+/* Header sub-nav: smooth scroll and focus for accessibility */
+.header-sub-nav {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.header-sub-nav a:focus-visible,
+.header-sub-nav button:focus-visible {
+  outline: 2px solid var(--ring, oklch(0.55 0.22 285));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect reduced motion for header hide/show */
+@media (prefers-reduced-motion: reduce) {
+  header.crayon-header-transition {
+    transition: none;
+  }
+}
+
+/* Scroll targets sit below fixed header */
+[id]:not([id=""]) {
+  scroll-margin-top: var(--header-height, 52px);
+}
+
 /* Banner visibility classes for header positioning */
 .banner-visible header.header-with-banner {
   top: calc(1.25rem + 32px);
@@ -1400,6 +1425,80 @@ nextjs-portal {
 
 .agent-card-stagger:nth-child(9) {
   animation-delay: 0.45s;
+}
+
+/* ——— Agent Store page: interactive & alive ——— */
+
+/* Hero chip: subtle hover lift and shadow */
+.hero-chip-interactive {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-chip-interactive:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Scroll indicator: gentle bounce to invite click */
+@keyframes scrollIndicatorBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+.scroll-indicator-bounce {
+  animation: scrollIndicatorBounce 2s ease-in-out infinite;
+}
+
+/* Browse carousel cards: hover lift and glow */
+.browse-card-interactive {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.browse-card-interactive:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.browse-card-interactive:hover .browse-card-arrow {
+  transform: translate(2px, -2px);
+}
+.browse-card-arrow {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator-bounce {
+    animation: none;
+  }
+  .hero-chip-interactive:hover,
+  .browse-card-interactive:hover,
+  .industry-card-interactive:hover {
+    transform: none;
+  }
+  .hero-search-interactive:hover {
+    transform: none;
+  }
+}
+
+/* Industry / use-case cards: hover scale and shadow */
+.industry-card-interactive {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.industry-card-interactive:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero search wrapper: subtle hover emphasis */
+.hero-search-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-search-interactive:hover {
+  transform: scale(1.01);
 }
 
 /* Enhanced card hover effect with smooth lift */
