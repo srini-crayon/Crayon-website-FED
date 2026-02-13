@@ -15,6 +15,107 @@ function isVideoPreviewUrl(url: string | undefined): boolean {
   return Boolean(isYoutube || isVimeo || isVideoFile)
 }
 
+type DemoAssetLike = {
+  asset_url?: string
+  asset_file_path?: string
+  demo_asset_link?: string
+  demo_link?: string
+  demo_asset_name?: string
+  demo_asset_type?: string
+}
+
+function getUrlFromAsset(asset: DemoAssetLike | undefined): string | undefined {
+  if (!asset) return undefined
+  const url = asset.asset_url || asset.asset_file_path || asset.demo_asset_link || asset.demo_link
+  return url?.trim() || undefined
+}
+
+function isAssetVideo(asset: DemoAssetLike): boolean {
+  const url = getUrlFromAsset(asset) || ''
+  const name = (asset.demo_asset_name || '').toLowerCase()
+  const type = (asset.demo_asset_type || '').toLowerCase()
+  if (/\.(mp4|webm|ogg|mov)(\?|$|&)/i.test(url) || /\.(mp4|webm|ogg|mov)$/i.test(name)) return true
+  if (type.startsWith('video/') || type === 'video') return true
+  if (/(?:youtube\.com|youtu\.be|vimeo\.com)/i.test(url)) return true
+  return false
+}
+
+function isUrlVideo(url: string): boolean {
+  const u = url.trim()
+  if (/\.(mp4|webm|ogg|mov)(\?|$|&|%3F|%2F)/i.test(u)) return true
+  if (/(?:youtube\.com|youtu\.be|vimeo\.com)/i.test(u)) return true
+  return false
+}
+
+/** Prefer video for playback: first video in array, else first asset. */
+function getPreviewUrlFromDemoAssets(assets: DemoAssetLike[] | undefined): string | undefined {
+  if (!Array.isArray(assets) || assets.length === 0) return undefined
+  const video = assets.find(isAssetVideo)
+  const first = assets[0]
+  return getUrlFromAsset((video || first) as DemoAssetLike)
+}
+
+/** Parse comma-separated demo_preview string; prefer first video URL, else first URL. */
+function getPreviewUrlFromDemoPreviewString(str: string | undefined): string | undefined {
+  if (!str || !str.trim()) return undefined
+  const urls = str.split(',').map((u) => u.trim()).filter(Boolean)
+  if (urls.length === 0) return undefined
+  const videoUrl = urls.find(isUrlVideo)
+  return videoUrl || urls[0]
+}
+
+/** Normalize preview URL: S3 and relative paths go through proxy so video/image loads correctly */
+function normalizePreviewUrl(url: string | undefined): string | undefined {
+  if (!url || !url.trim()) return undefined
+  const u = url.trim()
+  if (u.startsWith('blob:')) return u
+  if (/(?:youtube\.com|youtu\.be)/i.test(u) || /vimeo\.com/i.test(u)) return u
+  if (u.startsWith('https://') || u.startsWith('http://')) {
+    if (u.includes('.s3.') || u.includes('amazonaws.com')) {
+      try {
+        return `/api/image-proxy?url=${encodeURIComponent(u)}`
+      } catch {
+        return u
+      }
+    }
+    return u
+  }
+  const bucket = 'agentsstore'
+  const region = 'us-east-1'
+  const key = u.startsWith('/') ? u.slice(1) : u
+  const s3Url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`
+  try {
+    return `/api/image-proxy?url=${encodeURIComponent(s3Url)}`
+  } catch {
+    return s3Url
+  }
+}
+
+function isYoutubeUrl(url: string): boolean {
+  return /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i.test(url)
+}
+function isVimeoUrl(url: string): boolean {
+  return /vimeo\.com\/(\d+)/i.test(url)
+}
+function getYoutubeEmbedUrl(url: string, opts?: { autoplay?: boolean; mute?: boolean; loop?: boolean }): string {
+  const match = url.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i)
+  if (!match || !match[1]) return url
+  const id = match[1]
+  const params = new URLSearchParams()
+  if (opts?.autoplay) params.set('autoplay', '1')
+  if (opts?.mute) params.set('mute', '1')
+  if (opts?.loop) {
+    params.set('loop', '1')
+    params.set('playlist', id)
+  }
+  const qs = params.toString()
+  return `https://www.youtube.com/embed/${id}${qs ? `?${qs}` : ''}`
+}
+function getVimeoEmbedUrl(url: string): string {
+  const match = url.match(/vimeo\.com\/(\d+)/i)
+  return match && match[1] ? `https://player.vimeo.com/video/${match[1]}` : url
+}
+
 export function AgentDetailsBody(props: AgentDetailsContentProps) {
   const { id, title, description, data, agent } = props
   const content = (<>
@@ -225,15 +326,23 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
 
         </div>
 
-        {/* ΓöÇΓöÇ 6. Floating Video Preview (bottom-right) ΓÇô auto-play video from API when available ΓöÇΓöÇ */}
+        {/* ΓöÇΓöÇ 6. Floating Video Preview (bottom-right) ΓÇô prefer video from demo_assets / demo_preview for playback ΓöÇΓöÇ */}
         {(() => {
-          const previewUrl = data?.agent?.demo_preview
-            || (data?.demo_assets?.[0] as { asset_url?: string; demo_asset_link?: string; demo_link?: string } | undefined)?.asset_url
-            || (data?.demo_assets?.[0] as { demo_asset_link?: string; demo_link?: string } | undefined)?.demo_asset_link
-            || (data?.demo_assets?.[0] as { demo_link?: string } | undefined)?.demo_link
-          const hasPreview = Boolean((data?.demo_assets && data.demo_assets.length > 0) || data?.agent?.demo_preview)
-          const isVideo = isVideoPreviewUrl(previewUrl)
-          if (!hasPreview) return null
+          const agentAssets = (data?.agent?.demo_assets || data?.demo_assets) as DemoAssetLike[] | undefined
+          const demoPreviewStr = data?.agent?.demo_preview?.trim()
+          const rawPreviewUrl =
+            getPreviewUrlFromDemoAssets(agentAssets)
+            || getPreviewUrlFromDemoPreviewString(demoPreviewStr)
+            || (demoPreviewStr ? demoPreviewStr.split(',')[0]?.trim() : undefined)
+          const previewUrl = normalizePreviewUrl(rawPreviewUrl) || rawPreviewUrl
+          const hasPreview = Boolean(
+            demoPreviewStr
+            || (agentAssets && agentAssets.length > 0)
+          )
+          const isVideo = isVideoPreviewUrl(rawPreviewUrl)
+          const isYoutube = previewUrl ? isYoutubeUrl(previewUrl) : false
+          const isVimeo = previewUrl ? isVimeoUrl(previewUrl) : false
+          if (!hasPreview || !previewUrl) return null
           return (
                 <div
                   style={{
@@ -307,15 +416,33 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
 
               {/* Auto-playing video when API returns a video URL */}
               {isVideo && previewUrl ? (
-                <video
-                  src={previewUrl}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  title="Demo preview"
-                />
+                isYoutube ? (
+                  <iframe
+                    src={getYoutubeEmbedUrl(previewUrl, { autoplay: true, mute: true, loop: true })}
+                    title="Demo video"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : isVimeo ? (
+                  <iframe
+                    src={`${getVimeoEmbedUrl(previewUrl)}?autoplay=1&muted=1&loop=1`}
+                    title="Demo video"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    src={previewUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    title="Demo preview"
+                  />
+                )
               ) : previewUrl ? (
                 <img
                   src={previewUrl}
