@@ -187,7 +187,7 @@ export default function TangramAIPage() {
           }}
         />
 
-        <div className="relative mx-auto w-full max-w-[1100px] px-6 pb-16 pt-[150px] text-center">
+        <div className="relative mx-auto w-full max-w-[1100px] px-6 pb-16 pt-12 md:pt-16 text-center">
           <div className="mx-auto mb-6 flex justify-center">
             <Image
               src="/img/tangram-logo.svg"

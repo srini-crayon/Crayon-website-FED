@@ -3,21 +3,29 @@
 import { useState } from "react"
 import Image from "next/image"
 
+/** Base path for client logos (files live in public/img/). */
+const CLIENT_LOGOS_PATH = "/img"
+
+const clients = [
+  { name: "HDFC Bank", region: "India", logo: "hdfc-logo.png" },
+  { name: "ADIB", region: "UAE", logo: "adib-logo.png" },
+  { name: "Riyad Bank", region: "KSA", logo: "riyadh-bank-logo.svg" },
+  { name: "KBZ Bank", region: "Myanmar", logo: "kbz-logo.png" },
+  { name: "Mozark", region: "Global", logo: "mozark-logo.png" },
+  { name: "Gradiant", region: "Global", logo: "gradiant-logo.png" },
+  { name: "AMEX", region: "Global", logo: "amex-logo.png" },
+  { name: "Emirates", region: "UAE", logo: "emirates-logo.png" },
+  { name: "HSBC", region: "Global", logo: "hsbc-logo.png" },
+  { name: "VISA", region: "Global", logo: "visa-logo.png" },
+]
+
 export function ClientsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [failedLogos, setFailedLogos] = useState<Set<number>>(new Set())
 
-  const clients = [
-    { name: "HDFC Bank", region: "India", logo: "/img/hdfc-logo.png" },
-    { name: "ADIB", region: "UAE", logo: "/img/adib-logo.png" },
-    { name: "Riyad Bank", region: "KSA", logo: "/img/riyadh-bank-logo.svg" },
-    { name: "KBZ Bank", region: "Myanmar", logo: "/img/kbz-logo.png" },
-    { name: "Mozark", region: "Global", logo: "/img/mozark-logo.png" },
-    { name: "Gradiant", region: "Global", logo: "/img/gradiant-logo.png" },
-    { name: "AMEX", region: "Global", logo: "/img/amex-logo.png" },
-    { name: "Emirates", region: "UAE", logo: "/img/emirates-logo.png" },
-    { name: "HSBC", region: "Global", logo: "/img/hsbc-logo.png" },
-    { name: "VISA", region: "Global", logo: "/img/visa-logo.png" },
-  ]
+  const handleLogoError = (index: number) => {
+    setFailedLogos((prev) => new Set(prev).add(index))
+  }
 
   return (
     <section id="clients" className="py-24 bg-background">
@@ -66,32 +74,29 @@ export function ClientsSection() {
                   {client.logo ? (
                     <div className="mb-3 h-8 flex items-center">
                       <div
-                        className={`relative w-24 h-8 flex items-center justify-center overflow-hidden ${
-                          client.name === "HSBC" || client.name === "VISA"
-                            ? "rounded min-w-[6rem] min-h-[2rem] px-2 py-1"
-                            : ""
+                        className={`relative w-24 h-8 flex items-center justify-center overflow-hidden rounded ${
+                          client.name === "HSBC" || client.name === "VISA" ? "bg-white min-w-[6rem] min-h-[2rem] px-2 py-1" : "bg-background"
                         }`}
-                        style={
-                          client.name === "HSBC" || client.name === "VISA"
-                            ? { backgroundColor: "#ffffff" }
-                            : undefined
-                        }
                       >
-                        <Image
-                          src={client.logo}
-                          alt={client.name}
-                          width={96}
-                          height={32}
-                          className="object-contain object-left transition-all duration-300"
-                          style={{
-                            maxHeight: "32px",
-                            height: "auto",
-                            width: "auto",
-                          }}
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none"
-                          }}
-                        />
+                        {failedLogos.has(index) ? (
+                          <span className="text-xs font-semibold text-foreground/80 truncate px-1">
+                            {client.name}
+                          </span>
+                        ) : (
+                          <Image
+                            src={`${CLIENT_LOGOS_PATH}/${client.logo}`}
+                            alt={client.name}
+                            width={96}
+                            height={32}
+                            className="object-contain object-left transition-all duration-300"
+                            style={{
+                              maxHeight: "32px",
+                              height: "auto",
+                              width: "auto",
+                            }}
+                            onError={() => handleLogoError(index)}
+                          />
+                        )}
                       </div>
                     </div>
                   ) : (

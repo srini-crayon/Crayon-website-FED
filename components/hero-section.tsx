@@ -83,6 +83,9 @@ const slides = [
   },
 ]
 
+// Only show the first slide ("Accelerate Your Journey to AI Success"); set to slides to show all
+const visibleSlides = slides.slice(0, 1)
+
 export function HeroSection() {
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
@@ -154,7 +157,7 @@ export function HeroSection() {
   }, [api])
 
   return (
-    <section ref={heroSectionRef} className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden w-full">
+    <section ref={heroSectionRef} className="relative pt-12 pb-16 md:pt-16 md:pb-24 overflow-hidden w-full">
       {/* Cursor-based dot pattern with radial gradient reveal */}
       <div
         aria-hidden="true"
@@ -238,9 +241,9 @@ export function HeroSection() {
           className="w-full"
         >
           <CarouselContent className="-ml-0">
-            {slides.map((slide, index) => (
+            {visibleSlides.map((slide, index) => (
               <CarouselItem key={index} className="pl-0 w-full">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:mt-12">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-6">
                   {/* Left - Content */}
                   <div className={cn("max-w-xl", index === 0 && "lg:max-w-2xl")}>
                     <div className="inline-flex items-center gap-2 mb-6">
@@ -301,44 +304,42 @@ export function HeroSection() {
                     </div>
                   </div>
 
-                  {/* Right - Animated Illustration (hidden only for slide 1 "Accelerate Your Journey to AI Success") */}
-                  {index !== 0 && (
-                    <div className="hidden lg:flex items-center justify-center">
-                      <SlideIllustrationComponent slideIndex={index} isActive={current === index} />
-                    </div>
-                  )}
+                  {/* Right - Animated Illustration */}
+                  <div className="hidden lg:flex items-center justify-center">
+                    <SlideIllustrationComponent slideIndex={index} isActive={current === index} />
+                  </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
         </Carousel>
 
-        {/* Navigation Controls */}
-        <div className="flex items-center justify-end mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            {/* Carousel indicator */}
-            <span className="text-sm font-mono text-muted-foreground">
-              [{current + 1}/{slides.length}]
-            </span>
-            {/* Arrow navigation */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={scrollPrev}
-                className="flex items-center justify-center w-10 h-10 border border-border hover:bg-muted hover:border-accent/30 transition-all"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="w-4 h-4 text-foreground" />
-              </button>
-              <button
-                onClick={scrollNext}
-                className="flex items-center justify-center w-10 h-10 border border-border hover:bg-muted hover:border-accent/30 transition-all"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="w-4 h-4 text-foreground" />
-              </button>
+        {/* Navigation Controls - hidden when only first slide is shown */}
+        {visibleSlides.length > 1 && (
+          <div className="flex items-center justify-end mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-mono text-muted-foreground">
+                [{current + 1}/{visibleSlides.length}]
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={scrollPrev}
+                  className="flex items-center justify-center w-10 h-10 border border-border hover:bg-muted hover:border-accent/30 transition-all"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-4 h-4 text-foreground" />
+                </button>
+                <button
+                  onClick={scrollNext}
+                  className="flex items-center justify-center w-10 h-10 border border-border hover:bg-muted hover:border-accent/30 transition-all"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-4 h-4 text-foreground" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
       </div>
     </section>
