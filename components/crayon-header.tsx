@@ -343,15 +343,14 @@ export function CrayonHeader() {
           /
         </span>
 
-        {/* Center - Main navigation (Platform, Services, Community, About Us) - left aligned; Pricing & Resources hidden until content is ready */}
+        {/* Center - Main navigation (AI Platform, Catalyst, About Us) – Community hidden until content is ready */}
         <nav
           className="hidden lg:flex items-center justify-start gap-6 flex-1 relative"
           aria-label="Main navigation"
         >
           {[
-            { key: 'platform' as NavKey, href: '/tangram-ai', label: 'Platform' },
-            { key: 'services' as NavKey, href: '/catalyst', label: 'Services' },
-            { key: 'community' as NavKey, href: '/blog', label: 'Community' },
+            { key: 'platform' as NavKey, href: '/tangram-ai', label: 'AI Platform' },
+            { key: 'services' as NavKey, href: '/catalyst', label: 'Catalyst' },
             { key: 'about' as NavKey, href: '/vision', label: 'About Us' },
           ].map(({ key, href, label }) => (
             <div

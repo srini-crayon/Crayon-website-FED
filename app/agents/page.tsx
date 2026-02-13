@@ -994,14 +994,12 @@ export default function AgentLibraryPage() {
     total: number,
     onChange: (page: number) => void
   ) => {
-    // Pagination section commented out (Previous / page numbers / Next)
-    return null;
-    /*
     if (total <= 1) return null;
     const pages = Array.from({ length: total }, (_, idx) => idx + 1);
     return (
-      <div className="mt-16 flex items-center justify-center gap-2">
+      <div className="mt-10 flex items-center justify-center gap-2" style={{ marginBottom: "260px" }}>
         <button
+          type="button"
           onClick={() => onChange(Math.max(1, current - 1))}
           disabled={current === 1}
           className="pagination-button text-sm text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed px-2"
@@ -1015,6 +1013,7 @@ export default function AgentLibraryPage() {
           {pages.map((page) => (
             <button
               key={page}
+              type="button"
               onClick={() => onChange(page)}
               className={`pagination-button text-sm px-2 py-1 min-w-[32px] ${page === current
                 ? "text-gray-900 font-medium"
@@ -1029,6 +1028,7 @@ export default function AgentLibraryPage() {
           ))}
         </div>
         <button
+          type="button"
           onClick={() => onChange(Math.min(total, current + 1))}
           disabled={current === total}
           className="pagination-button text-sm text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed px-2"
@@ -1040,7 +1040,6 @@ export default function AgentLibraryPage() {
         </button>
       </div>
     );
-    */
   };
 
   return (
@@ -1084,21 +1083,6 @@ export default function AgentLibraryPage() {
         {/* Content wrapper with higher z-index */}
         <div style={{ position: 'relative', zIndex: 1 }}>
           <>
-            {/* Top radial gradient banner fixed to top (no whitespace) */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "360px",
-                top: 0,
-                left: 0,
-                background: "radial-gradient(100% 100% at 50% 0%, #FED1E6 0%, #FFFFFF 100%)",
-                opacity: 0.7,
-                pointerEvents: "none",
-                zIndex: -1,
-              }}
-            />
             {/* Hero Section — content aligned closer to top below header */}
             <section
               className="fade-in-section flex items-center justify-center"
@@ -1324,9 +1308,8 @@ export default function AgentLibraryPage() {
               return (
                 <section
                   id="browse-agents-section"
-                  className="w-full"
+                  className="w-full bg-white"
                   style={{
-                    background: "radial-gradient(100% 100% at 50% 0%, #FFE5E5 0%, #FFFFFF 100%)",
                     paddingTop: "64px",
                     paddingBottom: "80px",
                   }}
@@ -1880,10 +1863,11 @@ export default function AgentLibraryPage() {
                       {allCategoryTags.length > 12 && (
                         <span className="flex-shrink-0 px-4 py-2 text-sm text-gray-500" style={{ fontFamily: "Poppins, sans-serif" }}>More...</span>
                       )}
+                      {/* Filters button hidden for now – not required */}
                       <button
                         type="button"
                         onClick={() => setIsFilterPanelOpen(true)}
-                        className="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5"
+                        className="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 hidden"
                         style={{ fontFamily: "Poppins, sans-serif", backgroundColor: "#F3F4F6", color: "#4B5563" }}
                       >
                         <Filter className="h-3.5 w-3.5" />
@@ -2074,32 +2058,7 @@ export default function AgentLibraryPage() {
                         </div>
                       )}
 
-                      {totalPages > 1 && renderPaginationControls(currentPage, totalPages, setCurrentPage)}
-
-                      <div className="flex justify-center mt-10" style={{ marginBottom: "260px" }}>
-                        <button
-                          type="button"
-                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                          className="inline-flex items-center justify-center gap-1 px-5 hover:bg-gray-50 transition-colors"
-                          style={{
-                            fontFamily: "Inter, sans-serif",
-                            fontWeight: 500,
-                            fontStyle: "normal",
-                            fontSize: "14px",
-                            lineHeight: "16px",
-                            letterSpacing: "0%",
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                            color: "#344054",
-                            height: "40px",
-                            borderRadius: "8px",
-                            border: "1px solid #D0D5DD",
-                            background: "#FFFFFF",
-                          }}
-                        >
-                          See All +
-                        </button>
-                      </div>
+                      {renderPaginationControls(currentPage, totalPages, setCurrentPage)}
                     </div>
                   </>
                 )}
