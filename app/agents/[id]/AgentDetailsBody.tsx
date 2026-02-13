@@ -1,7 +1,8 @@
 "use client"
 
-import React from "react"
+import React, { useRef } from "react"
 import Image from "next/image"
+import { Maximize2 } from "lucide-react"
 import ScrollToTop from "@/components/scroll-to-top"
 import { CurrentAgentSetter } from "../../../components/current-agent-setter"
 import type { AgentDetailsContentProps } from "./types"
@@ -118,12 +119,13 @@ function getVimeoEmbedUrl(url: string): string {
 
 export function AgentDetailsBody(props: AgentDetailsContentProps) {
   const { id, title, description, data, agent } = props
+  const demoPreviewContainerRef = useRef<HTMLDivElement>(null)
   const content = (<>
     <div className="agent-details-page">
       <CurrentAgentSetter agentId={id} agentName={title} />
       <ScrollToTop />
-      {/* Main Content */}
-      <section style={{ position: 'relative', width: '100%', minHeight: '80vh', overflow: 'hidden' }}>
+      {/* Main Content - Overview (for sub-nav scroll) */}
+      <section id="overview" style={{ position: 'relative', width: '100%', minHeight: '80vh', overflow: 'hidden' }}>
 
         {/* ΓöÇΓöÇ Background Gradient ΓöÇΓöÇ */}
         <div
@@ -345,6 +347,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
           if (!hasPreview || !previewUrl) return null
           return (
                 <div
+                  ref={demoPreviewContainerRef}
                   style={{
                 position: 'absolute',
                 bottom: '40px',
@@ -359,9 +362,15 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 cursor: isVideo ? 'default' : 'pointer',
               }}
             >
-              {/* Close Button */}
+              {/* Expand button – fullscreen video/preview on click */}
               <button
                 type="button"
+                onClick={() => {
+                  const el = demoPreviewContainerRef.current
+                  if (el && typeof el.requestFullscreen === 'function') {
+                    el.requestFullscreen().catch(() => {})
+                  }
+                }}
                 style={{
                   position: 'absolute',
                   top: '8px',
@@ -372,15 +381,16 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                   background: 'rgba(0,0,0,0.5)',
                   border: 'none',
                   color: '#fff',
-                    fontSize: '14px',
+                  fontSize: '14px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   zIndex: 2,
                 }}
+                aria-label="Expand video"
               >
-                ├ù
+                <Maximize2 size={14} strokeWidth={2.5} />
               </button>
 
               {/* Play overlay only when preview is image (not video) */}
@@ -458,8 +468,8 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
 
       </section>
 
-      {/* Features, ROI, Deployment, Docs Section */}
-      <section className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden' }}>
+      {/* Features, ROI, Deployment, Docs Section - Capabilities (for sub-nav scroll) */}
+      <section id="capabilities" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
           {/* ΓöÇΓöÇ 1. "CAPABILITIES" Label with left/right lines ΓöÇΓöÇ */}
@@ -679,7 +689,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
 
         </div>
       </section>
-      <section className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden' }}>
+      <section id="value-proposition" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
           {/* ΓöÇΓöÇ 2. "KEY BENEFITS & VALUE PROPOSITION" Label with left/right lines ΓöÇΓöÇ */}
@@ -946,8 +956,8 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
 
         </div>
       </section>
-      <section className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FAFAFA' }}>
-        <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
+      <section id="how-it-works" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FAFAFA' }}>
+        <div id="agent-powering" className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
           {/* ΓöÇΓöÇ 1. "AGENTS & MODEL POWERING" Label with left/right lines ΓöÇΓöÇ */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
@@ -1492,7 +1502,11 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
           </div>
         </div>
       </section>
-      <section className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF' }}>
+      {/* Placeholder section for sub-nav "Use Cases" scroll target; content can be added later */}
+      <section id="use-cases" className="relative py-8 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FAFAFA' }} aria-hidden>
+        <div className="w-full mx-auto" style={{ maxWidth: '1200px' }} />
+      </section>
+      <section id="tech-security" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
           {/* ΓöÇΓöÇ 1. "TECH & SECURITY" Label with left/right lines ΓöÇΓöÇ */}
@@ -1841,7 +1855,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
           </div>
         </div>
       </section>
-      <section className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF', position: 'relative' }}>
+      <section id="faq" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF', position: 'relative' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
           {/* ΓöÇΓöÇ Decorative curved line - LEFT side ΓöÇΓöÇ */}
@@ -1964,26 +1978,6 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             Join leading financial institutions leveraging AI to streamline asset recovery and
             maximize returns
           </p>
-
-            {/* ΓöÇΓöÇ 4. Description ΓöÇΓöÇ */}
-            <p
-              style={{
-                fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                fontWeight: 400,
-                fontStyle: 'normal',
-                fontSize: '16px',
-                lineHeight: '24px',
-                letterSpacing: '0%',
-                textAlign: 'center',
-                verticalAlign: 'middle',
-                color: '#737373',
-                maxWidth: '460px',
-                margin: '0 auto 32px',
-              }}
-            >
-              Join leading financial institutions leveraging AI to streamline asset recovery and
-              maximize returns
-            </p>
 
             {/* ΓöÇΓöÇ 5. CTA Button ΓöÇΓöÇ */}
             <div style={{ textAlign: 'center' }}>
