@@ -144,7 +144,7 @@ export default function OurValuesPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Breadcrumb Section */}
-      <section className="pt-8 pb-4 fade-in-section" style={{ backgroundColor: "#FFFFFF" }}>
+      <section className="pt-4 pb-4 fade-in-section" style={{ backgroundColor: "#FFFFFF" }}>
         <div
           style={{
             width: "100%",
@@ -190,7 +190,7 @@ export default function OurValuesPage() {
         className="relative overflow-hidden"
         style={{
           backgroundColor: "#FFFFFF",
-          paddingTop: "140px",
+          paddingTop: "48px",
           paddingBottom: "24px",
         }}
       >
