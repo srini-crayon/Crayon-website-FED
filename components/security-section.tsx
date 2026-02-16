@@ -7,17 +7,17 @@ import Image from "next/image";
 const certifications = [
   {
     id: "01",
-    name: "DPP Standards",
+    name: "DPDP Standards",
     description: "Data Protection & Privacy Standards certified",
     icon: Shield,
     logo: null,
   },
   {
     id: "02",
-    name: "ISO 27701",
-    description: "Privacy Information Management certified",
+    name: "ISO 27001",
+    description: "Information Security Management certified",
     icon: Lock,
-    logo: "/img/iso-27701.png",
+    logo: "/img/iso-27001.png",
   },
   {
     id: "03",

@@ -15,7 +15,7 @@ import { SlideIllustration as SlideIllustrationComponent } from "@/components/sl
 
 const slides = [
   {
-    tag: "AI Success",
+    tag: "Simplify AI Success",
     headline: ["Accelerate Your", "Journey to AI Success", ""],
     highlightLine: 1,
     gradientColors: {
@@ -27,7 +27,7 @@ const slides = [
       secondary: "oklch(0.65 0.2 175/0.12)",
     },
     description:
-      "AI is easy to demo. It's brutally hard to run. Enterprises don't struggle with ambition. They struggle with execution. Crayon Data exists to simplify and accelerate AI success — moving you from pilots and proofs-of-concept to production-grade systems that run securely, responsibly, and at scale.",
+      "AI is easy to demo. It's hard to run. Crayon Data simplifies and accelerates AI adoption, turning pilots and POCs into secure, production-grade systems that run responsibly and at scale.",
     primaryCta: { label: "Explore Tangram", href: "/tangram-ai" },
     secondaryCta: { label: "See How Catalyst Works", href: "/catalyst" },
   },
@@ -157,7 +157,7 @@ export function HeroSection() {
   }, [api])
 
   return (
-    <section ref={heroSectionRef} className="relative pt-12 pb-16 md:pt-16 md:pb-24 overflow-hidden w-full">
+    <section ref={heroSectionRef} className="relative py-12 md:py-16 overflow-hidden w-full">
       {/* Cursor-based dot pattern with radial gradient reveal */}
       <div
         aria-hidden="true"
@@ -243,7 +243,7 @@ export function HeroSection() {
           <CarouselContent className="-ml-0">
             {visibleSlides.map((slide, index) => (
               <CarouselItem key={index} className="pl-0 w-full">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-6">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   {/* Left - Content */}
                   <div className={cn("max-w-xl", index === 0 && "lg:max-w-2xl")}>
                     <div className="inline-flex items-center gap-2 mb-6">
