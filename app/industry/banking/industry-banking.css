@@ -1,0 +1,70 @@
+/* Just ask input: no outline, border, or box-shadow; padding so bottom isn't clipped */
+.just-ask-input-wrapper {
+  padding: 2px;
+  margin: -2px;
+  box-sizing: content-box;
+  overflow: visible;
+}
+.just-ask-input-wrapper,
+.just-ask-input-wrapper:focus,
+.just-ask-input-wrapper:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+.just-ask-input-wrapper input.just-ask-input,
+.just-ask-input-wrapper input.just-ask-input:focus,
+.just-ask-input-wrapper input.just-ask-input:focus-visible,
+.just-ask-input-wrapper input.just-ask-input:hover,
+input.just-ask-input {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Search bar: focus ring on wrapper (inset) so no outline is ever clipped when zoomed */
+.industry-banking-search {
+  isolation: isolate;
+  /* Slight padding so focus ring never touches clip edge when zoomed */
+  padding: 2px;
+  margin: -2px;
+  box-sizing: content-box;
+}
+.industry-banking-search:focus-within {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
+  border-radius: 34px; /* 32px inner + 2px padding */
+}
+.industry-banking-search input {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+.industry-banking-search input:focus,
+.industry-banking-search input:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Extend stagger animation for industry banking card grid (12 cards) */
+.industry-banking-cards .stagger-item:nth-child(7) {
+  transition-delay: 0.15s;
+}
+.industry-banking-cards .stagger-item:nth-child(8) {
+  transition-delay: 0.2s;
+}
+.industry-banking-cards .stagger-item:nth-child(9) {
+  transition-delay: 0.25s;
+}
+.industry-banking-cards .stagger-item:nth-child(10) {
+  transition-delay: 0.3s;
+}
+.industry-banking-cards .stagger-item:nth-child(11) {
+  transition-delay: 0.35s;
+}
+.industry-banking-cards .stagger-item:nth-child(12) {
+  transition-delay: 0.4s;
+}

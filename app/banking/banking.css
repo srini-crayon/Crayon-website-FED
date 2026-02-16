@@ -8,6 +8,20 @@
   }
 }
 
+/* Seamless loop: translate by half (one copy width) so reset has no visible gap */
+@keyframes marquee-banking-seamless {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .animate-marquee-banking {
   animation: marquee-banking linear infinite;
+}
+
+.animate-marquee-banking-seamless {
+  animation: marquee-banking-seamless linear infinite;
 }
