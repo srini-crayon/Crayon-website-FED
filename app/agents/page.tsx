@@ -1553,6 +1553,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(251,146,60,0.12) 0%, rgba(220,38,38,0.06) 40%, transparent 70%)",
                       titleColor: "#EA580C",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FFF7ED 97.78%)",
+                      comingSoon: false,
                     },
                     {
                       id: "insurance",
@@ -1563,6 +1564,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(21,128,61,0.06) 40%, transparent 70%)",
                       titleColor: "#15803D",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F0FDF4 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "healthcare",
@@ -1573,6 +1575,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.12) 0%, rgba(190,24,93,0.06) 40%, transparent 70%)",
                       titleColor: "#BE185D",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "retail",
@@ -1583,6 +1586,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(196,181,253,0.12) 0%, rgba(109,40,217,0.06) 40%, transparent 70%)",
                       titleColor: "#6D28D9",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F5F3FF 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "education",
@@ -1593,6 +1597,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.1) 0%, rgba(157,23,77,0.06) 40%, transparent 70%)",
                       titleColor: "#9D174D",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "government",
@@ -1603,23 +1608,47 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(29,78,216,0.06) 40%, transparent 70%)",
                       titleColor: "#1D4ED8",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #EFF6FF 97.78%)",
+                      comingSoon: true,
                     },
                   ].map((item) => {
                     const Icon = item.icon;
+                    const isComingSoon = item.comingSoon === true;
                     return (
                       <Link
                         key={item.id}
-                        href={`/agents?industry=${item.id}`}
-                        className="industry-card-interactive block relative overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
+                        href={isComingSoon ? "#" : `/agents?industry=${item.id}`}
+                        onClick={isComingSoon ? (e) => e.preventDefault() : undefined}
+                        className={`industry-card-interactive block relative overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${isComingSoon ? "cursor-not-allowed" : ""}`}
                         style={{
                           width: "100%",
                           minHeight: "194px",
                           borderRadius: "8px",
-                          background: item.cardBackground,
+                          background: isComingSoon ? "linear-gradient(287.29deg, #F0F0F0 62.43%, #E5E5E5 97.78%)" : item.cardBackground,
                           boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
                           textDecoration: "none",
+                          opacity: isComingSoon ? 0.85 : 1,
                         }}
                       >
+                        {isComingSoon && (
+                          <span
+                            className="absolute top-3 right-3 z-10"
+                            style={{
+                              fontFamily: "Poppins, sans-serif",
+                              fontWeight: 500,
+                              fontSize: "11px",
+                              lineHeight: "16px",
+                              letterSpacing: "0.5px",
+                              color: "#6B7280",
+                              background: "#FFFFFF",
+                              border: "1px solid #D1D5DB",
+                              borderRadius: "6px",
+                              padding: "4px 8px",
+                              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                            }}
+                          >
+                            Coming Soon
+                          </span>
+                        )}
                         <div className="relative p-6">
                           <div className="flex justify-between items-start">
                             <div
@@ -1629,14 +1658,16 @@ export default function AgentLibraryPage() {
                                 height: "36px",
                               }}
                             >
-                              <Icon size={22} strokeWidth={2} style={{ color: item.titleColor }} />
+                              <Icon size={22} strokeWidth={2} style={{ color: isComingSoon ? "#9CA3AF" : item.titleColor }} />
                             </div>
-                            <ArrowUpRight
-                              size={18}
-                              className="flex-shrink-0 text-gray-400"
-                              strokeWidth={2}
-                              style={{ marginTop: "2px" }}
-                            />
+                            {!isComingSoon && (
+                              <ArrowUpRight
+                                size={18}
+                                className="flex-shrink-0 text-gray-400"
+                                strokeWidth={2}
+                                style={{ marginTop: "2px" }}
+                              />
+                            )}
                           </div>
                           <h3
                             className="mt-4"
@@ -1648,7 +1679,7 @@ export default function AgentLibraryPage() {
                               lineHeight: "100%",
                               letterSpacing: "0%",
                               verticalAlign: "middle",
-                              color: item.titleColor,
+                              color: isComingSoon ? "#9CA3AF" : item.titleColor,
                             }}
                           >
                             {item.title}
@@ -1662,7 +1693,7 @@ export default function AgentLibraryPage() {
                               fontSize: "14px",
                               lineHeight: "20px",
                               letterSpacing: "0%",
-                              color: "#475467",
+                              color: isComingSoon ? "#9CA3AF" : "#475467",
                             }}
                           >
                             {item.description}

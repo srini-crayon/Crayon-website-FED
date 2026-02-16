@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Maximize2 } from "lucide-react"
 import ScrollToTop from "@/components/scroll-to-top"
 import { CurrentAgentSetter } from "../../../components/current-agent-setter"
@@ -118,8 +119,11 @@ function getVimeoEmbedUrl(url: string): string {
 }
 
 export function AgentDetailsBody(props: AgentDetailsContentProps) {
-  const { id, title, description, data, agent } = props
+  const { id, title, description, data, agent, relatedAgents = [], agentsSource } = props
   const demoPreviewContainerRef = useRef<HTMLDivElement>(null)
+  const [techSecurityTab, setTechSecurityTab] = useState<string>('')
+  const [techSecurityExpandedTabs, setTechSecurityExpandedTabs] = useState<Set<string>>(new Set())
+  const TECH_SECURITY_VISIBLE_ROWS = 5
   const content = (<>
     <div className="agent-details-page">
       <CurrentAgentSetter agentId={id} agentName={title} />
@@ -201,7 +205,11 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 color: '#1C1C1C',
               }}
             >
-              {data?.agent?.agent_name || 'NPA Valuation Assistant'}
+              {(() => {
+                const descStr = (description || '').trim();
+                const fromDescription = descStr.includes(' - ') ? descStr.split(/\s+-\s+/)[0]?.trim() : '';
+                return fromDescription || data?.agent?.by_persona || data?.agent?.agent_name || 'NPA Valuation Assistant';
+              })()}
                   </span>
           </div>
 
@@ -248,7 +256,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             })()}
           </h1>
 
-          {/* ΓöÇΓöÇ 3. Description ΓöÇΓöÇ */}
+          {/* ΓöÇΓöÇ 3. Description (only the rest after " - "; tagline is in span above) ΓöÇΓöÇ */}
           <p
             style={{
               fontFamily: 'Poppins, sans-serif',
@@ -264,9 +272,14 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               margin: '0 0 32px 0',
             }}
           >
-            {description
-              ? description.replace(/\\n/g, ' ').slice(0, 200) + (description.length > 200 ? '...' : '')
-              : 'Streamline your non-performing asset workflow from email intake to valuation. Reduce processing time by 70% with AI-assisted automation and real-time analytics.'}
+            {(() => {
+              const descStr = (description || '').trim();
+              const restOnly = descStr.includes(' - ') ? descStr.split(/\s+-\s+/).slice(1).join(' - ').trim() : descStr;
+              const text = restOnly || description;
+              return text
+                ? text.replace(/\\n/g, ' ').slice(0, 200) + (text.length > 200 ? '...' : '')
+                : 'Streamline your non-performing asset workflow from email intake to valuation. Reduce processing time by 70% with AI-assisted automation and real-time analytics.';
+            })()}
           </p>
 
           {/* ΓöÇΓöÇ 4. DEMO NOW Button ΓöÇΓöÇ */}
@@ -510,30 +523,29 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             />
           </div>
 
-          {/* ΓöÇΓöÇ 2. Section Heading (gradient text) ΓöÇΓöÇ */}
-          <h2
-            style={{
-              fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-              fontWeight: 300,
-              fontStyle: 'normal',
-              fontSize: '36px',
-              lineHeight: '40px',
-              letterSpacing: '0%',
-              textAlign: 'center',
-              maxWidth: '640px',
-              margin: '0 auto 48px',
-              background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              color: 'transparent',
-            }}
-          >
-            Everything you need to manage NPA portfolios     efficiently and accurately
-          </h2>
-
-          {/* ΓöÇΓöÇ 3. Features Grid (3 columns ├ù 2 rows) ΓöÇΓöÇ */}
+          {/* ΓöÇΓöÇ 2. Section Heading + 3. Features Grid – first segment of features = h2, rest = cards ΓöÇΓöÇ */}
           {(() => {
-            /* ΓöÇΓöÇ Parse features from agent data ΓöÇΓöÇ */
+            const featuresStr = (agent?.features && String(agent.features).trim() && agent.features !== 'na') ? String(agent.features).replace(/\\n/g, '\n') : ''
+            const partsBySemicolon = featuresStr ? featuresStr.split(';').map((s: string) => s.trim()).filter(Boolean) : []
+            const capabilitiesHeading = partsBySemicolon.length > 0
+              ? partsBySemicolon[0]
+              : (agent?.by_value?.trim() || (agent?.description?.trim() ? (agent.description.split(/[.!?]/)[0]?.trim() || agent.description.slice(0, 80)) : '') || 'Everything you need to manage NPA portfolios efficiently and accurately')
+            const rawFromFeatures = partsBySemicolon.length > 1
+              ? partsBySemicolon.slice(1)
+              : (featuresStr && partsBySemicolon.length <= 1 ? [] : [])
+            const fromCapabilities = (data?.capabilities ?? []).map((c: { by_capability?: string }) => (c.by_capability || '').trim()).filter(Boolean)
+            const rawItems = rawFromFeatures.length > 0 ? rawFromFeatures : (fromCapabilities.length > 0 ? fromCapabilities : (featuresStr && !featuresStr.includes(';') ? featuresStr.split(/\s*[|]\s*|\n+/).map((s: string) => s.trim().replace(/^[,\-\s]+|[,\-\s]+$/g, '').replace(/^\d+\.\s*/, '')).filter(Boolean) : []))
+            const features = rawItems.map((item: string) => {
+              const colonMatch = item.match(/^([^:]{2,80}):\s*(.+)$/)
+              const dashMatch = item.match(/^([^\u2013\u2014-]{2,80})\s*[\u2013\u2014-]\s*(.+)$/)
+              if (colonMatch) return { title: colonMatch[1].trim(), description: colonMatch[2].trim() }
+              if (dashMatch) return { title: dashMatch[1].trim(), description: dashMatch[2].trim() }
+              const words = item.split(/\s+/)
+              if (words.length > 5) return { title: words.slice(0, 3).join(' '), description: item }
+              return { title: item, description: '' }
+            })
+            const displayItems = features.length > 0 ? features : [{ title: 'Everything you need', description: description || 'Capabilities and features for this agent.' }]
+
             const featureIcons = [
               /* Icon 1 - Email/Inbox */
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" key="icon-0">
@@ -566,54 +578,40 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               </svg>,
             ];
 
-            /* Parse the features string into individual items */
-            const rawItems = (agent?.features && agent.features !== 'na')
-              ? agent.features
-                .replace(/\\n/g, '\n')
-                .split(/[;\n]+/)
-                .map(s => s.trim().replace(/^[,\-\s]+|[,\-\s]+$/g, '').replace(/^\d+\.\s*/, ''))
-                .filter(Boolean)
-              : [];
-
-            /* Try to split each item into title : description */
-            const features = rawItems.map((item, idx) => {
-              /* Check for "Title: Description" or "Title - Description" pattern */
-              const colonMatch = item.match(/^([^:]{3,50}):\s*(.+)$/);
-              const dashMatch = item.match(/^([^ΓÇôΓÇö-]{3,50})\s*[ΓÇôΓÇö-]\s*(.+)$/);
-
-              if (colonMatch) {
-                return { title: colonMatch[1].trim(), description: colonMatch[2].trim() };
-              } else if (dashMatch) {
-                return { title: dashMatch[1].trim(), description: dashMatch[2].trim() };
-              } else {
-                /* No clear split ΓÇö use first few words as title, rest as desc */
-                const words = item.split(' ');
-                if (words.length > 6) {
-                  return {
-                    title: words.slice(0, 3).join(' '),
-                    description: item,
-                  };
-                }
-                return { title: item, description: '' };
-              }
-            });
-
             return (
-              <div
+              <>
+                <h2
+                  style={{
+                    fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+                    fontWeight: 300,
+                    fontStyle: 'normal',
+                    fontSize: '36px',
+                    lineHeight: '40px',
+                    letterSpacing: '0%',
+                    textAlign: 'center',
+                    maxWidth: '640px',
+                    margin: '0 auto 48px',
+                    background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                  }}
+                >
+                  {capabilitiesHeading}
+                </h2>
+                <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(3, 1fr)',
                 }}
               >
-                {features.map((feature, i) => (
+                {displayItems.map((feature, i) => (
                   <div
                     key={i}
                     style={{
                       padding: '28px 24px',
                       borderRight: (i % 3 !== 2) ? '1px solid #E5E7EB' : 'none',
-                      borderBottom: (i < features.length - 3 || (features.length <= 3 && false)) && i < Math.floor((features.length - 1) / 3) * 3 + 3 ? '1px solid #E5E7EB' : 'none',
-                      /* Simpler: add bottom border to first row */
-                      ...(i < 3 && features.length > 3 ? { borderBottom: '1px solid #E5E7EB' } : {}),
+                      borderBottom: i < Math.ceil(displayItems.length / 3) * 3 - 3 ? '1px solid #E5E7EB' : 'none',
                     }}
                   >
                     {/* Icon */}
@@ -657,19 +655,19 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                   </div>
                 ))}
 
-                {/* Fill empty cells if features.length is not a multiple of 3 */}
-                {features.length % 3 !== 0 &&
-                  Array.from({ length: 3 - (features.length % 3) }).map((_, i) => (
+                {displayItems.length % 3 !== 0 &&
+                  Array.from({ length: 3 - (displayItems.length % 3) }).map((_, i) => (
                     <div
                       key={`empty-${i}`}
                       style={{
                         padding: '28px 24px',
-                        borderRight: ((features.length + i) % 3 !== 2) ? '1px solid #E5E7EB' : 'none',
+                        borderRight: ((displayItems.length + i) % 3 !== 2) ? '1px solid #E5E7EB' : 'none',
                       }}
                     />
                   ))
                 }
                   </div>
+              </>
             );
           })()}
 
@@ -879,7 +877,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                           {card.title}
                         </h3>
 
-                        {/* Description */}
+                        {/* Description (strip stat from text when stat is shown in span below to avoid duplication) */}
                         {card.description && (
                           <p
                             style={{
@@ -894,7 +892,12 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                               margin: 0,
                             }}
                           >
-                            {card.description}
+                            {card.stat
+                              ? card.description
+                                  .replace(/\s+[-–—]\s*$/, '')
+                                  .replace(new RegExp('\\s*[-–—]\\s*' + (card.stat || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$'), '')
+                                  .trim()
+                              : card.description}
                           </p>
                         )}
                       </div>
@@ -1015,10 +1018,14 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               color: 'transparent',
             }}
           >
-            Agents and Models that combine to perform NPA Valuation Assistant
+            {agentsSource === 'similar'
+              ? `Agents similar to ${title || 'this solution'}`
+              : agentsSource === 'bundled'
+                ? `Agents and Models that combine to perform ${title || 'this solution'}`
+                : `Agents and Models that combine to perform ${title || 'this solution'}`}
           </h2>
 
-          {/* ΓöÇΓöÇ 4. Cards Grid (4 columns ├ù 2 rows) ΓöÇΓöÇ */}
+          {/* ΓöÇΓöÇ 4. Cards Grid – data from bundled / similar agents API ΓöÇΓöÇ */}
           <div
             style={{
               display: 'grid',
@@ -1026,478 +1033,70 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               gap: '16px',
             }}
           >
-
-            {/* ΓöÇΓöÇΓöÇΓöÇΓöÇ ROW 1 ΓöÇΓöÇΓöÇΓöÇΓöÇ */}
-
-            {/* Card 1: Workflows & Automations */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              {/* Top row: label + icon */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  Workflows & Automations
-                </span>
-                <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
-                </div>
-              {/* Title at bottom */}
-              <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0',
-                  }}
-                >
-                  Ask Happy Customers for Referrals
-                </h3>
-              </div>
-            </div>
-
-            {/* Card 2: AI Research Prompts */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  AI Research Prompts
-                </span>
-                <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
-            </div>
-              <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  Assign as B2B or B2C
-                </h3>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  BY CRAYON DATA
-                </span>
-          </div>
-        </div>
-
-            {/* Card 3: Sequences */}
-            <div
-                    style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                    style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  Sequences
-                </span>
-                <Image src="/img/agents/sequences-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
-              <div style={{ marginTop: 'auto' }}>
-                <h3
+            {relatedAgents.length > 0
+              ? relatedAgents.slice(0, 8).map((ra: { agent_id?: string; agent_name?: string; description?: string }) => {
+                  const agentId = ra.agent_id || ''
+                  const name = ra.agent_name || 'Agent'
+                  const desc = ra.description || ''
+                  const label = agentsSource === 'bundled' ? 'Bundled Agent' : agentsSource === 'similar' ? 'Similar Agent' : 'AI Agent'
+                  return (
+                    <Link
+                      key={agentId}
+                      href={`/agents/${agentId}`}
                       style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  Congratulate on New Role
-                </h3>
-                <span
-                          style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  BY CRAYON DATA
-                </span>
-              </div>
-            </div>
-
-            {/* Card 4: Conversations */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  Conversations
-                </span>
-                <Image src="/img/agents/conversations-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
-              <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  Discovery Call Scorecard
-                </h3>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  BY CRAYON DATA
-                </span>
-              </div>
-            </div>
-
-            {/* ΓöÇΓöÇΓöÇΓöÇΓöÇ ROW 2 (identical to row 1) ΓöÇΓöÇΓöÇΓöÇΓöÇ */}
-
-            {/* Card 5: Workflows & Automations */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  Workflows & Automations
-                </span>
-                <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
-              <div style={{ marginTop: 'auto' }}>
-                              <h3
-                                style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0',
-                  }}
-                >
-                  Ask Happy Customers for Referrals
-                </h3>
-              </div>
-            </div>
-
-            {/* Card 6: AI Research Prompts */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  AI Research Prompts
-                </span>
-                <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
-              <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  Assign as B2B or B2C
-                              </h3>
-                <span
-                                style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                                  fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  BY CRAYON DATA
-                </span>
-              </div>
-            </div>
-
-            {/* Card 7: Sequences */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                                  fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  Sequences
-                </span>
-                <Image src="/img/agents/workflows-icon.png" alt="" width={28} height={28} className="object-contain" />
-                            </div>
-              <div style={{ marginTop: 'auto' }}>
-                <h3
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  Congratulate on New Role
-                </h3>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  BY CRAYON DATA
-                </span>
-              </div>
-            </div>
-
-            {/* Card 8: Conversations */}
-            <div
-              style={{
-                background: '#F5F5F5',
-                borderRadius: '8px',
-                padding: '20px 20px 24px',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '257px',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                  }}
-                >
-                  Conversations
-                </span>
-                <Image src="/img/agents/conversations-icon.png" alt="" width={28} height={28} className="object-contain" />
-              </div>
-              <div style={{ marginTop: 'auto' }}>
-                              <h3
-                                style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '22.5px',
-                    lineHeight: '32px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  Discovery Call Scorecard
-                              </h3>
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 400,
-                    fontStyle: 'normal',
-                    fontSize: '13.3px',
-                    lineHeight: '14px',
-                    letterSpacing: '0.17px',
-                    verticalAlign: 'middle',
-                    color: '#000000DE',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  BY CRAYON DATA
-                </span>
-              </div>
-            </div>
+                        background: '#F5F5F5',
+                        borderRadius: '8px',
+                        padding: '20px 20px 24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        minHeight: '257px',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13.3px', lineHeight: '14px', letterSpacing: '0.17px', color: '#000000DE' }}>
+                          {label}
+                        </span>
+                        <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
+                      </div>
+                      <div style={{ marginTop: 'auto' }}>
+                        <h3 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '22.5px', lineHeight: '32px', letterSpacing: '0.17px', color: '#000000DE', margin: '0 0 6px 0' }}>
+                          {name}
+                        </h3>
+                        {desc ? (
+                          <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '12px', lineHeight: '16px', color: '#000000DE', margin: '0 0 6px 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            {desc}
+                          </p>
+                        ) : null}
+                        <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13.3px', lineHeight: '14px', color: '#000000DE', textTransform: 'uppercase' }}>
+                          BY CRAYON DATA
+                        </span>
+                      </div>
+                    </Link>
+                  )
+                })
+              : (
+                [
+                  { label: 'Workflows & Automations', title: 'Ask Happy Customers for Referrals', icon: '/img/agents/workflows-icon.png' },
+                  { label: 'AI Research Prompts', title: 'Assign as B2B or B2C', icon: '/img/agents/research-icon.png' },
+                  { label: 'Sequences', title: 'Congratulate on New Role', icon: '/img/agents/sequences-icon.png' },
+                  { label: 'Conversations', title: 'Discovery Call Scorecard', icon: '/img/agents/conversations-icon.png' },
+                ].map((card, i) => (
+                  <div
+                    key={i}
+                    style={{ background: '#F5F5F5', borderRadius: '8px', padding: '20px 20px 24px', display: 'flex', flexDirection: 'column', minHeight: '257px' }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13.3px', lineHeight: '14px', letterSpacing: '0.17px', color: '#000000DE' }}>{card.label}</span>
+                      <Image src={card.icon} alt="" width={28} height={28} className="object-contain" />
+                    </div>
+                    <div style={{ marginTop: 'auto' }}>
+                      <h3 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '22.5px', lineHeight: '32px', letterSpacing: '0.17px', color: '#000000DE', margin: '0 0 6px 0' }}>{card.title}</h3>
+                      <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13.3px', lineHeight: '14px', color: '#000000DE', textTransform: 'uppercase' }}>BY CRAYON DATA</span>
+                    </div>
+                  </div>
+                ))
+              )}
 
           </div>
         </div>
@@ -1568,291 +1167,199 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             Enterprise-Grade Tech Stack, Security, Compliance & Governance
           </h2>
 
-          {/* ΓöÇΓöÇ 4. Two-column layout: Tech rows left + Image right ΓöÇΓöÇ */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '48px',
-            }}
-          >
-
-            {/* ΓöÇΓöÇΓöÇΓöÇ LEFT: Deployment / Tech Rows ΓöÇΓöÇΓöÇΓöÇ */}
-            <div style={{ flex: '0 0 55%', maxWidth: '55%' }}>
-
-              {/* ΓöÇΓöÇ Row 01: Core Platform ΓöÇΓöÇ */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '20px',
-                  padding: '20px 0',
-                  borderBottom: '1px solid #F2F4F7',
-                }}
-              >
-                {/* Number */}
-                <span
-                              style={{
-                                fontFamily: 'Poppins, sans-serif',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    color: '#D0D5DD',
-                    minWidth: '24px',
-                    lineHeight: '20px',
-                    paddingTop: '2px',
-                  }}
-                >
-                  01
-                </span>
-                {/* Content */}
-                <div>
+          {/* ΓöÇΓöÇ 4. Two-column layout: Tabs + Tech rows (from deployment API) left, Image right – grouped by AWS, Azure, GCP, Self-hosted, etc. ΓöÇΓöÇ */}
+          {(() => {
+            type DepItem = { by_capability_id?: string; capability_name?: string; by_capability?: string; service_provider?: string; service_name?: string; deployment?: string; cloud_region?: string }
+            type CapItem = { serial_id?: string; by_capability?: string }
+            const deployments = (data?.deployments ?? []) as DepItem[]
+            const capabilitiesList = (data?.capabilities ?? []) as CapItem[]
+            const securityDetails = data?.documentation?.[0]?.security_details?.trim()
+            function getProviderGroup(d: DepItem): string {
+              const raw = [d.service_provider, d.deployment, d.cloud_region].filter(Boolean).map((s) => String(s).toLowerCase()).join(' ')
+              if (/aws|amazon/.test(raw)) return 'AWS'
+              if (/azure|microsoft/.test(raw)) return 'Azure'
+              if (/gcp|google|gke/.test(raw)) return 'GCP'
+              if (/self|on-prem|onprem|premise|self-hosted|selfhosted|on-premise|private/.test(raw)) return 'Self-hosted'
+              if (d.service_provider) return String(d.service_provider).trim()
+              if (d.deployment) return String(d.deployment).trim()
+              return 'Other'
+            }
+            function resolveTitleFromCapability(d: DepItem): string {
+              if (d.by_capability_id && capabilitiesList.length > 0) {
+                const cap = capabilitiesList.find((c: CapItem) => String(c.serial_id) === String(d.by_capability_id))
+                if (cap?.by_capability?.trim()) return cap.by_capability.trim()
+              }
+              return (d.by_capability || d.capability_name || d.service_name || getProviderGroup(d)).trim() || getProviderGroup(d)
+            }
+            const providerOrder = ['AWS', 'Azure', 'GCP', 'Self-hosted', 'Other']
+            const groups = new Map<string, { title: string; desc: string }[]>()
+            if (deployments.length > 0 || securityDetails) {
+              deployments.forEach((d: DepItem) => {
+                const groupKey = getProviderGroup(d)
+                const title = resolveTitleFromCapability(d)
+                const parts = [d.service_provider, d.service_name, d.deployment, d.cloud_region].filter(Boolean).map((s) => String(s).trim())
+                const desc = parts.length > 0 ? parts.join(' · ') : '—'
+                if (!groups.has(groupKey)) groups.set(groupKey, [])
+                groups.get(groupKey)!.push({ title, desc })
+              })
+              if (securityDetails) groups.set('Security', [{ title: 'Security', desc: securityDetails }])
+            } else {
+              groups.set('Overview', [
+                { title: 'Core Platform', desc: 'FastAPI · SQLAlchemy · Pydantic · PostgreSQL · MySQL · UltraDB' },
+                { title: 'AI & Automation', desc: 'OpenAI GPT-4 · LangChain · Natural language to SQL' },
+                { title: 'Security', desc: 'Encrypted credentials · SSL/TLS · Audit logging · Role-based access' },
+                { title: 'Deployment', desc: 'On-premise · Docker · Hybrid · Container-ready architecture' },
+              ])
+            }
+            const tabKeys = Array.from(groups.keys()).sort((a, b) => {
+              const ai = providerOrder.indexOf(a)
+              const bi = providerOrder.indexOf(b)
+              if (ai !== -1 && bi !== -1) return ai - bi
+              if (ai !== -1) return -1
+              if (bi !== -1) return 1
+              if (a === 'Security') return 1
+              if (b === 'Security') return -1
+              return a.localeCompare(b)
+            })
+            const activeTab = tabKeys.includes(techSecurityTab) ? techSecurityTab : (tabKeys[0] ?? '')
+            const activeRows = activeTab ? (groups.get(activeTab) ?? []) : []
+            const isExpanded = activeTab ? techSecurityExpandedTabs.has(activeTab) : false
+            const displayedRows = isExpanded ? activeRows : activeRows.slice(0, TECH_SECURITY_VISIBLE_ROWS)
+            const hasMore = activeRows.length > TECH_SECURITY_VISIBLE_ROWS
+            const rowStyle = { display: 'flex' as const, alignItems: 'flex-start' as const, gap: '20px', padding: '20px 0', borderBottom: '1px solid #F2F4F7' }
+            const lastRowStyle = { ...rowStyle, borderBottom: 'none' }
+            const numberStyle = { fontFamily: 'Poppins, sans-serif', fontSize: '12px', fontWeight: 500, color: '#D0D5DD', minWidth: '24px', lineHeight: '20px', paddingTop: '2px' }
+            const titleRowStyle = { fontFamily: 'Geist, var(--font-geist-sans), sans-serif', fontWeight: 500, fontStyle: 'normal' as const, fontSize: '14px', lineHeight: '20px', letterSpacing: '0%', verticalAlign: 'middle' as const, color: '#0A0A0A', marginBottom: '4px' }
+            const descStyle = { fontFamily: 'Geist, var(--font-geist-sans), sans-serif', fontWeight: 400, fontStyle: 'normal' as const, fontSize: '12px', lineHeight: '16px', letterSpacing: '0%', verticalAlign: 'middle' as const, color: '#737373' }
+            return (
+              <>
+                {/* Tabs row: full-width, centered, directly below h2 */}
+                {tabKeys.length > 0 && (
                   <div
                     style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 500,
-                                fontStyle: 'normal',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#0A0A0A',
-                      marginBottom: '4px',
+                      width: '100%',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      marginBottom: '24px',
+                      borderBottom: '1px solid #E5E7EB',
+                      paddingBottom: '12px',
                     }}
                   >
-                    <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
-                    Core Platform
+                    {tabKeys.map((key) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setTechSecurityTab(key)}
+                        style={{
+                          fontFamily: 'Poppins, sans-serif',
+                          fontWeight: 500,
+                          fontSize: '14px',
+                          lineHeight: '20px',
+                          color: activeTab === key ? '#0023F6' : '#374151',
+                          background: activeTab === key ? 'rgba(0, 35, 246, 0.08)' : 'transparent',
+                          border: '1px solid ' + (activeTab === key ? '#0023F6' : '#E5E7EB'),
+                          borderRadius: '8px',
+                          padding: '8px 16px',
+                          cursor: 'pointer',
+                          transition: 'color 0.2s, background 0.2s, border-color 0.2s',
+                        }}
+                      >
+                        {key}
+                      </button>
+                    ))}
                   </div>
-                  <div
-                    style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                                fontWeight: 400,
-                      fontStyle: 'normal',
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#737373',
-                    }}
-                  >
-                    FastAPI ┬╖ SQLAlchemy ┬╖ Pydantic ┬╖ PostgreSQL ┬╖ MySQL ┬╖ UltraDB
+                )}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '48px' }}>
+                  <div style={{ flex: '0 0 55%', maxWidth: '55%' }}>
+                  <div>
+                    {displayedRows.map((row, idx) => (
+                      <div key={idx} style={idx < displayedRows.length - 1 ? rowStyle : lastRowStyle}>
+                        <span style={numberStyle}>{String(idx + 1).padStart(2, '0')}</span>
+                        <div>
+                          <div style={titleRowStyle}>
+                            <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
+                            {row.title}
+                          </div>
+                          <div style={descStyle}>{row.desc}</div>
                         </div>
-                </div>
-              </div>
-
-              {/* ΓöÇΓöÇ Row 02: AI & Automation ΓöÇΓöÇ */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '20px',
-                  padding: '20px 0',
-                  borderBottom: '1px solid #F2F4F7',
-                }}
-              >
-                <span
+                      </div>
+                    ))}
+                    {hasMore && (
+                      <div style={{ paddingTop: '16px' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!activeTab) return
+                            setTechSecurityExpandedTabs((prev) => {
+                              const next = new Set(prev)
+                              if (next.has(activeTab)) next.delete(activeTab)
+                              else next.add(activeTab)
+                              return next
+                            })
+                          }}
                           style={{
                             fontFamily: 'Poppins, sans-serif',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    color: '#D0D5DD',
-                    minWidth: '24px',
-                    lineHeight: '20px',
-                    paddingTop: '2px',
-                  }}
-                >
-                  02
-                </span>
-                <div>
-                  <div
-                    style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 500,
-                            fontStyle: 'normal',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#0A0A0A',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
-                    AI & Automation
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                            fontWeight: 400,
-                      fontStyle: 'normal',
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#737373',
-                    }}
-                  >
-                    OpenAI GPT-4 ┬╖ LangChain ┬╖ Natural language to SQL
+                            fontWeight: 500,
+                            fontSize: '14px',
+                            lineHeight: '20px',
+                            color: '#0023F6',
+                            background: 'transparent',
+                            border: '1px solid #0023F6',
+                            borderRadius: '8px',
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            transition: 'color 0.2s, background 0.2s, border-color 0.2s',
+                          }}
+                        >
+                          {isExpanded ? 'View less' : `View more (${activeRows.length - TECH_SECURITY_VISIBLE_ROWS} more)`}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              {/* ΓöÇΓöÇ Row 03: Security ΓöÇΓöÇ */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '20px',
-                  padding: '20px 0',
-                  borderBottom: '1px solid #F2F4F7',
-                }}
-              >
-                <span
-                      style={{
-                        fontFamily: 'Poppins, sans-serif',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    color: '#D0D5DD',
-                    minWidth: '24px',
-                    lineHeight: '20px',
-                    paddingTop: '2px',
-                  }}
-                >
-                  03
-                </span>
-                <div>
-                  <div
-                    style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 500,
-                        fontStyle: 'normal',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#0A0A0A',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
-                    Security
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                        fontWeight: 400,
-                      fontStyle: 'normal',
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#737373',
-                    }}
-                  >
-                    Encrypted credentials ┬╖ SSL/TLS ┬╖ Audit logging ┬╖ Role-based access
-                                      </div>
-                                      </div>
-                                      </div>
-
-              {/* ΓöÇΓöÇ Row 04: Deployment ΓöÇΓöÇ */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '20px',
-                  padding: '20px 0',
-                }}
-              >
-                <span
+                {/* RIGHT: Tree Diagram Image */}
+                <div
                   style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    color: '#D0D5DD',
-                    minWidth: '24px',
-                    lineHeight: '20px',
-                    paddingTop: '2px',
+                    flex: '0 0 42%',
+                    maxWidth: '42%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
                   }}
                 >
-                  04
-                </span>
-                <div>
                   <div
                     style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 500,
-                      fontStyle: 'normal',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#0A0A0A',
-                      marginBottom: '4px',
+                      position: 'absolute',
+                      inset: 0,
+                      backgroundImage:
+                        'linear-gradient(to right, #F2F4F7 1px, transparent 1px), linear-gradient(to bottom, #F2F4F7 1px, transparent 1px)',
+                      backgroundSize: '40px 40px',
+                      borderRadius: '8px',
+                      opacity: 0.6,
                     }}
-                  >
-                    <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
-                    Deployment
-                                    </div>
-                  <div
+                  />
+                  <img
+                    src="/tech-tree-diagram.png"
+                    alt="Technology architecture diagram"
                     style={{
-                      fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
-                      fontWeight: 400,
-                      fontStyle: 'normal',
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#737373',
+                      position: 'relative',
+                      zIndex: 1,
+                      width: '100%',
+                      maxWidth: '380px',
+                      height: 'auto',
+                      objectFit: 'contain',
                     }}
-                  >
-                    On-premise ┬╖ Docker ┬╖ Hybrid ┬╖ Container-ready architecture
-                                </div>
+                  />
                 </div>
-            </div>
 
-            </div>
-
-            {/* ΓöÇΓöÇΓöÇΓöÇ RIGHT: Tree Diagram Image ΓöÇΓöÇΓöÇΓöÇ */}
-            <div
-              style={{
-                flex: '0 0 42%',
-                maxWidth: '42%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-              }}
-            >
-              {/* Grid background behind the image */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundImage:
-                    'linear-gradient(to right, #F2F4F7 1px, transparent 1px), linear-gradient(to bottom, #F2F4F7 1px, transparent 1px)',
-                  backgroundSize: '40px 40px',
-                  borderRadius: '8px',
-                  opacity: 0.6,
-                }}
-              />
-              {/* 
-          IMPORTANT: Replace the src below with your actual image path.
-          Copy Mask_group__4_.png ΓåÆ /public/images/tech-tree-diagram.png
-        */}
-              <img
-                src="/tech-tree-diagram.png"
-                alt="Technology architecture diagram"
-                style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  width: '100%',
-                  maxWidth: '380px',
-                  height: 'auto',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
-
-          </div>
+              </div>
+              </>
+            );
+          })()}
         </div>
       </section>
       <section id="faq" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF', position: 'relative' }}>
