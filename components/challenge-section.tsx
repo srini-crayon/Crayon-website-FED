@@ -11,35 +11,30 @@ export function ChallengeSection() {
       number: "01",
       title: "Fragmented data and legacy systems",
       description: "Data silos and legacy systems create integration complexity that stalls AI initiatives.",
-      stat: "—",
       statLabel: "Enterprises struggle with fragmented data"
     },
     {
       number: "02",
       title: "Governance, risk, and accuracy concerns",
       description: "Risk management, accuracy requirements, and regulatory compliance slow every deployment.",
-      stat: "—",
       statLabel: "Governance gaps block production"
     },
     {
       number: "03",
       title: "Slow movement from idea to deployment",
       description: "The gap between AI capability and enterprise reality grows wider each quarter.",
-      stat: "—",
       statLabel: "Ideas stay in pilot mode"
     },
     {
       number: "04",
       title: "Tools that don't fit real-world complexity",
       description: "Generic solutions built for demos fail when facing real-world enterprise complexity.",
-      stat: "—",
       statLabel: "Tool mismatch limits impact"
     },
     {
       number: "05",
       title: "Rapid evolution of AI technologies",
       description: "Models and vendors change fast; enterprises need to evolve without rebuilding from scratch.",
-      stat: "—",
       statLabel: "Keeping pace with AI evolution"
     }
   ]
@@ -68,8 +63,8 @@ export function ChallengeSection() {
           </p>
         </div>
 
-        {/* Challenge Grid */}
-        <div className="grid md:grid-cols-5 gap-px bg-border overflow-hidden">
+        {/* Challenge Grid - single row with equal height so bottom text aligns across all cards */}
+        <div className="grid md:grid-cols-5 md:grid-rows-1 gap-px bg-border overflow-hidden md:items-stretch">
           {challenges.map((challenge, index) => {
             const accentColors = [
               "oklch(0.55 0.2 260)", // Purple
@@ -83,7 +78,7 @@ export function ChallengeSection() {
             return (
               <div
                 key={index}
-                className="bg-background p-8 md:p-10 group cursor-pointer relative border border-transparent transition-all duration-300 flex flex-col"
+                className="bg-background p-8 md:p-10 group cursor-pointer relative border border-transparent transition-all duration-300 flex flex-col min-h-0 overflow-hidden md:h-full md:self-stretch"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 style={{
@@ -91,7 +86,7 @@ export function ChallengeSection() {
                 }}
               >
                 {/* Number */}
-                <div className="flex items-center gap-2 mb-4 h-4">
+                <div className="flex items-center gap-2 mb-4 h-4 flex-shrink-0">
                   {/* Left accent line */}
                   <div
                     className="w-[3px] transition-all duration-500 ease-out rounded-r-full shrink-0"
@@ -112,7 +107,7 @@ export function ChallengeSection() {
                 
                 {/* Title */}
                 <h3 
-                  className="text-xl font-medium mb-3 flex items-center gap-3 transition-colors duration-300"
+                  className="text-xl font-medium mb-3 flex items-center gap-3 transition-colors duration-300 flex-shrink-0"
                   style={{
                     color: hoveredIndex === index ? accentColor : undefined
                   }}
@@ -130,22 +125,16 @@ export function ChallengeSection() {
                   />
                 </h3>
                 
-                {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-                  {challenge.description}
-                </p>
+                {/* Description - flex-1 so cards stay equal height; overflow-auto if content overflows */}
+                <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-8 flex-shrink-0">
+                    {challenge.description}
+                  </p>
+                </div>
                 
-                {/* Stat */}
-                <div className="pt-6 border-t border-border">
-                  <span 
-                    className="text-3xl font-light transition-colors duration-300"
-                    style={{
-                      color: hoveredIndex === index ? accentColor : undefined
-                    }}
-                  >
-                    {challenge.stat}
-                  </span>
-                  <p className="text-xs text-muted-foreground mt-1">
+                {/* Stat label (dash removed) - flex-shrink-0 keeps it at same level */}
+                <div className="pt-6 border-t border-border flex-shrink-0">
+                  <p className="text-xs text-muted-foreground">
                     {challenge.statLabel}
                   </p>
                 </div>

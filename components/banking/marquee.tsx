@@ -9,6 +9,8 @@ interface MarqueeProps {
   reverse?: boolean
   pauseOnHover?: boolean
   speed?: "slow" | "normal" | "fast"
+  /** Use seamless loop (no gap when animation restarts). Use when content is duplicated once. */
+  seamless?: boolean
 }
 
 export function Marquee({
@@ -17,6 +19,7 @@ export function Marquee({
   reverse = false,
   pauseOnHover = false,
   speed = "normal",
+  seamless = false,
 }: MarqueeProps) {
   const speedMap = {
     slow: "40s",
@@ -33,7 +36,8 @@ export function Marquee({
     >
       <div
         className={cn(
-          "flex shrink-0 gap-[var(--gap)] animate-marquee-banking",
+          "flex shrink-0 gap-[var(--gap)]",
+          seamless ? "animate-marquee-banking-seamless" : "animate-marquee-banking",
           reverse && "[animation-direction:reverse]",
           pauseOnHover && "group-hover:[animation-play-state:paused]"
         )}
