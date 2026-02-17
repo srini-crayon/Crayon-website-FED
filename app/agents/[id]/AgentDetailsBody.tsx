@@ -1,12 +1,110 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Maximize2 } from "lucide-react"
 import ScrollToTop from "@/components/scroll-to-top"
 import { CurrentAgentSetter } from "../../../components/current-agent-setter"
 import type { AgentDetailsContentProps } from "./types"
+
+/** Default How It Works steps when API has no workflow field (e.g. earnings analyst / agent_001 style). */
+const DEFAULT_WORKFLOW_STEPS = [
+  { num: '01', title: 'Document Upload', desc: 'User provides earnings documents in PDF or transcript format' },
+  { num: '02', title: 'Content Parsing', desc: 'AI extracts all financial metrics and key insights automatically' },
+  { num: '03', title: 'Comparative Mapping', desc: 'System compares metrics across institutions and time periods' },
+  { num: '04', title: 'Insight Generation', desc: 'AI synthesizes findings into actionable intelligence' },
+  { num: '05', title: 'Presentation Creation', desc: 'Generates executive summaries and visual analytics' },
+  { num: '06', title: 'User Review', desc: 'Team validates and customizes findings before delivery' },
+]
+
+type WorkflowStep = { num: string; title: string; desc: string }
+
+/** True if steps look like placeholders (e.g. "Step 1", "Step 2" with no real content). */
+function isPlaceholderSteps(steps: WorkflowStep[]): boolean {
+  if (!steps.length) return true
+  return steps.every(
+    (s, i) =>
+      (s.title === `Step ${i + 1}` || /^Step\s*\d+$/i.test(s.title)) &&
+      !s.desc.trim()
+  )
+}
+
+/** Get title from workflow item (multiple possible API keys). */
+function getStepTitle(item: any, i: number): string {
+  const raw = (item?.title ?? item?.step_title ?? item?.name ?? item?.heading ?? item?.label ?? '').trim()
+  return raw || `Step ${i + 1}`
+}
+
+/** Get description from workflow item. */
+function getStepDesc(item: any): string {
+  return (item?.description ?? item?.step_description ?? item?.body ?? item?.content ?? item?.text ?? '').trim()
+}
+
+/** Parse workflow from API: array, JSON string, or pipe/tab delimited lines. */
+function parseWorkflow(workflow: unknown): WorkflowStep[] | null {
+  if (workflow == null || workflow === '') return null
+  if (typeof workflow === 'object' && !Array.isArray(workflow)) return null
+  if (Array.isArray(workflow)) {
+    if (workflow.length === 0) return null
+    const steps = workflow.map((item: any, i: number) => ({
+      num: (item.step_number ?? item.step ?? String(i + 1).padStart(2, '0')),
+      title: getStepTitle(item, i),
+      desc: getStepDesc(item),
+    }))
+    return isPlaceholderSteps(steps) ? null : steps
+  }
+  if (typeof workflow !== 'string') return null
+  const str = String(workflow).replace(/\\n/g, '\n').trim()
+  if (!str) return null
+  try {
+    const parsed = JSON.parse(str) as unknown
+    if (Array.isArray(parsed)) {
+      const steps = parsed.map((item: any, i: number) => ({
+        num: (item.step_number ?? item.step ?? String(i + 1).padStart(2, '0')),
+        title: getStepTitle(item, i),
+        desc: getStepDesc(item),
+      }))
+      return isPlaceholderSteps(steps) ? null : steps
+    }
+  } catch {
+    /* not JSON */
+  }
+  const lines = str.split(/\n|;/).map((s) => s.trim()).filter(Boolean)
+  if (lines.length === 0) return null
+  const steps = lines.map((line, i) => {
+    const dashMatch = line.match(/\s+[-–—]\s+/) // "Title - Description" or "Title – Description"
+    const sep = dashMatch ? dashMatch[0] : ''
+    const dashIndex = sep ? line.indexOf(sep) : -1
+    if (dashIndex >= 0) {
+      const title = line.slice(0, dashIndex).trim()
+      const desc = line.slice(dashIndex + sep.length).trim()
+      return { num: String(i + 1).padStart(2, '0'), title: title || `Step ${i + 1}`, desc }
+    }
+    const parts = line.split(/\s*\|\s*|\t/).map((p) => p.trim())
+    const num = parts[0] && /^\d+/.test(parts[0]) ? parts[0].padStart(2, '0') : String(i + 1).padStart(2, '0')
+    return { num, title: parts[1] ?? `Step ${i + 1}`, desc: parts[2] ?? '' }
+  })
+  return isPlaceholderSteps(steps) ? null : steps
+}
+
+/** Parse "Title - Description" or "Title – Description" steps from features string (semicolon or newline separated). */
+function parseWorkflowFromFeatures(featuresStr: string | undefined): WorkflowStep[] | null {
+  if (!featuresStr || !String(featuresStr).trim() || String(featuresStr).toLowerCase() === 'na') return null
+  const raw = String(featuresStr).replace(/\\n/g, '\n').trim()
+  const parts = raw.split(/[;\n]+/).map((s) => s.trim()).filter(Boolean)
+  if (parts.length === 0) return null
+  const steps: WorkflowStep[] = parts.map((p, i) => {
+    const dashMatch = p.match(/\s+[-–—]\s+/) // space + hyphen/en-dash/em-dash + space
+    const sep = dashMatch ? dashMatch[0] : ''
+    const dashIndex = sep ? p.indexOf(sep) : -1
+    const title = dashIndex >= 0 ? p.slice(0, dashIndex).trim() : p
+    const desc = dashIndex >= 0 ? p.slice(dashIndex + sep.length).trim() : ''
+    return { num: String(i + 1).padStart(2, '0'), title: title || `Step ${i + 1}`, desc }
+  })
+  if (isPlaceholderSteps(steps)) return null
+  return steps.length > 0 ? steps : null
+}
 
 function isVideoPreviewUrl(url: string | undefined): boolean {
   if (!url || !url.trim()) return false
@@ -124,6 +222,17 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
   const [techSecurityTab, setTechSecurityTab] = useState<string>('')
   const [techSecurityExpandedTabs, setTechSecurityExpandedTabs] = useState<Set<string>>(new Set())
   const TECH_SECURITY_VISIBLE_ROWS = 5
+
+  // How It Works steps: only from API `workflow` field. Do not use `features` here — features is for Capabilities section.
+  const workflowSteps = useMemo((): WorkflowStep[] => {
+    const a = agent as { workflow?: unknown }
+    const d = data?.agent as { workflow?: unknown } | undefined
+    const workflow = a?.workflow ?? d?.workflow
+    const fromWorkflow = parseWorkflow(workflow)
+    if (fromWorkflow && fromWorkflow.length > 0) return fromWorkflow
+    return DEFAULT_WORKFLOW_STEPS
+  }, [agent, data?.agent])
+
   const content = (<>
     <div className="agent-details-page">
       <CurrentAgentSetter agentId={id} agentName={title} />
@@ -205,15 +314,11 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 color: '#1C1C1C',
               }}
             >
-              {(() => {
-                const descStr = (description || '').trim();
-                const fromDescription = descStr.includes(' - ') ? descStr.split(/\s+-\s+/)[0]?.trim() : '';
-                return fromDescription || data?.agent?.by_persona || data?.agent?.agent_name || 'NPA Valuation Assistant';
-              })()}
+              {title || data?.agent?.agent_name || 'NPA Valuation Assistant'}
                   </span>
           </div>
 
-          {/* ΓöÇΓöÇ 2. Main Heading (last word = italic teal) ΓöÇΓöÇ */}
+          {/* ΓöÇΓöÇ 2. Main Heading (tagline; last word = teal gradient) ΓöÇΓöÇ */}
           <h1
                     style={{
                       fontFamily: 'Poppins, sans-serif',
@@ -229,7 +334,10 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             }}
           >
             {(() => {
-              const words = (title || '').split(' ');
+              const descStr = (description || '').trim();
+              const fromDescription = descStr.includes(' - ') ? descStr.split(/\s+-\s+/)[0]?.trim() : '';
+              const tagline = fromDescription || data?.agent?.by_persona || data?.agent?.agent_name || 'NPA Valuation Assistant';
+              const words = (tagline || '').split(' ');
               const lastWord = words.pop();
               return (
                 <>
@@ -687,6 +795,200 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
 
         </div>
       </section>
+
+      {/* How It Works – NPA valuation process steps + illustration */}
+      <section id="how-it-works" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden', background: '#FFFFFF' }}>
+        <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
+          {/* "HOW IT WORKS" Label – from API workflow_section_label or default */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
+            <span style={{ width: '48px', height: '1px', backgroundColor: '#111827', flexShrink: 0 }} aria-hidden />
+            <span
+              style={{
+                fontFamily: 'Poppins, sans-serif',
+                fontWeight: 500,
+                fontSize: '12px',
+                lineHeight: '16px',
+                letterSpacing: '1.2px',
+                textAlign: 'center',
+                textTransform: 'uppercase',
+                color: '#111827',
+              }}
+            >
+              {(agent as { workflow_section_label?: string })?.workflow_section_label?.trim() ||
+                (data?.agent as { workflow_section_label?: string })?.workflow_section_label?.trim() ||
+                'HOW IT WORKS'}
+            </span>
+            <span style={{ width: '48px', height: '1px', backgroundColor: '#111827', flexShrink: 0 }} aria-hidden />
+          </div>
+
+          {/* Main title – from API workflow_section_title or default; same style as capabilities h2 */}
+          <h2
+            style={{
+              fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+              fontWeight: 300,
+              fontStyle: 'normal',
+              fontSize: '36px',
+              lineHeight: '40px',
+              letterSpacing: '0%',
+              textAlign: 'center',
+              maxWidth: '640px',
+              margin: '0 auto 48px',
+              background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
+          >
+            {(agent as { workflow_section_title?: string })?.workflow_section_title?.trim() ||
+              (data?.agent as { workflow_section_title?: string })?.workflow_section_title?.trim() ||
+              'See how our agent perform each stage in the Npa valuation like an SME'}
+          </h2>
+
+          {/* Two-column: steps (left) + illustration (right) */}
+          <div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-12 items-start"
+            style={{
+              borderBottom: '1px solid #E5E5E5',
+            }}
+          >
+            {/* Left column – numbered steps (height matches illustration 640px) */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                width: '100%',
+                maxWidth: '576px',
+                height: '640px',
+              }}
+            >
+              {workflowSteps.map((step) => (
+                <div
+                  key={step.num}
+                  style={{
+                    display: 'flex',
+                    gap: '16px',
+                    alignItems: 'flex-start',
+                    maxWidth: '576px',
+                    flex: '1 1 0',
+                    minHeight: 0,
+                    borderBottom: '1px solid #E5E5E5',
+                    paddingBottom: '10px',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: 'Geist Mono, var(--font-geist-mono), monospace',
+                      fontWeight: 400,
+                      fontStyle: 'normal',
+                      fontSize: '12px',
+                      lineHeight: '16px',
+                      letterSpacing: '0%',
+                      verticalAlign: 'middle',
+                      color: '#737373',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {step.num}
+                  </span>
+                  <div>
+                    <h3
+                      style={{
+                        fontFamily: 'Poppins, sans-serif',
+                        fontWeight: 500,
+                        fontStyle: 'normal',
+                        fontSize: '18px',
+                        lineHeight: '26px',
+                        letterSpacing: '0%',
+                        verticalAlign: 'middle',
+                        color: '#333333',
+                        margin: '0 0 4px 0',
+                      }}
+                    >
+                      {step.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+                        fontWeight: 400,
+                        fontStyle: 'normal',
+                        fontSize: '14px',
+                        lineHeight: '22.75px',
+                        letterSpacing: '0%',
+                        color: '#737373',
+                        margin: 0,
+                      }}
+                    >
+                      {step.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right column – illustration panel */}
+            <div
+              style={{
+                width: '100%',
+                maxWidth: '720px',
+                height: '640px',
+                borderRadius: '24px',
+                overflow: 'hidden',
+                background: 'linear-gradient(180deg, #FFF8E7 0%, #E8F4F0 50%, #D6E8E4 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '32px',
+              }}
+            >
+              <svg width="100%" height="280" viewBox="0 0 400 280" fill="none" style={{ maxWidth: '380px' }}>
+                {/* Envelope (left) */}
+                <g transform="translate(48, 72)">
+                  <path
+                    d="M2 6 L12 14 L22 6 L22 20 L2 20 Z"
+                    fill="#B3E5FC"
+                    stroke="#81D4FA"
+                    strokeWidth="1.2"
+                    strokeLinejoin="round"
+                  />
+                </g>
+                {/* Document / card */}
+                <rect x="140" y="70" width="80" height="50" rx="6" fill="white" stroke="#E0E0E0" strokeWidth="1" />
+                <line x1="152" y1="84" x2="208" y2="84" stroke="#E0E0E0" strokeWidth="1" />
+                <line x1="152" y1="92" x2="200" y2="92" stroke="#E0E0E0" strokeWidth="1" />
+                <line x1="152" y1="100" x2="192" y2="100" stroke="#E0E0E0" strokeWidth="1" />
+                {/* Purple circle */}
+                <circle cx="200" cy="55" r="12" fill="#B39DDB" stroke="#9575CD" strokeWidth="1" />
+                <circle cx="200" cy="55" r="4" fill="white" />
+                {/* Flow line: envelope → pill */}
+                <path
+                  d="M 85 115 Q 120 140 160 160 L 240 200 L 300 220"
+                  stroke="#1E3A8A"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                />
+                <polygon points="300,220 292,214 292,226" fill="#1E3A8A" />
+                <circle cx="85" cy="115" r="4" fill="#1E3A8A" />
+                {/* Asterisk-like node */}
+                <g transform="translate(108, 128)">
+                  <path d="M0-6L0 6M-6 0L6 0M-4-4L4 4M-4 4L4-4" stroke="#9E9E9E" strokeWidth="1.2" strokeLinecap="round" />
+                </g>
+                {/* Pill shape (right) */}
+                <rect x="280" y="195" width="80" height="32" rx="16" fill="url(#howItWorksPill)" />
+                <defs>
+                  <linearGradient id="howItWorksPill" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#7E57C2" />
+                    <stop offset="100%" stopColor="#1E88E5" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="value-proposition" className="relative py-16 px-8 md:px-12 lg:px-16" style={{ overflowX: 'hidden' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1200px' }}>
 
@@ -1243,8 +1545,6 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                       justifyContent: 'center',
                       gap: '8px',
                       marginBottom: '24px',
-                      borderBottom: '1px solid #E5E7EB',
-                      paddingBottom: '12px',
                     }}
                   >
                     {tabKeys.map((key) => (
@@ -1271,7 +1571,18 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                     ))}
                   </div>
                 )}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '48px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '48px',
+                    width: '100%',
+                    maxWidth: '1026px',
+                    minHeight: '510px',
+                    opacity: 1,
+                    margin: '0 auto',
+                  }}
+                >
                   <div style={{ flex: '0 0 55%', maxWidth: '55%' }}>
                   <div>
                     {displayedRows.map((row, idx) => (
@@ -1279,7 +1590,6 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                         <span style={numberStyle}>{String(idx + 1).padStart(2, '0')}</span>
                         <div>
                           <div style={titleRowStyle}>
-                            <span style={{ color: '#0A0A0A', fontWeight: 500, marginRight: '6px' }}>//</span>
                             {row.title}
                           </div>
                           <div style={descStyle}>{row.desc}</div>
@@ -1458,11 +1768,10 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 color: 'transparent',
               }}
             >
-              Ready to Transform Your
+              Experience the Impact of{' '}
             </span>
-            <br />
             <span>
-              NPA Workflow?
+              {agent?.agent_name ?? title}
             </span>
           </h2>
 
@@ -1482,8 +1791,10 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               margin: '0 auto 32px',
             }}
           >
-            Join leading financial institutions leveraging AI to streamline asset recovery and
-            maximize returns
+            Turn operational complexity into
+          
+            measurable
+            <br /> performance gains.
           </p>
 
             {/* ΓöÇΓöÇ 5. CTA Button ΓöÇΓöÇ */}
