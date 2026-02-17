@@ -150,7 +150,8 @@ export default function LabsPage() {
             aria-hidden
           />
           <div className="relative z-10 w-full mx-auto flex flex-col items-center" style={{ maxWidth: 1244.81 }}>
-            <div className="text-center mb-12 mx-auto" style={{ maxWidth: 769 }}>
+            {/* Group 1410104275 / 1410104274: 769×134 — label + heading + subtitle; gap to cards ~42px per spec */}
+            <div className="text-center mx-auto" style={{ maxWidth: 769, marginBottom: 42 }}>
               <div className="flex items-center justify-center gap-2 mb-5">
                 <span className="h-px flex-shrink-0" style={{ width: 32, background: "#1F2937" }} aria-hidden />
                 <p
@@ -184,7 +185,7 @@ export default function LabsPage() {
                 Labs brings direction to experimentation
               </h2>
               <p
-                className="text-center mx-auto mb-10"
+                className="text-center mx-auto"
                 style={{
                   fontFamily: "Poppins, sans-serif",
                   fontWeight: 400,
@@ -327,7 +328,7 @@ export default function LabsPage() {
                   fontSize: 16,
                   lineHeight: "24px",
                   color: "#4B5563",
-                  maxWidth: 554,
+                  maxWidth: 720,
                 }}
               >
                 Labs engagements typically run in focused sprints. We align stakeholders. Define the opportunity space. Test quickly using Tangram's modular AI capabilities. Validate impact with real users. Every idea is evaluated against:

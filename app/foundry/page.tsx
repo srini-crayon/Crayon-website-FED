@@ -123,8 +123,8 @@ export default function FoundryPage() {
             aria-hidden
           />
           <div className="relative z-10 w-full mx-auto flex flex-col items-center" style={{ maxWidth: 1244.81 }}>
-            {/* Group 1410104275 / 1410104274: 769×134 — label (Poppins 500 12px #111827, dividers 32px #1F2937) + heading (Geist 300 36px 40px gradient #0023F6→#008F59) + subtitle (Poppins 400 16px 554px #4B5563) */}
-            <div className="text-center mb-12 mx-auto" style={{ maxWidth: 769, minHeight: 134 }}>
+            {/* Group 1410104275 / 1410104274: label + heading + subtitle; gap to cards 42px (same as Labs) */}
+            <div className="text-center mx-auto" style={{ maxWidth: 769, marginBottom: 42 }}>
               <div className="flex items-center justify-center gap-2 mb-5">
                 <span className="h-px flex-shrink-0" style={{ width: 32, background: "#1F2937" }} aria-hidden />
                 <p
@@ -158,7 +158,7 @@ export default function FoundryPage() {
                 Built the way enterprises need it
               </h2>
               <p
-                className="text-center mx-auto mb-10"
+                className="text-center mx-auto"
                 style={{
                   fontFamily: "Poppins, sans-serif",
                   fontWeight: 400,
