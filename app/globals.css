@@ -318,6 +318,17 @@
   animation-play-state: paused;
 }
 
+/* Marquee that always scrolls (no pause on hover) */
+.animate-marquee-always {
+  animation: marquee 35s linear infinite;
+  display: inline-flex;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 /* Fade-in scroll animation */
 .fade-in-section {
   opacity: 0;
