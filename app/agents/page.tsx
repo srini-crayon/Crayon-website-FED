@@ -29,6 +29,8 @@ const fallbackAgents = [
     badges: [{ label: "Image Processing", variant: "default" as const }],
     tags: ["CRM", "Claims", "Insurance"],
     capabilities: ["Document Intelligence"],
+    industries: [],
+    businessFunctions: [],
     providers: ["AWS"],
     deploymentType: "Solution",
     persona: "Operations Teams",
@@ -43,6 +45,8 @@ type Agent = {
   badges: { label: string; variant: "default" }[];
   tags: string[];
   capabilities: string[];
+  industries: string[];
+  businessFunctions: string[];
   providers: string[];
   deploymentType: string;
   persona: string;
@@ -59,6 +63,8 @@ type ApiAgent = {
   tags: string | null;
   by_value?: string | null;
   by_capability?: string | null;
+  by_industry?: string | null;
+  business_function?: string | null;
   service_provider?: string | null;
   asset_type?: string | null;
   by_persona?: string | null;
@@ -124,6 +130,14 @@ async function fetchAgents() {
           { label: (a as any).by_value || "", variant: "default" as const },
         ],
         capabilities: a.by_capability ? a.by_capability.split(",").map(c => c.trim()).filter(Boolean) : [],
+        industries: (() => {
+          const raw = a.by_industry ?? (a as any).applicable_industry;
+          return raw ? String(raw).split(",").map((s: string) => s.trim()).filter(Boolean) : [];
+        })(),
+        businessFunctions: (() => {
+          const raw = a.business_function ?? (a as any).business_function;
+          return raw ? String(raw).split(",").map((s: string) => s.trim()).filter(Boolean) : [];
+        })(),
         providers: a.service_provider ? a.service_provider.split(",").map(p => p.trim()).filter(Boolean) : [],
         deploymentType: a.asset_type || "",
         persona: a.by_persona || "",
@@ -243,7 +257,8 @@ export default function AgentLibraryPage() {
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 9;
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategoryTag, setSelectedCategoryTag] = useState<string | null>(null);
+  const [selectedCategoryTag, setSelectedCategoryTag] = useState<string[]>([]);
+  const [selectedByValueTag, setSelectedByValueTag] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<"Recommended" | "A-Z">("Recommended");
   const [recommendedDropdownOpen, setRecommendedDropdownOpen] = useState(false);
   const [aiCurrentPage, setAiCurrentPage] = useState(1);
@@ -257,7 +272,21 @@ export default function AgentLibraryPage() {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const browseCarouselRef = useRef<HTMLDivElement>(null);
   const [browseCarouselPage, setBrowseCarouselPage] = useState(0);
-  const BROWSE_CAROUSEL_PAGES = 4;
+  /** Only these agents are shown in the browse carousel; each card uses API data when available (id, title, description), else static fallback. */
+  const BROWSE_CARDS_DATA: { id: string; title: string; description: string; image: string; background: string }[] = [
+    { id: "lea", title: "LEA Notice Assistant", description: "Legal entity and agreement management agent.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "account-opening", title: "Account Opening Automation", description: "Streamlined account opening and onboarding workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "npa", title: "NPA Valuation Assistant", description: "NPA valuation and portfolio management assistant.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
+    { id: "travel-ai", title: "Travel AI", description: "AI-powered travel assistant for bookings, itineraries, and recommendations.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "omp", title: "OMP (Offer Management Platform)", description: "Operations and process management agent for streamlined workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "test-data", title: "Test Data Management", description: "Generate and manage test data for QA and development.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
+    { id: "controls-agent", title: "Control Agents", description: "Governance and controls automation for compliance and risk.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "data-studio", title: "Data Studio", description: "Visual analytics and data exploration for business insights.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "cxo-concierge", title: "CXO Concierge", description: "Executive-level assistant for strategy, reporting, and decision support.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
+    { id: "ap-automation", title: "Account Payable Automation", description: "Accounts payable automation and invoice processing.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "wealth-rm", title: "Wealth RM Assistant", description: "Wealth and relationship management for advisors and clients.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+  ];
+  const BROWSE_CAROUSEL_PAGES = BROWSE_CARDS_DATA.length;
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -388,6 +417,14 @@ export default function AgentLibraryPage() {
               ],
               // Add new fields for filtering
               capabilities: a.by_capability ? a.by_capability.split(",").map(c => c.trim()).filter(Boolean) : [],
+              industries: (() => {
+                const raw = a.by_industry ?? (a as any).applicable_industry;
+                return raw ? String(raw).split(",").map((s: string) => s.trim()).filter(Boolean) : [];
+              })(),
+              businessFunctions: (() => {
+                const raw = a.business_function ?? (a as any).business_function;
+                return raw ? String(raw).split(",").map((s: string) => s.trim()).filter(Boolean) : [];
+              })(),
               providers: a.service_provider ? a.service_provider.split(",").map(p => p.trim()).filter(Boolean) : [],
               deploymentType: a.asset_type || "",
               persona: a.by_persona || "",
@@ -692,15 +729,24 @@ export default function AgentLibraryPage() {
     return () => clearTimeout(timer);
   }, [allCapabilities]);
 
-  // Category tags for "All Agents" section (from agent tags + capabilities)
+  // Category tags for "All Agents" section (from agent API business_function)
   const allCategoryTags = useMemo(() => {
     const set = new Set<string>();
     agents.forEach(agent => {
-      agent.tags.forEach(t => t && set.add(t.trim()));
-      agent.capabilities.forEach(c => c && set.add(c.trim()));
+      (agent.businessFunctions || []).forEach(bf => bf && set.add(bf.trim()));
     });
     const list = Array.from(set).filter(Boolean).sort();
-    return list.length > 0 ? list : ["Banking", "Retail", "Customer Experience", "Productivity", "HR", "Data Accelerator", "Fashion", "Consumer", "Tech Distribution"];
+    return list.length > 0 ? list : ["Banking", "Retail", "Customer Experience", "Productivity", "HR", "Data Accelerator", "Operations & Automation", "Tech Distribution"];
+  }, [agents]);
+
+  // By-value tags from agents API (by_value / valueProposition)
+  const allByValueTags = useMemo(() => {
+    const set = new Set<string>();
+    agents.forEach(agent => {
+      const v = (agent.valueProposition || "").trim();
+      if (v) set.add(v);
+    });
+    return Array.from(set).filter(Boolean).sort();
   }, [agents]);
 
   const allPersonas = useMemo(() => {
@@ -770,6 +816,8 @@ export default function AgentLibraryPage() {
       filtered = filtered.filter(agent =>
         agent.title.toLowerCase().includes(q) ||
         agent.description.toLowerCase().includes(q) ||
+        (agent.industries || []).some(ind => ind.toLowerCase().includes(q)) ||
+        (agent.businessFunctions || []).some(bf => bf.toLowerCase().includes(q)) ||
         agent.tags.some(tag => tag.toLowerCase().includes(q)) ||
         agent.capabilities.some(cap => cap.toLowerCase().includes(q)) ||
         agent.providers.some(prov => prov.toLowerCase().includes(q))
@@ -813,11 +861,17 @@ export default function AgentLibraryPage() {
       }
     }
 
-    // Category tag filter (All Agents section)
-    if (selectedCategoryTag) {
+    // Category tag filter (All Agents section) – multi-select
+    if (selectedCategoryTag.length > 0) {
       filtered = filtered.filter(agent =>
-        agent.tags.some(t => t.trim() === selectedCategoryTag) ||
-        agent.capabilities.some(c => c.trim() === selectedCategoryTag)
+        (agent.businessFunctions || []).some(bf => selectedCategoryTag.includes(bf.trim()))
+      );
+    }
+
+    // By-value filter (from agents API by_value / valueProposition) – multi-select
+    if (selectedByValueTag.length > 0) {
+      filtered = filtered.filter(agent =>
+        selectedByValueTag.includes((agent.valueProposition || "").trim())
       );
     }
 
@@ -864,7 +918,7 @@ export default function AgentLibraryPage() {
       const bOrder = b.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       return aOrder - bOrder;
     });
-  }, [agents, aiSearchedAgentIds, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter]);
+  }, [agents, aiSearchedAgentIds, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, selectedCategoryTag, selectedByValueTag]);
 
   // All agents (filtered by manual filters)
   const allFilteredAgents = useMemo(() => {
@@ -885,7 +939,7 @@ export default function AgentLibraryPage() {
       const bOrder = b.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       return aOrder - bOrder;
     });
-  }, [agents, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, aiSearchedAgentIds, showFavoritesOnly, favorites, selectedWishlistId, wishlists, selectedCategoryTag]);
+  }, [agents, search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, aiSearchedAgentIds, showFavoritesOnly, favorites, selectedWishlistId, wishlists, selectedCategoryTag, selectedByValueTag]);
 
   // Sorted list for All Agents (Recommended = order from API, A-Z = by title)
   const sortedFilteredAgents = useMemo(() => {
@@ -935,7 +989,7 @@ export default function AgentLibraryPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, selectedCapability, selectedCategoryTag, sortBy]);
+  }, [search, capabilityFilter, byCapabilityFilter, deploymentFilter, personaFilter, agentIdFromUrl, selectedCapability, selectedCategoryTag.length, selectedByValueTag.length, sortBy]);
 
   useEffect(() => {
     setAiCurrentPage(1);
@@ -1265,37 +1319,36 @@ export default function AgentLibraryPage() {
 
             {/* Browse 200+ Agents & Agentic Solutions — pink gradient + carousel */}
             {(() => {
-              const defaultCardBackground = "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)";
-              const browseCards = [
-                {
-                  id: "campaign-agent",
-                  title: "Campaign Agent",
-                  description: "Smart AI powered personalised campaigns show runner",
-                  image: "/img/carousel-card-campaign.png",
-                  background: defaultCardBackground,
-                },
-                {
-                  id: "customer-support-agent",
-                  title: "Customer Support Agent",
-                  description: "Agent built to handle diverse customer and vendor interactions with emotional intelligence.",
-                  image: "/img/carousel-card-support.png",
-                  background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)",
-                },
-                {
-                  id: "earnings-agent",
-                  title: "Earnings Agent",
-                  description: "Agent built to produce financial insights and searchable summaries from earnings data.",
-                  image: "/img/carousel-card-campaign.png",
-                  background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)",
-                },
-                {
-                  id: "workflow-agent",
-                  title: "Workflow Agent",
-                  description: "Automate repetitive tasks and route work intelligently across your team.",
-                  image: "/img/carousel-card-support.png",
-                  background: defaultCardBackground,
-                },
-              ];
+              const normalize = (s: string) => s.trim().toLowerCase();
+              const usedAgentIds = new Set<string>();
+              const browseCards = BROWSE_CARDS_DATA.map((staticCard) => {
+                const fromApi = agents.find(
+                  (a) => normalize(a.title) === normalize(staticCard.title)
+                );
+                if (fromApi && !usedAgentIds.has(fromApi.id)) {
+                  usedAgentIds.add(fromApi.id);
+                  return {
+                    id: fromApi.id,
+                    title: fromApi.title,
+                    description: fromApi.description,
+                    image: staticCard.image,
+                    background: staticCard.background,
+                  };
+                }
+                // Ensure every card has a valid agent id from API for correct detail page redirect
+                const fallbackAgent = agents.find((a) => !usedAgentIds.has(a.id)) ?? agents[0];
+                if (fallbackAgent) {
+                  usedAgentIds.add(fallbackAgent.id);
+                  return {
+                    id: fallbackAgent.id,
+                    title: fallbackAgent.title,
+                    description: fallbackAgent.description,
+                    image: staticCard.image,
+                    background: staticCard.background,
+                  };
+                }
+                return { ...staticCard };
+              });
               const cardWidth = 560;
               const cardHeight = 270;
               const gap = 24;
@@ -1409,11 +1462,13 @@ export default function AgentLibraryPage() {
                                       letterSpacing: "0.17px",
                                       verticalAlign: "middle",
                                       color: "#FFFFFFDE",
+                                      marginTop: 100,
                                     }}
                                   >
                                     {card.title}
                                   </h3>
                                   <p
+                                    className="line-clamp-2"
                                     style={{
                                       fontFamily: "Inter, sans-serif",
                                       fontWeight: 400,
@@ -1422,10 +1477,31 @@ export default function AgentLibraryPage() {
                                       lineHeight: "18px",
                                       letterSpacing: "0.17px",
                                       color: "#FFFFFFDE",
+                                      overflow: "hidden",
+                                      display: "-webkit-box",
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: "vertical" as const,
                                     }}
                                   >
                                     {card.description}
                                   </p>
+                                  <div
+                                    className="mt-3 inline-flex items-center gap-1.5"
+                                    style={{
+                                      fontFamily: "Geist, var(--font-geist-sans), sans-serif",
+                                      fontWeight: 400,
+                                      fontStyle: "normal",
+                                      fontSize: "14px",
+                                      lineHeight: "20px",
+                                      letterSpacing: "0%",
+                                      verticalAlign: "middle",
+                                      color: "#FFFFFF",
+                                      alignSelf: "flex-start",
+                                    }}
+                                  >
+                                    Know More
+                                    <ArrowUpRight size={16} strokeWidth={2.5} aria-hidden style={{ width: 16, height: 16, opacity: 1, marginTop: 2 }} />
+                                  </div>
                                 </div>
                                 <div
                                   className="flex-shrink-0 relative overflow-hidden"
@@ -1441,20 +1517,10 @@ export default function AgentLibraryPage() {
                                     alt=""
                                     role="presentation"
                                     fill
-                                    className="object-contain object-right"
+                                    className="object-contain object-right rounded-[18px]"
+                                    style={{ opacity: 1 }}
                                   />
                                 </div>
-                              </div>
-                              <div
-                                className="mt-4 flex items-center gap-1"
-                                style={{
-                                  fontFamily: "Poppins, sans-serif",
-                                  fontSize: "14px",
-                                  fontWeight: 500,
-                                  color: "#FFFFFF",
-                                }}
-                              >
-                                Know More <span className="browse-card-arrow"><ArrowUpRight size={16} strokeWidth={2.5} /></span>
                               </div>
                             </Link>
                           </div>
@@ -1553,6 +1619,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(251,146,60,0.12) 0%, rgba(220,38,38,0.06) 40%, transparent 70%)",
                       titleColor: "#EA580C",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FFF7ED 97.78%)",
+                      comingSoon: false,
                     },
                     {
                       id: "insurance",
@@ -1563,6 +1630,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(21,128,61,0.06) 40%, transparent 70%)",
                       titleColor: "#15803D",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F0FDF4 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "healthcare",
@@ -1573,6 +1641,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.12) 0%, rgba(190,24,93,0.06) 40%, transparent 70%)",
                       titleColor: "#BE185D",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "retail",
@@ -1583,6 +1652,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(196,181,253,0.12) 0%, rgba(109,40,217,0.06) 40%, transparent 70%)",
                       titleColor: "#6D28D9",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F5F3FF 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "education",
@@ -1593,6 +1663,7 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.1) 0%, rgba(157,23,77,0.06) 40%, transparent 70%)",
                       titleColor: "#9D174D",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
+                      comingSoon: true,
                     },
                     {
                       id: "government",
@@ -1603,23 +1674,47 @@ export default function AgentLibraryPage() {
                       gradientFromCorner: "linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(29,78,216,0.06) 40%, transparent 70%)",
                       titleColor: "#1D4ED8",
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #EFF6FF 97.78%)",
+                      comingSoon: true,
                     },
                   ].map((item) => {
                     const Icon = item.icon;
+                    const isComingSoon = item.comingSoon === true;
                     return (
                       <Link
                         key={item.id}
-                        href={`/agents?industry=${item.id}`}
-                        className="industry-card-interactive block relative overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
+                        href={isComingSoon ? "#" : `/industry/${item.id}`}
+                        onClick={isComingSoon ? (e) => e.preventDefault() : undefined}
+                        className={`industry-card-interactive block relative overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${isComingSoon ? "cursor-not-allowed" : ""}`}
                         style={{
                           width: "100%",
                           minHeight: "194px",
                           borderRadius: "8px",
-                          background: item.cardBackground,
+                          background: isComingSoon ? "linear-gradient(287.29deg, #F0F0F0 62.43%, #E5E5E5 97.78%)" : item.cardBackground,
                           boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
                           textDecoration: "none",
+                          opacity: isComingSoon ? 0.85 : 1,
                         }}
                       >
+                        {isComingSoon && (
+                          <span
+                            className="absolute top-3 right-3 z-10"
+                            style={{
+                              fontFamily: "Poppins, sans-serif",
+                              fontWeight: 500,
+                              fontSize: "11px",
+                              lineHeight: "16px",
+                              letterSpacing: "0.5px",
+                              color: "#6B7280",
+                              background: "#FFFFFF",
+                              border: "1px solid #D1D5DB",
+                              borderRadius: "6px",
+                              padding: "4px 8px",
+                              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                            }}
+                          >
+                            Coming Soon
+                          </span>
+                        )}
                         <div className="relative p-6">
                           <div className="flex justify-between items-start">
                             <div
@@ -1629,14 +1724,16 @@ export default function AgentLibraryPage() {
                                 height: "36px",
                               }}
                             >
-                              <Icon size={22} strokeWidth={2} style={{ color: item.titleColor }} />
+                              <Icon size={22} strokeWidth={2} style={{ color: isComingSoon ? "#9CA3AF" : item.titleColor }} />
                             </div>
-                            <ArrowUpRight
-                              size={18}
-                              className="flex-shrink-0 text-gray-400"
-                              strokeWidth={2}
-                              style={{ marginTop: "2px" }}
-                            />
+                            {!isComingSoon && (
+                              <ArrowUpRight
+                                size={18}
+                                className="flex-shrink-0 text-gray-400"
+                                strokeWidth={2}
+                                style={{ marginTop: "2px" }}
+                              />
+                            )}
                           </div>
                           <h3
                             className="mt-4"
@@ -1648,7 +1745,7 @@ export default function AgentLibraryPage() {
                               lineHeight: "100%",
                               letterSpacing: "0%",
                               verticalAlign: "middle",
-                              color: item.titleColor,
+                              color: isComingSoon ? "#9CA3AF" : item.titleColor,
                             }}
                           >
                             {item.title}
@@ -1662,7 +1759,7 @@ export default function AgentLibraryPage() {
                               fontSize: "14px",
                               lineHeight: "20px",
                               letterSpacing: "0%",
-                              color: "#475467",
+                              color: isComingSoon ? "#9CA3AF" : "#475467",
                             }}
                           >
                             {item.description}
@@ -1837,45 +1934,105 @@ export default function AgentLibraryPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-3 justify-between">
-                    <div className="flex gap-[10px] overflow-x-auto scrollbar-hide pb-1" style={{ flex: "1 1 auto", minWidth: 0 }}>
-                      {allCategoryTags.slice(0, 12).map((tag) => (
-                        <button
-                          key={tag}
-                          type="button"
-                          onClick={() => setSelectedCategoryTag(selectedCategoryTag === tag ? null : tag)}
-                          className="flex-shrink-0 text-sm font-medium transition-colors rounded-full"
-                          style={{
-                            fontFamily: "Poppins, sans-serif",
-                            paddingTop: "11px",
-                            paddingRight: "18px",
-                            paddingBottom: "11px",
-                            paddingLeft: "18px",
-                            border: "1px solid #EAECF0",
-                            borderRadius: "999px",
-                            backgroundColor: selectedCategoryTag === tag ? "#1E3A8A" : "#FFFFFF",
-                            color: selectedCategoryTag === tag ? "#FFFFFF" : "#374151",
-                          }}
-                        >
-                          {tag}
-                        </button>
-                      ))}
+                  <div className="flex flex-col gap-3">
+                    {allByValueTags.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="flex-shrink-0 text-sm font-medium text-gray-600" style={{ fontFamily: "Poppins, sans-serif" }}>By value</span>
+                        <div className="flex gap-[10px] overflow-x-auto scrollbar-hide pb-1" style={{ flex: "1 1 auto", minWidth: 0 }}>
+                          {allByValueTags.map((valueTag) => {
+                            const isSelected = selectedByValueTag.includes(valueTag);
+                            return (
+                              <button
+                                key={valueTag}
+                                type="button"
+                                onClick={() => setSelectedByValueTag(prev => isSelected ? prev.filter(t => t !== valueTag) : [...prev, valueTag])}
+                                className="flex-shrink-0 text-sm font-medium transition-colors rounded-full"
+                                style={{
+                                  fontFamily: "Poppins, sans-serif",
+                                  paddingTop: "11px",
+                                  paddingRight: "18px",
+                                  paddingBottom: "11px",
+                                  paddingLeft: "18px",
+                                  border: "1px solid #EAECF0",
+                                  borderRadius: "999px",
+                                  backgroundColor: isSelected ? "#1E3A8A" : "#FFFFFF",
+                                  color: isSelected ? "#FFFFFF" : "#374151",
+                                }}
+                              >
+                                {valueTag}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {(selectedByValueTag.length > 0 || selectedCategoryTag.length > 0) && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedByValueTag([]);
+                              setSelectedCategoryTag([]);
+                            }}
+                            className="flex-shrink-0 text-sm font-medium transition-colors rounded-full"
+                            style={{
+                              fontFamily: "Poppins, sans-serif",
+                              paddingTop: "11px",
+                              paddingRight: "18px",
+                              paddingBottom: "11px",
+                              paddingLeft: "18px",
+                              border: "1px solid #EAECF0",
+                              borderRadius: "999px",
+                              backgroundColor: "#FFFFFF",
+                              color: "#374151",
+                            }}
+                          >
+                            Clear all
+                          </button>
+                        )}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <span className="flex-shrink-0 text-sm font-medium text-gray-600" style={{ fontFamily: "Poppins, sans-serif" }}>By business function</span>
+                      <div className="flex gap-[10px] overflow-x-auto scrollbar-hide pb-1" style={{ flex: "1 1 auto", minWidth: 0 }}>
+                        {allCategoryTags.slice(0, 12).map((tag) => {
+                          const isSelected = selectedCategoryTag.includes(tag);
+                          return (
+                            <button
+                              key={tag}
+                              type="button"
+                              onClick={() => setSelectedCategoryTag(prev => isSelected ? prev.filter(t => t !== tag) : [...prev, tag])}
+                              className="flex-shrink-0 text-sm font-medium transition-colors rounded-full"
+                              style={{
+                                fontFamily: "Poppins, sans-serif",
+                                paddingTop: "11px",
+                                paddingRight: "18px",
+                                paddingBottom: "11px",
+                                paddingLeft: "18px",
+                                border: "1px solid #EAECF0",
+                                borderRadius: "999px",
+                                backgroundColor: isSelected ? "#1E3A8A" : "#FFFFFF",
+                                color: isSelected ? "#FFFFFF" : "#374151",
+                              }}
+                            >
+                              {tag}
+                            </button>
+                          );
+                        })}
                       {allCategoryTags.length > 12 && (
                         <span className="flex-shrink-0 px-4 py-2 text-sm text-gray-500" style={{ fontFamily: "Poppins, sans-serif" }}>More...</span>
                       )}
-                      {/* Filters button hidden for now – not required */}
-                      <button
-                        type="button"
-                        onClick={() => setIsFilterPanelOpen(true)}
-                        className="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 hidden"
-                        style={{ fontFamily: "Poppins, sans-serif", backgroundColor: "#F3F4F6", color: "#4B5563" }}
-                      >
-                        <Filter className="h-3.5 w-3.5" />
-                        Filters
-                        {(byCapabilityFilter.length > 0 || personaFilter.length > 0) && (
-                          <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#EF4444" }} />
-                        )}
-                      </button>
+                        {/* Filters button hidden for now – not required */}
+                        <button
+                          type="button"
+                          onClick={() => setIsFilterPanelOpen(true)}
+                          className="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 hidden"
+                          style={{ fontFamily: "Poppins, sans-serif", backgroundColor: "#F3F4F6", color: "#4B5563" }}
+                        >
+                          <Filter className="h-3.5 w-3.5" />
+                          Filters
+                          {(byCapabilityFilter.length > 0 || personaFilter.length > 0) && (
+                            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#EF4444" }} />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1901,7 +2058,8 @@ export default function AgentLibraryPage() {
                   setSearch("");
                   setShowFavoritesOnly(false);
                   setSelectedWishlistId(null);
-                  setSelectedCategoryTag(null);
+                  setSelectedCategoryTag([]);
+                  setSelectedByValueTag([]);
                 }}
                 hasActiveFilters={
                   capabilityFilter !== "All" ||
@@ -1910,7 +2068,8 @@ export default function AgentLibraryPage() {
                   search !== "" ||
                   showFavoritesOnly ||
                   selectedWishlistId !== null ||
-                  selectedCategoryTag !== null
+                  selectedCategoryTag.length > 0 ||
+                  selectedByValueTag.length > 0
                 }
                 showFavoritesOnly={showFavoritesOnly}
                 setShowFavoritesOnly={setShowFavoritesOnly}
@@ -1920,7 +2079,7 @@ export default function AgentLibraryPage() {
               />
 
               {/* Agent Grid */}
-              <div id="agent-cards" className="w-full mx-auto" style={{ maxWidth: "1360px", paddingLeft: "12px", paddingRight: "12px" }}>
+              <div id="agent-cards" className="w-full mx-auto" style={{ maxWidth: "1360px", paddingLeft: "12px", paddingRight: "12px", paddingBottom: "64px" }}>
                 {loading && (
                   <div
                     className="grid gap-4 md:gap-6 lg:gap-10"

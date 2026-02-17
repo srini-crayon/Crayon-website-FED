@@ -110,9 +110,9 @@ export function CrayonHeader() {
   // Secondary menu items - Services (Catalyst)
   const servicesMenuItems: SecondaryItem[] = [
     { label: "Catalyst", path: "/catalyst" },
-    { label: "Labs", path: "/labs", disabled: true },
-    { label: "Foundry", path: "/foundry", disabled: true },
-    { label: "Factory", path: "/factory", disabled: true },
+    { label: "Labs", path: "/labs" },
+    { label: "Foundry", path: "/foundry" },
+    { label: "Factory", path: "/factory" },
   ]
 
   // Secondary menu items - The Platform (similar to About Us)
@@ -245,9 +245,9 @@ export function CrayonHeader() {
       icon: "/img/menu-service.png",
       links: [
         { label: "Catalyst", href: "/catalyst" },
-        { label: "Labs", href: "/labs", disabled: true },
-        { label: "Foundry", href: "/foundry", disabled: true },
-        { label: "Factory", href: "/factory", disabled: true },
+        { label: "Labs", href: "/labs" },
+        { label: "Foundry", href: "/foundry" },
+        { label: "Factory", href: "/factory" },
       ],
     },
     {

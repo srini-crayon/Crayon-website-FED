@@ -13,7 +13,7 @@ export function CTASection() {
   ]
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 md:py-32 bg-background">
       <div className="max-w-5xl mx-auto px-4">
         {/* Minimal header */}
         <div className="text-center mb-16">

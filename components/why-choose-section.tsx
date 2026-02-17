@@ -63,7 +63,7 @@ export function WhyChooseSection() {
     <section className="py-24 md:py-32 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Minimal Header */}
-        <div className="flex items-end justify-between mb-16 pb-8 border-b border-border">
+        <div className="flex items-end justify-between mb-8 pb-4 border-b border-border">
           <div>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />

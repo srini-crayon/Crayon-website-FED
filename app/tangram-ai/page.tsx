@@ -340,6 +340,136 @@ export default function TangramAIPage() {
         </div>
       </section>
 
+      {/* AI success made easy */}
+      <section
+        className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center fade-in-visible"
+        style={{ background: "#F9FAFB" }}
+      >
+        <div className="mx-auto w-full max-w-[1100px] px-6 text-center">
+            <h2
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 600,
+                fontSize: 32,
+                lineHeight: "40px",
+                background: "linear-gradient(90deg, #F05283 0%, #8F2B8C 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
+                marginBottom: 6,
+              }}
+            >
+              AI success made easy.
+            </h2>
+            <p
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 500,
+                fontSize: 16,
+                lineHeight: "24px",
+                color: "#111827",
+              }}
+            >
+              Find. Try. Pick. Launch.
+            </p>
+
+          <div className="mt-12 flex flex-col md:flex-row md:items-stretch md:justify-center md:gap-0 w-full">
+            {[
+              {
+                title: "Find Your Use Case",
+                desc: "Explore ready-made industry use cases.",
+                icon: <Search size={26} />,
+                glow: "rgba(139, 92, 246, 0.18)",
+                iconBg: "rgba(124, 58, 237, 0.12)",
+                iconColor: "#7C3AED",
+              },
+              {
+                title: "Try an agent",
+                desc: "Test the right AI copilot for your need.",
+                icon: <Layers size={26} />,
+                glow: "rgba(236, 72, 153, 0.16)",
+                iconBg: "rgba(236, 72, 153, 0.10)",
+                iconColor: "#EC4899",
+              },
+              {
+                title: "Pick your stack",
+                desc: "Choose your preferred platform or model.",
+                icon: <Settings size={26} />,
+                glow: "rgba(245, 158, 11, 0.16)",
+                iconBg: "rgba(245, 158, 11, 0.10)",
+                iconColor: "#B45309",
+              },
+              {
+                title: "Launch your trial",
+                desc: "Experience the future of work in minutes.",
+                icon: <Rocket size={26} />,
+                glow: "rgba(16, 185, 129, 0.16)",
+                iconBg: "rgba(16, 185, 129, 0.10)",
+                iconColor: "#047857",
+              },
+            ].map((card, index) => (
+              <span key={card.title} className="flex items-stretch md:items-center">
+                {index > 0 && (
+                  <span
+                    className="hidden md:block shrink-0 self-center"
+                    style={{
+                      width: "clamp(20px, 4vw, 40px)",
+                      minWidth: 20,
+                      height: 2,
+                      borderRadius: 1,
+                      background: "linear-gradient(90deg, #2563EB 0%, #06B6D4 100%)",
+                    }}
+                    aria-hidden
+                  />
+                )}
+                <Card
+                  className="rounded-[24px] border border-[#E5E7EB] bg-white py-0 shadow-none md:flex-1 md:min-w-0"
+                >
+                  <CardContent className="px-6 py-6">
+                    <div className="flex flex-col items-center text-center">
+                      <div
+                        className="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-full"
+                        style={{
+                          background: card.iconBg,
+                          boxShadow: `0 18px 40px ${card.glow}`,
+                          color: card.iconColor,
+                        }}
+                      >
+                        {card.icon}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "Poppins, sans-serif",
+                          fontWeight: 600,
+                          fontSize: 14,
+                          lineHeight: "20px",
+                          color: "#111827",
+                          marginBottom: 6,
+                        }}
+                      >
+                        {card.title}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "Poppins, sans-serif",
+                          fontWeight: 400,
+                          fontSize: 13,
+                          lineHeight: "18px",
+                          color: "#6B7280",
+                        }}
+                      >
+                        {card.desc}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Tangram Is Already in Production */}
       <section
         className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center fade-in-visible"
@@ -515,136 +645,6 @@ export default function TangramAIPage() {
         </div>
       </section>
 
-      {/* AI success made easy */}
-      <section
-        className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center fade-in-visible"
-        style={{ background: "#F9FAFB" }}
-      >
-        <div className="mx-auto w-full max-w-[1100px] px-6 text-center">
-            <h2
-              style={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 600,
-                fontSize: 32,
-                lineHeight: "40px",
-                background: "linear-gradient(90deg, #F05283 0%, #8F2B8C 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                color: "transparent",
-                marginBottom: 6,
-              }}
-            >
-              AI success made easy.
-            </h2>
-            <p
-              style={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 500,
-                fontSize: 16,
-                lineHeight: "24px",
-                color: "#111827",
-              }}
-            >
-              Find. Try. Pick. Launch.
-            </p>
-
-          <div className="mt-12 flex flex-col md:flex-row md:items-stretch md:justify-center md:gap-0 w-full">
-            {[
-              {
-                title: "Find Your Use Case",
-                desc: "Explore ready-made industry use cases.",
-                icon: <Search size={26} />,
-                glow: "rgba(139, 92, 246, 0.18)",
-                iconBg: "rgba(124, 58, 237, 0.12)",
-                iconColor: "#7C3AED",
-              },
-              {
-                title: "Try an agent",
-                desc: "Test the right AI copilot for your need.",
-                icon: <Layers size={26} />,
-                glow: "rgba(236, 72, 153, 0.16)",
-                iconBg: "rgba(236, 72, 153, 0.10)",
-                iconColor: "#EC4899",
-              },
-              {
-                title: "Pick your stack",
-                desc: "Choose your preferred platform or model.",
-                icon: <Settings size={26} />,
-                glow: "rgba(245, 158, 11, 0.16)",
-                iconBg: "rgba(245, 158, 11, 0.10)",
-                iconColor: "#B45309",
-              },
-              {
-                title: "Launch your trial",
-                desc: "Experience the future of work in minutes.",
-                icon: <Rocket size={26} />,
-                glow: "rgba(16, 185, 129, 0.16)",
-                iconBg: "rgba(16, 185, 129, 0.10)",
-                iconColor: "#047857",
-              },
-            ].map((card, index) => (
-              <span key={card.title} className="flex items-stretch md:items-center">
-                {index > 0 && (
-                  <span
-                    className="hidden md:block shrink-0 self-center"
-                    style={{
-                      width: "clamp(20px, 4vw, 40px)",
-                      minWidth: 20,
-                      height: 2,
-                      borderRadius: 1,
-                      background: "linear-gradient(90deg, #2563EB 0%, #06B6D4 100%)",
-                    }}
-                    aria-hidden
-                  />
-                )}
-                <Card
-                  className="rounded-[24px] border border-[#E5E7EB] bg-white py-0 shadow-none md:flex-1 md:min-w-0"
-                >
-                  <CardContent className="px-6 py-6">
-                    <div className="flex flex-col items-center text-center">
-                      <div
-                        className="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-full"
-                        style={{
-                          background: card.iconBg,
-                          boxShadow: `0 18px 40px ${card.glow}`,
-                          color: card.iconColor,
-                        }}
-                      >
-                        {card.icon}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 600,
-                          fontSize: 14,
-                          lineHeight: "20px",
-                          color: "#111827",
-                          marginBottom: 6,
-                        }}
-                      >
-                        {card.title}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 400,
-                          fontSize: 13,
-                          lineHeight: "18px",
-                          color: "#6B7280",
-                        }}
-                      >
-                        {card.desc}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Why Choose Tangram */}
       <section
         className="fade-in-section py-16 md:py-20 lg:py-24 min-h-[80vh] flex items-center fade-in-visible"
@@ -746,18 +746,18 @@ export default function TangramAIPage() {
                 fontStyle: "normal",
               }}
             >
-              Tangram isn't a tool - it's a platform for GenAI adoption. With Tangram, enterprises unlock
+              Tangram isn&apos;t a tool. It&apos;s a GenAI adoption platform built for enterprise scale. Here&apos;s what you unlock with Tangram:
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
               {[
-                { id: "01", n: "01.", t: "Composability", desc: "AI you can plug in anywhere — across systems, teams, or journeys.", img: "/img/Composability.svg" },
-                { id: "02", n: "02.", t: "Agentic Workflows", desc: "Automated workflows that adapt and learn from your business processes.", img: "/img/Agentic Workflows.svg" },
-                { id: "03", n: "03.", t: "Faster Time-to-Value", desc: "Deploy AI solutions in days, not months, with pre-built components.", img: "/img/Faster Time-to-Value.svg" },
-                { id: "04", n: "04.", t: "Lower TCO", desc: "Reduce total cost of ownership with efficient, scalable AI infrastructure.", img: "/img/Lower TCO.svg" },
-                { id: "05", n: "05.", t: "Enterprise-Grade Deployment", desc: "Production-ready AI with security, compliance, and governance built-in.", img: "/img/Enterprise-Grade Deployment.svg" },
+                { id: "01", n: "01.", t: "Composable AI Architecture", desc: "Plug AI into any system, workflow, or journey — without rebuilding your stack.", img: "/img/Composability.svg" },
+                { id: "02", n: "02.", t: "Agentic Workflows at Scale", desc: "Move from prompts to production-grade, multi-step business automation.", img: "/img/Agentic Workflows.svg" },
+                { id: "03", n: "03.", t: "Enterprise-Grade Governance", desc: "Built-in security, auditability, and role-based controls for regulated environments.", img: "/img/Enterprise-Grade Deployment.svg" },
+                { id: "04", n: "04.", t: "Faster Time-to-Value", desc: "Deploy reusable AI agents in weeks — not quarters.", img: "/img/Faster Time-to-Value.svg" },
+                { id: "05", n: "05.", t: "Lower Total Cost of Ownership", desc: "Shared infrastructure and modular components reduce duplication and long-term AI spend.", img: "/img/Lower TCO.svg" },
               ].map((item) => {
                 const isExpanded = whatYouGetExpanded === item.id;
                 return (
@@ -814,7 +814,7 @@ export default function TangramAIPage() {
                             lineHeight: "22px",
                             color: "#374151",
                             opacity: isExpanded ? 1 : 0,
-                            maxHeight: isExpanded ? 80 : 0,
+                            maxHeight: isExpanded ? 120 : 0,
                             overflow: "hidden",
                             marginTop: 6,
                           }}
@@ -831,12 +831,12 @@ export default function TangramAIPage() {
             <div className="relative w-full overflow-hidden rounded-[8px] bg-white flex items-center justify-center">
               {(() => {
                 const activeItem = [
-                  { id: "01", img: "/img/Composability.svg", alt: "Tangram.ai - Composability" },
-                  { id: "02", img: "/img/Agentic Workflows.svg", alt: "Tangram.ai - Agentic Workflows" },
-                  { id: "03", img: "/img/Faster Time-to-Value.svg", alt: "Tangram.ai - Faster Time-to-Value" },
-                  { id: "04", img: "/img/Lower TCO.svg", alt: "Tangram.ai - Lower TCO" },
-                  { id: "05", img: "/img/Enterprise-Grade Deployment.svg", alt: "Tangram.ai - Enterprise-Grade Deployment" },
-                ].find((item) => item.id === whatYouGetExpanded) || { img: "/img/Composability.svg", alt: "Tangram.ai - Composability" };
+                  { id: "01", img: "/img/Composability.svg", alt: "Tangram.ai - Composable AI Architecture" },
+                  { id: "02", img: "/img/Agentic Workflows.svg", alt: "Tangram.ai - Agentic Workflows at Scale" },
+                  { id: "03", img: "/img/Enterprise-Grade Deployment.svg", alt: "Tangram.ai - Enterprise-Grade Governance" },
+                  { id: "04", img: "/img/Faster Time-to-Value.svg", alt: "Tangram.ai - Faster Time-to-Value" },
+                  { id: "05", img: "/img/Lower TCO.svg", alt: "Tangram.ai - Lower Total Cost of Ownership" },
+                ].find((item) => item.id === whatYouGetExpanded) || { img: "/img/Composability.svg", alt: "Tangram.ai - Composable AI Architecture" };
                 return (
                   <Image
                     key={whatYouGetExpanded}
