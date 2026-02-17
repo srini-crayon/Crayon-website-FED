@@ -257,7 +257,21 @@ export default function AgentLibraryPage() {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const browseCarouselRef = useRef<HTMLDivElement>(null);
   const [browseCarouselPage, setBrowseCarouselPage] = useState(0);
-  const BROWSE_CAROUSEL_PAGES = 4;
+  /** Only these agents are shown in the browse carousel; each card uses API data when available (id, title, description), else static fallback. */
+  const BROWSE_CARDS_DATA: { id: string; title: string; description: string; image: string; background: string }[] = [
+    { id: "lea", title: "LEA", description: "Legal entity and agreement management agent.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "account-opening", title: "Account Opening", description: "Streamlined account opening and onboarding workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "npa", title: "NPA", description: "NPA valuation and portfolio management assistant.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
+    { id: "travel-ai", title: "Travel AI", description: "AI-powered travel assistant for bookings, itineraries, and recommendations.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "omp", title: "OMP", description: "Operations and process management agent for streamlined workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "test-data", title: "Test Data", description: "Generate and manage test data for QA and development.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
+    { id: "controls-agent", title: "Controls Agent", description: "Governance and controls automation for compliance and risk.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "data-studio", title: "Data Studio", description: "Visual analytics and data exploration for business insights.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "cxo-concierge", title: "CXO Concierge", description: "Executive-level assistant for strategy, reporting, and decision support.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
+    { id: "ap-automation", title: "AP Automation", description: "Accounts payable automation and invoice processing.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "wealth-rm", title: "Wealth RM", description: "Wealth and relationship management for advisors and clients.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+  ];
+  const BROWSE_CAROUSEL_PAGES = BROWSE_CARDS_DATA.length;
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -1265,37 +1279,22 @@ export default function AgentLibraryPage() {
 
             {/* Browse 200+ Agents & Agentic Solutions — pink gradient + carousel */}
             {(() => {
-              const defaultCardBackground = "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)";
-              const browseCards = [
-                {
-                  id: "campaign-agent",
-                  title: "Campaign Agent",
-                  description: "Smart AI powered personalised campaigns show runner",
-                  image: "/img/carousel-card-campaign.png",
-                  background: defaultCardBackground,
-                },
-                {
-                  id: "customer-support-agent",
-                  title: "Customer Support Agent",
-                  description: "Agent built to handle diverse customer and vendor interactions with emotional intelligence.",
-                  image: "/img/carousel-card-support.png",
-                  background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)",
-                },
-                {
-                  id: "earnings-agent",
-                  title: "Earnings Agent",
-                  description: "Agent built to produce financial insights and searchable summaries from earnings data.",
-                  image: "/img/carousel-card-campaign.png",
-                  background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)",
-                },
-                {
-                  id: "workflow-agent",
-                  title: "Workflow Agent",
-                  description: "Automate repetitive tasks and route work intelligently across your team.",
-                  image: "/img/carousel-card-support.png",
-                  background: defaultCardBackground,
-                },
-              ];
+              const normalize = (s: string) => s.trim().toLowerCase();
+              const browseCards = BROWSE_CARDS_DATA.map((staticCard) => {
+                const fromApi = agents.find(
+                  (a) => normalize(a.title) === normalize(staticCard.title)
+                );
+                if (fromApi) {
+                  return {
+                    id: fromApi.id,
+                    title: fromApi.title,
+                    description: fromApi.description,
+                    image: staticCard.image,
+                    background: staticCard.background,
+                  };
+                }
+                return { ...staticCard };
+              });
               const cardWidth = 560;
               const cardHeight = 270;
               const gap = 24;
@@ -1409,11 +1408,13 @@ export default function AgentLibraryPage() {
                                       letterSpacing: "0.17px",
                                       verticalAlign: "middle",
                                       color: "#FFFFFFDE",
+                                      marginTop: 100,
                                     }}
                                   >
                                     {card.title}
                                   </h3>
                                   <p
+                                    className="line-clamp-2"
                                     style={{
                                       fontFamily: "Inter, sans-serif",
                                       fontWeight: 400,
@@ -1422,10 +1423,31 @@ export default function AgentLibraryPage() {
                                       lineHeight: "18px",
                                       letterSpacing: "0.17px",
                                       color: "#FFFFFFDE",
+                                      overflow: "hidden",
+                                      display: "-webkit-box",
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: "vertical" as const,
                                     }}
                                   >
                                     {card.description}
                                   </p>
+                                  <div
+                                    className="mt-3 inline-flex items-center gap-1.5"
+                                    style={{
+                                      fontFamily: "Geist, var(--font-geist-sans), sans-serif",
+                                      fontWeight: 400,
+                                      fontStyle: "normal",
+                                      fontSize: "14px",
+                                      lineHeight: "20px",
+                                      letterSpacing: "0%",
+                                      verticalAlign: "middle",
+                                      color: "#FFFFFF",
+                                      alignSelf: "flex-start",
+                                    }}
+                                  >
+                                    Know More
+                                    <ArrowUpRight size={16} strokeWidth={2.5} aria-hidden style={{ width: 16, height: 16, opacity: 1, marginTop: 2 }} />
+                                  </div>
                                 </div>
                                 <div
                                   className="flex-shrink-0 relative overflow-hidden"
@@ -1441,20 +1463,10 @@ export default function AgentLibraryPage() {
                                     alt=""
                                     role="presentation"
                                     fill
-                                    className="object-contain object-right"
+                                    className="object-contain object-right rounded-[18px]"
+                                    style={{ opacity: 1 }}
                                   />
                                 </div>
-                              </div>
-                              <div
-                                className="mt-4 flex items-center gap-1"
-                                style={{
-                                  fontFamily: "Poppins, sans-serif",
-                                  fontSize: "14px",
-                                  fontWeight: 500,
-                                  color: "#FFFFFF",
-                                }}
-                              >
-                                Know More <span className="browse-card-arrow"><ArrowUpRight size={16} strokeWidth={2.5} /></span>
                               </div>
                             </Link>
                           </div>
@@ -1616,7 +1628,7 @@ export default function AgentLibraryPage() {
                     return (
                       <Link
                         key={item.id}
-                        href={isComingSoon ? "#" : `/agents?industry=${item.id}`}
+                        href={isComingSoon ? "#" : `/industry/${item.id}`}
                         onClick={isComingSoon ? (e) => e.preventDefault() : undefined}
                         className={`industry-card-interactive block relative overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${isComingSoon ? "cursor-not-allowed" : ""}`}
                         style={{
