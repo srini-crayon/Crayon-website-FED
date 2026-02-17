@@ -221,7 +221,33 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
   const demoPreviewContainerRef = useRef<HTMLDivElement>(null)
   const [techSecurityTab, setTechSecurityTab] = useState<string>('')
   const [techSecurityExpandedTabs, setTechSecurityExpandedTabs] = useState<Set<string>>(new Set())
+  const [selectedWorkflowStepIndex, setSelectedWorkflowStepIndex] = useState(0)
   const TECH_SECURITY_VISIBLE_ROWS = 5
+
+  // Sorted (alphabetically by name) image URLs from agent API demo_assets / demo_preview for How it works panel
+  const workflowPanelImageUrls = useMemo((): string[] => {
+    const agentAssets = (data?.agent?.demo_assets || data?.demo_assets) as DemoAssetLike[] | undefined
+    const list: { name: string; url: string }[] = []
+    if (Array.isArray(agentAssets)) {
+      agentAssets.forEach((a) => {
+        const url = getUrlFromAsset(a)
+        if (url && !isAssetVideo(a)) {
+          const name = (a.demo_asset_name || url || '').trim()
+          list.push({ name, url })
+        }
+      })
+    }
+    const previewStr = data?.agent?.demo_preview?.trim()
+    if (previewStr) {
+      previewStr.split(',').map((u) => u.trim()).filter(Boolean).forEach((url) => {
+        if (!isUrlVideo(url) && !list.some((x) => x.url === url)) {
+          list.push({ name: url, url })
+        }
+      })
+    }
+    list.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+    return list.map((x) => x.url)
+  }, [data?.agent?.demo_assets, data?.demo_assets, data?.agent?.demo_preview])
 
   // How It Works steps: only from API `workflow` field. Do not use `features` here — features is for Capabilities section.
   const workflowSteps = useMemo((): WorkflowStep[] => {
@@ -232,6 +258,11 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
     if (fromWorkflow && fromWorkflow.length > 0) return fromWorkflow
     return DEFAULT_WORKFLOW_STEPS
   }, [agent, data?.agent])
+
+  // Reset selected workflow step when steps or image list change (e.g. different agent)
+  React.useEffect(() => {
+    setSelectedWorkflowStepIndex((prev) => Math.min(prev, Math.max(0, workflowSteps.length - 1)))
+  }, [workflowSteps.length])
 
   const content = (<>
     <div className="agent-details-page">
@@ -390,31 +421,36 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             })()}
           </p>
 
-          {/* ΓöÇΓöÇ 4. DEMO NOW Button ΓöÇΓöÇ */}
-          <a
-            href={data?.agent?.demo_link || data?.agent?.application_demo_url || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-            className="inline-flex items-center justify-center bg-black no-underline mb-7 cursor-pointer border-none transition-all duration-200 hover:bg-[#1a1a1a] hover:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:-translate-y-px"
-                      style={{
-                        fontFamily: 'Poppins, sans-serif',
-              fontWeight: 500,
-                        fontStyle: 'normal',
-              fontSize: '14px',
-              lineHeight: '100%',
-              letterSpacing: '0.5px',
-              textAlign: 'center',
-              verticalAlign: 'middle',
-              textTransform: 'uppercase',
-              color: '#FFFFFF',
-              width: 228,
-              height: 44,
-              borderRadius: 4,
-              opacity: 1,
-            }}
-          >
-            DEMO NOW
-          </a>
+          {/* ΓöÇΓöÇ 4. DEMO NOW / Join Waiting list Button ΓöÇΓöÇ */}
+          {(() => {
+            const demoUrl = (data?.agent?.demo_link || data?.agent?.application_demo_url || '').trim()
+            const hasDemo = Boolean(demoUrl)
+            return (
+              <a
+                href={hasDemo ? demoUrl : '#'}
+                {...(hasDemo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                className="inline-flex items-center justify-center bg-black no-underline mb-7 cursor-pointer border-none transition-all duration-200 hover:bg-[#1a1a1a] hover:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:-translate-y-px"
+                style={{
+                  fontFamily: 'Poppins, sans-serif',
+                  fontWeight: 500,
+                  fontStyle: 'normal',
+                  fontSize: '14px',
+                  lineHeight: '100%',
+                  letterSpacing: '0.5px',
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  textTransform: 'uppercase',
+                  color: '#FFFFFF',
+                  width: 228,
+                  height: 44,
+                  borderRadius: 4,
+                  opacity: 1,
+                }}
+              >
+                {hasDemo ? 'DEMO NOW' : 'Join Waiting list'}
+              </a>
+            )
+          })()}
 
           {/* ΓöÇΓöÇ 5. Just Ask AI + Provider Icons ΓöÇΓöÇ */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -851,7 +887,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               borderBottom: '1px solid #E5E5E5',
             }}
           >
-            {/* Left column – numbered steps (height matches illustration 640px) */}
+            {/* Left column – numbered steps (height matches illustration 640px); click to change right-panel image */}
             <div
               style={{
                 display: 'flex',
@@ -862,71 +898,83 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 height: '640px',
               }}
             >
-              {workflowSteps.map((step) => (
-                <div
-                  key={step.num}
-                  style={{
-                    display: 'flex',
-                    gap: '16px',
-                    alignItems: 'flex-start',
-                    maxWidth: '576px',
-                    flex: '1 1 0',
-                    minHeight: 0,
-                    borderBottom: '1px solid #E5E5E5',
-                    paddingBottom: '10px',
-                  }}
-                >
-                  <span
+              {workflowSteps.map((step, idx) => {
+                const isSelected = selectedWorkflowStepIndex === idx
+                return (
+                  <button
+                    key={step.num}
+                    type="button"
+                    onClick={() => setSelectedWorkflowStepIndex(idx)}
                     style={{
-                      fontFamily: 'Geist Mono, var(--font-geist-mono), monospace',
-                      fontWeight: 400,
-                      fontStyle: 'normal',
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      letterSpacing: '0%',
-                      verticalAlign: 'middle',
-                      color: '#737373',
-                      flexShrink: 0,
+                      display: 'flex',
+                      gap: '16px',
+                      alignItems: 'flex-start',
+                      maxWidth: '576px',
+                      flex: '1 1 0',
+                      minHeight: 0,
+                      borderBottom: '1px solid #E5E5E5',
+                      paddingBottom: '10px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      background: isSelected ? 'rgba(0, 35, 246, 0.06)' : 'transparent',
+                      border: 'none',
+                      borderLeft: isSelected ? '3px solid #0023F6' : '3px solid transparent',
+                      paddingLeft: isSelected ? '13px' : '16px',
+                      marginLeft: 0,
                     }}
                   >
-                    {step.num}
-                  </span>
-                  <div>
-                    <h3
+                    <span
                       style={{
-                        fontFamily: 'Poppins, sans-serif',
-                        fontWeight: 500,
-                        fontStyle: 'normal',
-                        fontSize: '18px',
-                        lineHeight: '26px',
-                        letterSpacing: '0%',
-                        verticalAlign: 'middle',
-                        color: '#333333',
-                        margin: '0 0 4px 0',
-                      }}
-                    >
-                      {step.title}
-                    </h3>
-                    <p
-                      style={{
-                        fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+                        fontFamily: 'Geist Mono, var(--font-geist-mono), monospace',
                         fontWeight: 400,
                         fontStyle: 'normal',
-                        fontSize: '14px',
-                        lineHeight: '22.75px',
+                        fontSize: '12px',
+                        lineHeight: '16px',
                         letterSpacing: '0%',
+                        verticalAlign: 'middle',
                         color: '#737373',
-                        margin: 0,
+                        flexShrink: 0,
                       }}
                     >
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                      {step.num}
+                    </span>
+                    <div>
+                      <h3
+                        style={{
+                          fontFamily: 'Poppins, sans-serif',
+                          fontWeight: 500,
+                          fontStyle: 'normal',
+                          fontSize: '18px',
+                          lineHeight: '26px',
+                          letterSpacing: '0%',
+                          verticalAlign: 'middle',
+                          color: '#333333',
+                          margin: '0 0 4px 0',
+                        }}
+                      >
+                        {step.title}
+                      </h3>
+                      <p
+                        style={{
+                          fontFamily: 'Geist, var(--font-geist-sans), sans-serif',
+                          fontWeight: 400,
+                          fontStyle: 'normal',
+                          fontSize: '14px',
+                          lineHeight: '22.75px',
+                          letterSpacing: '0%',
+                          color: '#737373',
+                          margin: 0,
+                        }}
+                      >
+                        {step.desc}
+                      </p>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
 
-            {/* Right column – illustration panel */}
+            {/* Right column – illustration panel: image from agent API assets (alphabetical), changes on workflow step click */}
             <div
               style={{
                 width: '100%',
@@ -934,7 +982,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 height: '640px',
                 borderRadius: '24px',
                 overflow: 'hidden',
-                background: 'linear-gradient(180deg, #FFF8E7 0%, #E8F4F0 50%, #D6E8E4 100%)',
+                background: workflowPanelImageUrls.length > 0 ? '#f5f5f5' : 'linear-gradient(180deg, #FFF8E7 0%, #E8F4F0 50%, #D6E8E4 100%)',
                 position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
@@ -942,48 +990,69 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 padding: '32px',
               }}
             >
-              <svg width="100%" height="280" viewBox="0 0 400 280" fill="none" style={{ maxWidth: '380px' }}>
-                {/* Envelope (left) */}
-                <g transform="translate(48, 72)">
+              {workflowPanelImageUrls.length > 0 ? (
+                (() => {
+                  const imgIndex = selectedWorkflowStepIndex % workflowPanelImageUrls.length
+                  const src = normalizePreviewUrl(workflowPanelImageUrls[imgIndex])
+                  return src ? (
+                    <img
+                      src={src}
+                      alt={`Workflow step ${selectedWorkflowStepIndex + 1}`}
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        width: 'auto',
+                        height: 'auto',
+                        objectFit: 'contain',
+                        borderRadius: '8px',
+                      }}
+                    />
+                  ) : null
+                })()
+              ) : (
+                <svg width="100%" height="280" viewBox="0 0 400 280" fill="none" style={{ maxWidth: '380px' }}>
+                  {/* Envelope (left) */}
+                  <g transform="translate(48, 72)">
+                    <path
+                      d="M2 6 L12 14 L22 6 L22 20 L2 20 Z"
+                      fill="#B3E5FC"
+                      stroke="#81D4FA"
+                      strokeWidth="1.2"
+                      strokeLinejoin="round"
+                    />
+                  </g>
+                  {/* Document / card */}
+                  <rect x="140" y="70" width="80" height="50" rx="6" fill="white" stroke="#E0E0E0" strokeWidth="1" />
+                  <line x1="152" y1="84" x2="208" y2="84" stroke="#E0E0E0" strokeWidth="1" />
+                  <line x1="152" y1="92" x2="200" y2="92" stroke="#E0E0E0" strokeWidth="1" />
+                  <line x1="152" y1="100" x2="192" y2="100" stroke="#E0E0E0" strokeWidth="1" />
+                  {/* Purple circle */}
+                  <circle cx="200" cy="55" r="12" fill="#B39DDB" stroke="#9575CD" strokeWidth="1" />
+                  <circle cx="200" cy="55" r="4" fill="white" />
+                  {/* Flow line: envelope → pill */}
                   <path
-                    d="M2 6 L12 14 L22 6 L22 20 L2 20 Z"
-                    fill="#B3E5FC"
-                    stroke="#81D4FA"
-                    strokeWidth="1.2"
-                    strokeLinejoin="round"
+                    d="M 85 115 Q 120 140 160 160 L 240 200 L 300 220"
+                    stroke="#1E3A8A"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeLinecap="round"
                   />
-                </g>
-                {/* Document / card */}
-                <rect x="140" y="70" width="80" height="50" rx="6" fill="white" stroke="#E0E0E0" strokeWidth="1" />
-                <line x1="152" y1="84" x2="208" y2="84" stroke="#E0E0E0" strokeWidth="1" />
-                <line x1="152" y1="92" x2="200" y2="92" stroke="#E0E0E0" strokeWidth="1" />
-                <line x1="152" y1="100" x2="192" y2="100" stroke="#E0E0E0" strokeWidth="1" />
-                {/* Purple circle */}
-                <circle cx="200" cy="55" r="12" fill="#B39DDB" stroke="#9575CD" strokeWidth="1" />
-                <circle cx="200" cy="55" r="4" fill="white" />
-                {/* Flow line: envelope → pill */}
-                <path
-                  d="M 85 115 Q 120 140 160 160 L 240 200 L 300 220"
-                  stroke="#1E3A8A"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                />
-                <polygon points="300,220 292,214 292,226" fill="#1E3A8A" />
-                <circle cx="85" cy="115" r="4" fill="#1E3A8A" />
-                {/* Asterisk-like node */}
-                <g transform="translate(108, 128)">
-                  <path d="M0-6L0 6M-6 0L6 0M-4-4L4 4M-4 4L4-4" stroke="#9E9E9E" strokeWidth="1.2" strokeLinecap="round" />
-                </g>
-                {/* Pill shape (right) */}
-                <rect x="280" y="195" width="80" height="32" rx="16" fill="url(#howItWorksPill)" />
-                <defs>
-                  <linearGradient id="howItWorksPill" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#7E57C2" />
-                    <stop offset="100%" stopColor="#1E88E5" />
-                  </linearGradient>
-                </defs>
-              </svg>
+                  <polygon points="300,220 292,214 292,226" fill="#1E3A8A" />
+                  <circle cx="85" cy="115" r="4" fill="#1E3A8A" />
+                  {/* Asterisk-like node */}
+                  <g transform="translate(108, 128)">
+                    <path d="M0-6L0 6M-6 0L6 0M-4-4L4 4M-4 4L4-4" stroke="#9E9E9E" strokeWidth="1.2" strokeLinecap="round" />
+                  </g>
+                  {/* Pill shape (right) */}
+                  <rect x="280" y="195" width="80" height="32" rx="16" fill="url(#howItWorksPill)" />
+                  <defs>
+                    <linearGradient id="howItWorksPill" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#7E57C2" />
+                      <stop offset="100%" stopColor="#1E88E5" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              )}
             </div>
           </div>
         </div>
@@ -1797,31 +1866,36 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             <br /> performance gains.
           </p>
 
-            {/* ΓöÇΓöÇ 5. CTA Button ΓöÇΓöÇ */}
+            {/* ΓöÇΓöÇ 5. CTA Button – DEMO / Join Waiting list ΓöÇΓöÇ */}
             <div style={{ textAlign: 'center' }}>
-              <a
-                href={data?.agent?.demo_link || data?.agent?.application_demo_url || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center bg-[#1A1A1A] no-underline cursor-pointer border-none transition-all duration-200 hover:bg-black hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)] hover:-translate-y-px"
-                style={{
-                  width: '228px',
-                  height: '44px',
-                  borderRadius: '4px',
-                  fontFamily: 'Poppins, sans-serif',
-                  fontWeight: 500,
-                  fontStyle: 'normal',
-                  fontSize: '14px',
-                  lineHeight: '100%',
-                  letterSpacing: '0.5px',
-                  textAlign: 'center',
-                  verticalAlign: 'middle',
-                  textTransform: 'uppercase',
-                  color: '#FFFFFF',
-                }}
-              >
-                GET STARTED TODAY
-              </a>
+              {(() => {
+                const demoUrl = (data?.agent?.demo_link || data?.agent?.application_demo_url || '').trim()
+                const hasDemo = Boolean(demoUrl)
+                return (
+                  <a
+                    href={hasDemo ? demoUrl : '#'}
+                    {...(hasDemo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    className="inline-flex items-center justify-center bg-[#1A1A1A] no-underline cursor-pointer border-none transition-all duration-200 hover:bg-black hover:shadow-[0_4px_24px_rgba(0,0,0,0.18)] hover:-translate-y-px"
+                    style={{
+                      width: '228px',
+                      height: '44px',
+                      borderRadius: '4px',
+                      fontFamily: 'Poppins, sans-serif',
+                      fontWeight: 500,
+                      fontStyle: 'normal',
+                      fontSize: '14px',
+                      lineHeight: '100%',
+                      letterSpacing: '0.5px',
+                      textAlign: 'center',
+                      verticalAlign: 'middle',
+                      textTransform: 'uppercase',
+                      color: '#FFFFFF',
+                    }}
+                  >
+                    {hasDemo ? 'GET STARTED TODAY' : 'Join Waiting list'}
+                  </a>
+                )
+              })()}
             </div>
 
         </div>
