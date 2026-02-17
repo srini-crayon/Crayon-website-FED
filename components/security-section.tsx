@@ -1,215 +1,305 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Shield, Lock, Server, FileCheck, ArrowUpRight, Key, Users, TestTube, Clock, Globe, Layers } from "lucide-react";
-import Image from "next/image";
+import Image from "next/image"
+import { Shield, Lock, Server, FileCheck, Key, Users, TestTube, Clock, Globe, Layers } from "lucide-react"
 
 const certifications = [
   {
     id: "01",
     name: "DPDP Standards",
     description: "Data Protection & Privacy Standards certified",
-    icon: Shield,
-    logo: null,
+    logo: "/img/dpdp-act-2023.png",
   },
   {
     id: "02",
     name: "ISO 27001",
     description: "Information Security Management certified",
-    icon: Lock,
     logo: "/img/iso-27001.png",
   },
   {
     id: "03",
     name: "SOC 2 Type II",
     description: "Security & Availability Controls audited",
-    icon: Server,
     logo: "/img/soc2.png",
   },
   {
     id: "04",
     name: "GDPR",
     description: "Full Data Protection Compliance",
-    icon: FileCheck,
     logo: "/img/gdpr-compliant.png",
   },
-];
+]
 
 const securityFeatures = [
   { text: "End-to-end encryption", icon: Key },
-  { text: "Role-based access control", icon: Users },
   { text: "Regular penetration testing", icon: TestTube },
-  { text: "99.99% uptime SLA", icon: Clock },
   { text: "Global data residency", icon: Globe },
+  { text: "Role-based access control", icon: Users },
+  { text: "99.99% uptime SLA", icon: Clock },
   { text: "Multi-tenant architecture", icon: Layers },
-];
+]
 
 export function SecuritySection() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
   return (
-    <section className="py-24 bg-background">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Minimal Header */}
+    <section className="py-24 md:py-32 bg-background">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header - Group 1410104285 / 1410104274 */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
-              <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
+            <div className="flex items-center gap-3 mb-4" style={{ gap: "12px" }}>
+              <span
+                className="shrink-0"
+                style={{
+                  minWidth: "32px",
+                  height: "1px",
+                  background: "rgba(10, 10, 10, 0.4)",
+                }}
+              />
+              <span
+                className="font-mono uppercase flex items-center"
+                style={{
+                  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                  fontWeight: 400,
+                  fontSize: "12px",
+                  lineHeight: "16px",
+                  letterSpacing: "1.2px",
+                  color: "rgba(10, 10, 10, 0.7)",
+                }}
+              >
                 Security
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-light">
-              <span className="bg-gradient-to-r from-[oklch(0.55_0.2_260)] to-[oklch(0.65_0.2_175)] bg-clip-text text-transparent">
-                Enterprise-Grade
-              </span>
-              <span className="font-medium text-foreground"> Security</span>
+            <h2
+              className="tracking-tight"
+              style={{
+                fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                fontWeight: 300,
+                fontSize: "36px",
+                lineHeight: "40px",
+                background: "linear-gradient(90deg, #1C69E3 0%, #00B388 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Enterprise-Grade Security
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground max-w-sm md:text-right">
+          <p
+            className="max-w-sm flex items-center md:text-right"
+            style={{
+              fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+              fontWeight: 400,
+              fontSize: "14px",
+              lineHeight: "20px",
+              color: "#737373",
+            }}
+          >
             Meeting the highest standards required by global enterprises and financial institutions.
           </p>
         </div>
 
-        {/* Two Column Layout */}
+        {/* Two columns - Group 1410104286: left HorizontalBorder list, right Group 1410104276 */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-          {/* Left - Certifications */}
-          <div className="space-y-0 border-t border-border">
-            {certifications.map((cert, index) => (
+          {/* Left - Certifications list */}
+          <div className="space-y-0 border-t border-[#E5E5E5]">
+            {certifications.map((cert) => (
               <div
                 key={cert.id}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative border-b border-border py-6 cursor-pointer"
+                className="relative flex items-center gap-4 py-5 border-b border-[#E5E5E5]"
+                style={{ minHeight: "89px" }}
               >
-                {/* Background fill micro-interaction */}
+                <span
+                  className="font-mono flex items-center shrink-0"
+                  style={{
+                    fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                    fontWeight: 400,
+                    fontSize: "10px",
+                    lineHeight: "15px",
+                    letterSpacing: "1px",
+                    color: "#737373",
+                  }}
+                >
+                  {cert.id}
+                </span>
                 <div
-                  className={`absolute inset-0 bg-muted/50 transition-transform duration-500 ease-out origin-left ${
-                    hoveredIndex === index ? "scale-x-100" : "scale-x-0"
-                  }`}
-                />
-
-                <div className="relative flex items-center gap-6">
-                  {/* Number */}
-                  <span className="text-[10px] font-mono text-muted-foreground tracking-widest w-6">
-                    {cert.id}
-                  </span>
-
-                  {/* Icon/Logo */}
-                  <div
-                    className={`w-10 h-10 flex items-center justify-center border transition-all duration-300 relative overflow-hidden ${
-                      hoveredIndex === index
-                        ? "border-accent bg-accent/5"
-                        : "border-border"
-                    }`}
-                  >
-                    {cert.logo ? (
-                      <div className="relative w-full h-full p-1.5">
-                        <Image
-                          src={cert.logo}
-                          alt={cert.name}
-                          fill
-                          className="object-contain transition-opacity duration-300"
-                          style={{
-                            opacity: hoveredIndex === index ? 1 : 0.7
-                          }}
-                        />
-                      </div>
-                    ) : null}
-                    <cert.icon
-                      className={`w-4 h-4 transition-colors duration-300 absolute ${
-                        cert.logo ? 'opacity-0' : ''
-                      } ${
-                        hoveredIndex === index ? "text-accent" : "text-muted-foreground"
-                      }`}
+                  className="w-10 h-10 shrink-0 flex items-center justify-center box-border border overflow-hidden"
+                  style={{ border: "1px solid #E5E5E5" }}
+                >
+                  {cert.logo ? (
+                    <Image
+                      src={cert.logo}
+                      alt={cert.name}
+                      width={40}
+                      height={40}
+                      className="object-contain"
+                      style={{ opacity: 0.7 }}
                     />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-foreground">
-                      {cert.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      {cert.description}
-                    </p>
-                  </div>
-
-                  {/* Arrow */}
-                  <ArrowUpRight
-                    className={`w-4 h-4 transition-all duration-300 ${
-                      hoveredIndex === index
-                        ? "text-accent translate-x-0.5 -translate-y-0.5 opacity-100"
-                        : "text-muted-foreground/30 opacity-0"
-                    }`}
-                  />
+                  ) : (
+                    <Shield className="w-4 h-4" style={{ color: "#737373" }} strokeWidth={1.33333} />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3
+                    className="flex items-center"
+                    style={{
+                      fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      lineHeight: "20px",
+                      color: "#0A0A0A",
+                    }}
+                  >
+                    {cert.name}
+                  </h3>
+                  <p
+                    className="flex items-center mt-0.5"
+                    style={{
+                      fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                      fontWeight: 400,
+                      fontSize: "12px",
+                      lineHeight: "16px",
+                      color: "#737373",
+                    }}
+                  >
+                    {cert.description}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Right - Features + Visual */}
-          <div className="flex flex-col justify-between">
-            {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4 mb-12">
-              {securityFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3 group">
-                  <feature.icon className="w-4 h-4 text-foreground/60 dark:text-foreground/70 transition-all duration-300 group-hover:scale-110 group-hover:text-foreground flex-shrink-0" />
-                  <span className="text-sm text-foreground/80 dark:text-foreground/90 transition-colors duration-300 group-hover:text-foreground">
+          {/* Right - Features (Group 1410104275) + Visual (Overlay+Border with ENCRYPTED/COMPLIANT/AUDITED/SECURED) */}
+          <div className="flex flex-col">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-6 mb-8">
+              {securityFeatures.map((feature) => (
+                <div key={feature.text} className="flex items-center gap-3">
+                  <feature.icon
+                    className="w-4 h-4 shrink-0"
+                    strokeWidth={1.33333}
+                    style={{ color: "rgba(10, 10, 10, 0.6)" }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                      fontWeight: 400,
+                      fontSize: "14px",
+                      lineHeight: "20px",
+                      color: "rgba(10, 10, 10, 0.8)",
+                    }}
+                  >
                     {feature.text}
                   </span>
                 </div>
               ))}
             </div>
 
-            {/* Minimal Visual */}
-            <div className="relative h-48 border border-border bg-muted/40 dark:bg-muted/30">
-              {/* Grid pattern */}
-              <div className="absolute inset-0 opacity-20 dark:opacity-15">
-                <div className="h-full w-full" style={{
-                  backgroundImage: `linear-gradient(var(--color-border) 1px, transparent 1px),
-                                    linear-gradient(90deg, var(--color-border) 1px, transparent 1px)`,
-                  backgroundSize: '24px 24px'
-                }} />
-              </div>
-
-              {/* Center element */}
+            {/* Overlay+Border - Group 1410104276 bottom part */}
+            <div
+              className="relative box-border border mt-auto"
+              style={{
+                minHeight: "192px",
+                background: "rgba(245, 245, 245, 0.4)",
+                border: "1px solid #E5E5E5",
+              }}
+            >
+              <div
+                className="absolute inset-0 pointer-events-none opacity-20"
+                style={{
+                  background:
+                    "linear-gradient(180deg, #E5E5E5 4.17%, rgba(229, 229, 229, 0) 4.17%), linear-gradient(90deg, #E5E5E5 4.17%, rgba(229, 229, 229, 0) 4.17%)",
+                }}
+              />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative">
                   {/* Pulsing rings */}
-                  <div className="absolute inset-0 w-20 h-20 -m-2 border animate-ping" style={{ 
-                    borderColor: 'oklch(0.55 0.2 260 / 0.4)',
-                    animationDuration: '3s' 
-                  }} />
-                  <div className="absolute inset-0 w-20 h-20 -m-2 border animate-ping" style={{ 
-                    borderColor: 'oklch(0.65 0.2 175 / 0.35)',
-                    animationDuration: '3s', 
-                    animationDelay: '1s' 
-                  }} />
-                  <div className="absolute inset-0 w-20 h-20 -m-2 border animate-ping" style={{ 
-                    borderColor: 'oklch(0.65 0.2 330 / 0.3)',
-                    animationDuration: '3s', 
-                    animationDelay: '2s' 
-                  }} />
-                  
-                  {/* Shield */}
-                  <div className="w-16 h-16 border border-accent/60 dark:border-accent/50 flex items-center justify-center bg-background/80 dark:bg-background/70">
-                    <Shield className="w-6 h-6 text-foreground/70 dark:text-foreground/80 animate-pulse" style={{ animationDuration: '2s' }} />
+                  <div
+                    className="absolute inset-0 rounded-full border box-border -m-2 animate-ping"
+                    style={{
+                      border: "1px solid rgba(28, 105, 227, 0.4)",
+                      animationDuration: "3s",
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 rounded-full border box-border -m-2 animate-ping"
+                    style={{
+                      border: "1px solid rgba(0, 179, 136, 0.35)",
+                      animationDuration: "3s",
+                      animationDelay: "1s",
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 rounded-full border box-border -m-2 animate-ping"
+                    style={{
+                      border: "1px solid rgba(207, 87, 200, 0.3)",
+                      animationDuration: "3s",
+                      animationDelay: "2s",
+                    }}
+                  />
+                  <div
+                    className="relative w-16 h-16 flex items-center justify-center box-border rounded-sm"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.8)",
+                      border: "1px solid rgba(245, 245, 245, 0.6)",
+                    }}
+                  >
+                    <Shield
+                      className="w-6 h-6 animate-pulse"
+                      strokeWidth={2}
+                      style={{
+                        color: "rgba(10, 10, 10, 0.7)",
+                        animationDuration: "2s",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
-
-              {/* Corner labels */}
-              <span className="absolute top-3 left-3 text-[10px] font-mono text-muted-foreground">
+              <span
+                className="absolute left-3 top-3 font-mono"
+                style={{
+                  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                  fontWeight: 400,
+                  fontSize: "10px",
+                  lineHeight: "15px",
+                  color: "#737373",
+                }}
+              >
                 ENCRYPTED
               </span>
-              <span className="absolute top-3 right-3 text-[10px] font-mono text-muted-foreground">
+              <span
+                className="absolute right-3 top-3 font-mono"
+                style={{
+                  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                  fontWeight: 400,
+                  fontSize: "10px",
+                  lineHeight: "15px",
+                  color: "#737373",
+                }}
+              >
                 COMPLIANT
               </span>
-              <span className="absolute bottom-3 left-3 text-[10px] font-mono text-muted-foreground">
+              <span
+                className="absolute left-3 bottom-3 font-mono"
+                style={{
+                  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                  fontWeight: 400,
+                  fontSize: "10px",
+                  lineHeight: "15px",
+                  color: "#737373",
+                }}
+              >
                 AUDITED
               </span>
-              <span className="absolute bottom-3 right-3 text-[10px] font-mono text-muted-foreground">
+              <span
+                className="absolute right-3 bottom-3 font-mono"
+                style={{
+                  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                  fontWeight: 400,
+                  fontSize: "10px",
+                  lineHeight: "15px",
+                  color: "#737373",
+                }}
+              >
                 SECURED
               </span>
             </div>
@@ -217,5 +307,5 @@ export function SecuritySection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

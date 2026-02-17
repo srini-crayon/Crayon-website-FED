@@ -157,7 +157,7 @@ export function HeroSection() {
   }, [api])
 
   return (
-    <section ref={heroSectionRef} className="relative py-12 md:py-16 overflow-hidden w-full">
+    <section ref={heroSectionRef} className="relative py-24 md:py-32 overflow-hidden w-full">
       {/* Cursor-based dot pattern with radial gradient reveal */}
       <div
         aria-hidden="true"
@@ -189,38 +189,48 @@ export function HeroSection() {
       </div>
 
       {/* Grid pattern background */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none z-0 opacity-[0.03] dark:opacity-[0.05]"
         style={{
           backgroundImage: `
             linear-gradient(to right, currentColor 1px, transparent 1px),
             linear-gradient(to bottom, currentColor 1px, transparent 1px)
           `,
-          backgroundSize: '24px 24px',
-          color: 'currentColor'
+          backgroundSize: "24px 24px",
+          color: "currentColor",
         }}
       />
-      
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-background/50 dark:bg-background/30 pointer-events-none z-0" />
-      
-      {/* Colorful background gradients - changes per slide */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+
+      {/* Light overlay for content readability (reduced so gradient stays bright) */}
+      <div className="absolute inset-0 bg-background/15 dark:bg-background/5 pointer-events-none z-0" />
+
+      {/* bg-home-desktop: Figma Vector layers only */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Vector - visibility: hidden in Figma; gradient ref for parity */}
         <div
-          className="absolute top-10 right-0 w-[500px] h-[500px] rounded-full blur-[100px] transition-all duration-1000 ease-out"
-          style={{ backgroundColor: slides[current]?.glowColors.primary }}
+          className="absolute"
+          style={{
+            left: "-7.04%",
+            right: "55.43%",
+            top: "39.94%",
+            bottom: "11.1%",
+            visibility: "hidden",
+            background:
+              "linear-gradient(224.62deg, #E3B3FF 32.5%, #FF711D 39.18%, #FEBB66 58.27%, #FDCD49 65.26%, rgba(253, 205, 73, 0) 73.76%)",
+          }}
         />
+        {/* Vector - visible: spec gradient colours only */}
         <div
-          className="absolute top-40 right-40 w-[300px] h-[300px] rounded-full blur-[80px] transition-all duration-1000 ease-out"
-          style={{ backgroundColor: slides[current]?.glowColors.secondary }}
-        />
-        <div
-          className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full blur-[100px] transition-all duration-1000 ease-out"
-          style={{ backgroundColor: slides[current]?.glowColors.secondary, opacity: 0.8 }}
-        />
-        <div
-          className="absolute bottom-40 left-1/3 w-[250px] h-[250px] rounded-full blur-[80px] transition-all duration-1000 ease-out"
-          style={{ backgroundColor: slides[current]?.glowColors.primary, opacity: 0.6 }}
+          className="absolute"
+          style={{
+            left: "35%",
+            right: "-10%",
+            top: "12.17%",
+            bottom: "45.15%",
+            background:
+              "linear-gradient(89.28deg, rgba(95, 95, 250, 0) 3.91%, #6565FF 9.89%, #4242E3 44.88%, #2FC4FF 81.59%, rgba(51, 166, 249, 0) 89.27%)",
+            filter: "blur(130px)",
+          }}
         />
       </div>
 
@@ -244,36 +254,72 @@ export function HeroSection() {
             {visibleSlides.map((slide, index) => (
               <CarouselItem key={index} className="pl-0 w-full">
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  {/* Left - Content */}
-                  <div className={cn("max-w-xl", index === 0 && "lg:max-w-2xl")}>
+                  {/* Left - Content (spec: Geist tag, Poppins heading/body, divider, gradient text, button) */}
+                  <div className={cn("max-w-xl", index === 0 && "lg:max-w-3xl")}>
                     <div className="inline-flex items-center gap-2 mb-6">
-                      <span className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/60" />
-                      <p className="text-foreground/90 dark:text-foreground font-medium tracking-wide text-xs uppercase">
+                      <span
+                        className="shrink-0"
+                        style={{
+                          background: "rgba(10, 10, 10, 0.4)",
+                          height: "1px",
+                          minWidth: "32px",
+                        }}
+                      />
+                      <p
+                        className="font-medium uppercase flex items-center"
+                        style={{
+                          fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                          fontWeight: 500,
+                          fontSize: "12px",
+                          lineHeight: "16px",
+                          letterSpacing: "0.3px",
+                          color: "rgba(10, 10, 10, 0.9)",
+                        }}
+                      >
                         {slide.tag}
                       </p>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-light tracking-tight leading-[1.1]">
+                    <h1
+                      className="font-medium tracking-tight"
+                      style={{
+                        fontFamily: "'Poppins', sans-serif",
+                        fontWeight: 500,
+                        fontSize: "clamp(2.5rem, 5vw, 60px)",
+                        lineHeight: "66px",
+                        letterSpacing: "-1.5px",
+                      }}
+                    >
                       {slide.headline.map((line, lineIndex) => (
                         <span key={lineIndex}>
                           {lineIndex === slide.highlightLine ? (
                             <span
-                              className="bg-gradient-to-r bg-clip-text text-transparent"
+                              className="bg-clip-text text-transparent md:whitespace-nowrap"
                               style={{
-                                backgroundImage: `linear-gradient(to right, ${slide.gradientColors.from}, ${slide.gradientColors.to})`,
+                                backgroundImage: "linear-gradient(90deg, #E300DE 0%, #0019FF 100%)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent",
+                                backgroundClip: "text",
                               }}
                             >
                               {line}
                             </span>
                           ) : (
-                            <span className="font-medium text-foreground">
-                              {line}
-                            </span>
+                            <span style={{ color: "#0A0A0A" }}>{line}</span>
                           )}
                           {lineIndex < slide.headline.length - 1 && <br />}
                         </span>
                       ))}
                     </h1>
-                    <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-lg leading-relaxed">
+                    <p
+                      className="mt-6 max-w-lg"
+                      style={{
+                        fontFamily: "'Poppins', sans-serif",
+                        fontWeight: 400,
+                        fontSize: "18px",
+                        lineHeight: "29px",
+                        color: "#091917",
+                      }}
+                    >
                       {slide.description}
                     </p>
 
@@ -283,29 +329,38 @@ export function HeroSection() {
                         ref={(el) => {
                           if (el) buttonRefs.current[index] = el as unknown as HTMLButtonElement
                         }}
-                        className="border-gradient animate-button-glow-gradient relative text-white rounded-[4px] px-8 py-3 h-12 flex items-center justify-center gap-2 font-medium transition-all hover:opacity-90"
+                        className="relative text-white rounded-[4px] px-8 py-3 flex items-center justify-center gap-2 transition-all hover:opacity-90 box-border"
                         style={{
-                          "--gradient-angle": "0deg",
-                          boxShadow: "0 0 20px rgba(249, 115, 22, 0.4), 0 0 40px rgba(236, 72, 153, 0.2), 0 0 60px rgba(139, 92, 246, 0.15)",
-                        } as React.CSSProperties & { "--gradient-angle"?: string }}
+                          background: "#000000",
+                          borderRadius: "4px",
+                          boxShadow:
+                            "0px 0px 20px rgba(249, 115, 22, 0.4), 0px 0px 40px rgba(236, 72, 153, 0.2), 0px 0px 60px rgba(139, 92, 246, 0.15)",
+                          fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                          fontWeight: 500,
+                          fontSize: "16px",
+                          lineHeight: "24px",
+                          textAlign: "center",
+                          color: "#FFFFFF",
+                        }}
                       >
                         <span className="relative z-10">{slide.primaryCta.label}</span>
-                        <ArrowRight className="relative z-10 w-4 h-4" />
+                        <ArrowRight className="relative z-10 w-4 h-4" strokeWidth={1.33333} />
                       </a>
                       {"secondaryCta" in slide && slide.secondaryCta && (
                         <a
                           href={slide.secondaryCta.href}
-                          className="border border-border hover:bg-muted/50 rounded-[4px] px-8 py-3 h-12 flex items-center justify-center gap-2 font-medium text-foreground transition-all"
+                          className="rounded-[4px] px-8 py-3 flex items-center justify-center gap-2 font-medium transition-all border border-[#E5E5E5] hover:bg-muted/50"
+                          style={{ color: "#0A0A0A" }}
                         >
                           <span>{slide.secondaryCta.label}</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4" strokeWidth={1.33333} />
                         </a>
                       )}
                     </div>
                   </div>
 
-                  {/* Right - Animated Illustration */}
-                  <div className="hidden lg:flex items-center justify-center">
+                  {/* Right - Animated Illustration (3 lines up) */}
+                  <div className="hidden lg:flex items-center justify-center -mt-12">
                     <SlideIllustrationComponent slideIndex={index} isActive={current === index} />
                   </div>
                 </div>
@@ -314,27 +369,37 @@ export function HeroSection() {
           </CarouselContent>
         </Carousel>
 
-        {/* Navigation Controls - hidden when only first slide is shown */}
+        {/* Navigation Controls - spec: Geist Mono [2/4], buttons border #E5E5E5 */}
         {visibleSlides.length > 1 && (
           <div className="flex items-center justify-end mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-4">
-              <span className="text-sm font-mono text-muted-foreground">
+              <span
+                className="font-mono flex items-center"
+                style={{
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  color: "#737373",
+                }}
+              >
                 [{current + 1}/{visibleSlides.length}]
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={scrollPrev}
-                  className="flex items-center justify-center w-10 h-10 border border-border hover:bg-muted hover:border-accent/30 transition-all"
+                  className="flex items-center justify-center box-border border hover:bg-muted transition-all aspect-square min-w-[40px] min-h-[40px]"
+                  style={{ border: "1px solid #E5E5E5" }}
                   aria-label="Previous slide"
                 >
-                  <ChevronLeft className="w-4 h-4 text-foreground" />
+                  <ChevronLeft className="w-4 h-4 shrink-0" style={{ color: "#0A0A0A" }} />
                 </button>
                 <button
                   onClick={scrollNext}
-                  className="flex items-center justify-center w-10 h-10 border border-border hover:bg-muted hover:border-accent/30 transition-all"
+                  className="flex items-center justify-center box-border border hover:bg-muted transition-all aspect-square min-w-[40px] min-h-[40px]"
+                  style={{ border: "1px solid #E5E5E5" }}
                   aria-label="Next slide"
                 >
-                  <ChevronRight className="w-4 h-4 text-foreground" />
+                  <ChevronRight className="w-4 h-4 shrink-0" style={{ color: "#0A0A0A" }} />
                 </button>
               </div>
             </div>

@@ -28,38 +28,86 @@ export function ClientsSection() {
   }
 
   return (
-    <section id="clients" className="py-24 bg-background">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-16">
+    <section id="clients" className="py-24 md:py-32 bg-background">
+      <div className="max-w-[1352px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header - Group 1410104262 / 1410104261: divider, label, heading, right copy */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
           <div>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-8 h-[1px] bg-foreground/40 dark:bg-foreground/50" />
-              <span className="text-xs font-mono text-foreground/70 dark:text-foreground/80 tracking-widest uppercase">
+            <div className="flex items-center gap-3 mb-4" style={{ gap: "12px" }}>
+              <span
+                className="shrink-0"
+                style={{
+                  width: "32px",
+                  height: "1px",
+                  background: "rgba(10, 10, 10, 0.4)",
+                }}
+              />
+              <span
+                className="font-mono uppercase flex items-center"
+                style={{
+                  fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                  fontWeight: 400,
+                  fontSize: "12px",
+                  lineHeight: "16px",
+                  letterSpacing: "1.2px",
+                  color: "rgba(10, 10, 10, 0.7)",
+                }}
+              >
                 Success Sets Us Apart
               </span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-light">
-              <span className="bg-gradient-to-r from-[oklch(0.55_0.3_260)] to-[oklch(0.7_0.3_75)] bg-clip-text text-transparent">
-                This isn't theory.
-              </span>
-              <span className="font-medium text-foreground"> Our systems support:</span>
+            <h2
+              className="tracking-tight"
+              style={{
+                fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                fontWeight: 300,
+                fontSize: "36px",
+                lineHeight: "40px",
+                background: "linear-gradient(90deg, #0053FF 0%, #FF6D00 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              This isn&apos;t theory. Our systems support:
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground max-w-xs">
+          <p
+            className="max-w-[367px] flex items-center"
+            style={{
+              fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+              fontWeight: 400,
+              fontSize: "14px",
+              lineHeight: "20px",
+              color: "#737373",
+            }}
+          >
             AI that runs inside regulated environments. AI that integrates with real systems. AI that delivers measurable outcomes. These are not pilots. They are production systems.
           </p>
         </div>
 
-        {/* Client Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 border-l border-t border-border">
+        {/* Client Grid - Border 1px top+left #E5E5E5; cells 132px min-height, 24px padding */}
+        <div
+          className="grid grid-cols-2 md:grid-cols-5"
+          style={{
+            borderWidth: "1px 0 0 1px",
+            borderStyle: "solid",
+            borderColor: "#E5E5E5",
+          }}
+        >
           {clients.map((client, index) => {
             return (
               <div
                 key={index}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative border-r border-b border-border p-6 cursor-pointer transition-all duration-300"
+                className="group relative cursor-pointer transition-all duration-300"
+                style={{
+                  borderRight: "1px solid #E5E5E5",
+                  borderBottom: "1px solid #E5E5E5",
+                  minHeight: "132px",
+                  padding: "24px",
+                }}
               >
                 {/* Hover background */}
                 <div
@@ -70,9 +118,9 @@ export function ClientsSection() {
 
                 {/* Content */}
                 <div className="relative flex flex-col h-full">
-                  {/* Logo */}
+                  {/* Logo - spec: 24px from top */}
                   {client.logo ? (
-                    <div className="mb-3 h-8 flex items-center">
+                    <div className="h-8 flex items-center mb-4">
                       <div
                         className={`relative w-24 h-8 flex items-center justify-center overflow-hidden rounded ${
                           client.name === "HSBC" || client.name === "VISA" ? "bg-white min-w-[6rem] min-h-[2rem] px-2 py-1" : "bg-background"
@@ -100,30 +148,57 @@ export function ClientsSection() {
                       </div>
                     </div>
                   ) : (
-                    <div className="h-8 mb-3" />
+                    <div className="h-8 mb-4" />
                   )}
-                  
-                  <div className="flex-1">
-                    {/* Name */}
-                    <h3 className="text-sm font-medium text-foreground mb-1">
-                      {client.name}
-                    </h3>
 
-                    {/* Region */}
-                    <p className="text-[10px] font-mono text-muted-foreground tracking-wider uppercase">
-                      {client.region}
-                    </p>
-                  </div>
+                  {/* Heading 3 - spec: Geist 500, 14px/20px, #0A0A0A */}
+                  <h3
+                    className="flex items-center mb-1"
+                    style={{
+                      fontFamily: "var(--font-geist-sans), 'Geist', sans-serif",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      lineHeight: "20px",
+                      color: "#0A0A0A",
+                    }}
+                  >
+                    {client.name}
+                  </h3>
+
+                  {/* Region - spec: Geist Mono 10px/15px, letter-spacing 0.5px, uppercase, #737373 */}
+                  <p
+                    className="flex items-center uppercase"
+                    style={{
+                      fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+                      fontWeight: 400,
+                      fontSize: "10px",
+                      lineHeight: "15px",
+                      letterSpacing: "0.5px",
+                      color: "#737373",
+                    }}
+                  >
+                    {client.region}
+                  </p>
                 </div>
               </div>
             )
           })}
         </div>
 
-        {/* Many more */}
-        <div className="mt-10 pt-8 border-t border-border text-center">
-          <p className="text-sm text-muted-foreground">
-            <span className="text-foreground/80 font-medium">+ Many More...</span>
+        {/* and Many More... - spec: Poppins 500, 16px/24px, center, #0A0A0A */}
+        <div className="mt-10 pt-8 text-center">
+          <p
+            className="flex items-center justify-center"
+            style={{
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: "#0A0A0A",
+              textAlign: "center",
+            }}
+          >
+            + Many More...
           </p>
         </div>
       </div>
