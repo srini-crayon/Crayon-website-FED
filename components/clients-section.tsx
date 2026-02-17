@@ -185,8 +185,8 @@ export function ClientsSection() {
           })}
         </div>
 
-        {/* and Many More... - spec: Poppins 500, 16px/24px, center, #0A0A0A */}
-        <div className="mt-10 pt-8 text-center">
+        {/* + Many More... - 2 lines above; Poppins 500, 16px/24px, center, #0A0A0A */}
+        <div className="text-center" style={{ marginTop: "1.5rem", paddingTop: 0 }}>
           <p
             className="flex items-center justify-center"
             style={{
