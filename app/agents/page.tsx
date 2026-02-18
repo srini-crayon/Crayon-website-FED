@@ -749,6 +749,29 @@ export default function AgentLibraryPage() {
     return Array.from(set).filter(Boolean).sort();
   }, [agents]);
 
+  // Business function tags shown in UI: hierarchical – when "By value" is selected, only show business functions from agents matching that value
+  const categoryTagsForDisplay = useMemo(() => {
+    const agentsToUse =
+      selectedByValueTag.length > 0
+        ? agents.filter(agent => selectedByValueTag.includes((agent.valueProposition || "").trim()))
+        : agents;
+    const set = new Set<string>();
+    agentsToUse.forEach(agent => {
+      (agent.businessFunctions || []).forEach(bf => bf && set.add(bf.trim()));
+    });
+    const list = Array.from(set).filter(Boolean).sort();
+    return list.length > 0 ? list : ["Banking", "Retail", "Customer Experience", "Productivity", "HR", "Data Accelerator", "Operations & Automation", "Tech Distribution"];
+  }, [agents, selectedByValueTag]);
+
+  // When "By value" selection changes, clear any "By business function" selection that is no longer in the filtered list
+  const categoryTagsForDisplayKey = categoryTagsForDisplay.join(",");
+  useEffect(() => {
+    setSelectedCategoryTag(prev => {
+      const next = prev.filter(tag => categoryTagsForDisplay.includes(tag));
+      return next.length === prev.length ? prev : next;
+    });
+  }, [categoryTagsForDisplayKey]);
+
   const allPersonas = useMemo(() => {
     const personas = new Set<string>();
     agents.forEach(agent => {
@@ -1992,7 +2015,7 @@ export default function AgentLibraryPage() {
                     <div className="flex items-center gap-2">
                       <span className="flex-shrink-0 text-sm font-medium text-gray-600" style={{ fontFamily: "Poppins, sans-serif" }}>By business function</span>
                       <div className="flex gap-[10px] overflow-x-auto scrollbar-hide pb-1" style={{ flex: "1 1 auto", minWidth: 0 }}>
-                        {allCategoryTags.slice(0, 12).map((tag) => {
+                        {categoryTagsForDisplay.slice(0, 12).map((tag) => {
                           const isSelected = selectedCategoryTag.includes(tag);
                           return (
                             <button
@@ -2016,7 +2039,7 @@ export default function AgentLibraryPage() {
                             </button>
                           );
                         })}
-                      {allCategoryTags.length > 12 && (
+                      {categoryTagsForDisplay.length > 12 && (
                         <span className="flex-shrink-0 px-4 py-2 text-sm text-gray-500" style={{ fontFamily: "Poppins, sans-serif" }}>More...</span>
                       )}
                         {/* Filters button hidden for now – not required */}
