@@ -181,6 +181,7 @@ async function fetchBundledAgents(agentId: string) {
             agent_name: agent.agent_name || 'Agent',
             description: agent.description || 'Agent description',
             demo_preview: agent.demo_preview || '',
+            tags: agent.tags ? String(agent.tags).split(',').map((t: string) => t.trim()).filter(Boolean) : [],
           }))
         return bundledAgents
       }
@@ -197,7 +198,7 @@ async function fetchBundledAgents(agentId: string) {
 async function fetchSimilarAgents(agentId: string) {
   try {
     // Fetch similar agents from the API as fallback
-    const res = await fetch(`https://agents-store.onrender.com/api/agents/${agentId}/similar?limit=4`, { cache: "no-store" })
+    const res = await fetch(`https://agents-store.onrender.com/api/agents/${agentId}/similar?limit=16`, { cache: "no-store" })
     if (res.ok) {
       const data: SimilarAgentsResponse = await res.json()
       // eslint-disable-next-line no-console
@@ -212,6 +213,7 @@ async function fetchSimilarAgents(agentId: string) {
             agent_name: agent.agent_name || 'Agent',
             description: agent.description || 'Agent description',
             demo_preview: agent.demo_preview || '',
+            tags: agent.tags ? String(agent.tags).split(',').map((t: string) => t.trim()).filter(Boolean) : [],
           }))
         return similarAgents
       }

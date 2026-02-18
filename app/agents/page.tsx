@@ -1327,24 +1327,32 @@ export default function AgentLibraryPage() {
                 );
                 if (fromApi && !usedAgentIds.has(fromApi.id)) {
                   usedAgentIds.add(fromApi.id);
+                  const template = fromApi.assetType === "Solution" ? "?template=solution" : (fromApi.assetType === "Use case" || (fromApi as any).deploymentType === "Use case") ? "?template=usecase" : "";
                   return {
                     id: fromApi.id,
                     title: fromApi.title,
                     description: fromApi.description,
                     image: staticCard.image,
                     background: staticCard.background,
+                    assetType: fromApi.assetType,
+                    deploymentType: (fromApi as any).deploymentType,
+                    templateParam: template,
                   };
                 }
                 // Ensure every card has a valid agent id from API for correct detail page redirect
                 const fallbackAgent = agents.find((a) => !usedAgentIds.has(a.id)) ?? agents[0];
                 if (fallbackAgent) {
                   usedAgentIds.add(fallbackAgent.id);
+                  const template = fallbackAgent.assetType === "Solution" ? "?template=solution" : (fallbackAgent.assetType === "Use case" || (fallbackAgent as any).deploymentType === "Use case") ? "?template=usecase" : "";
                   return {
                     id: fallbackAgent.id,
                     title: fallbackAgent.title,
                     description: fallbackAgent.description,
                     image: staticCard.image,
                     background: staticCard.background,
+                    assetType: fallbackAgent.assetType,
+                    deploymentType: (fallbackAgent as any).deploymentType,
+                    templateParam: template,
                   };
                 }
                 return { ...staticCard };
@@ -1438,7 +1446,7 @@ export default function AgentLibraryPage() {
                             }}
                           >
                             <Link
-                              href={`/agents/${card.id}`}
+                              href={`/agents/${card.id}${(card as any).templateParam ?? ""}`}
                               className="block p-6 h-full min-h-0 flex flex-col"
                               style={{ textDecoration: "none" }}
                             >
@@ -2107,10 +2115,12 @@ export default function AgentLibraryPage() {
                           const isFirstCard = index === 0 && currentPage === 1;
                           const categoryLabel = agent.assetType === "Solution" ? "Agentic AI Solution" : agent.assetType === "Use case" || (agent as any).deploymentType === "Use case" ? "Agentic AI Use case" : "AI Agent";
                           const isUseCase = categoryLabel === "Agentic AI Use case";
+                          // Redirect to the correct template: solution → solution page, use case → use case page, else → agent page
+                          const templateParam = agent.assetType === "Solution" ? "?template=solution" : (agent.assetType === "Use case" || (agent as any).deploymentType === "Use case") ? "?template=usecase" : "";
                           return (
                             <Link
                               key={agent.id}
-                              href={`/agents/${agent.id}`}
+                              href={`/agents/${agent.id}${templateParam}`}
                               scroll
                               className="group block relative rounded-xl overflow-hidden transition-shadow hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
                               style={{

@@ -1,3 +1,15 @@
+/** Normalized detail template type from API asset_type */
+export type AgentDetailType = "Agent" | "Solution" | "Use case"
+
+/** Map API asset_type to template type; default "Agent" */
+export function getAgentDetailType(assetType: string | undefined): AgentDetailType {
+  if (!assetType || !String(assetType).trim()) return "Agent"
+  const v = String(assetType).trim().toLowerCase()
+  if (v === "solution") return "Solution"
+  if (v === "use case" || v === "usecase") return "Use case"
+  return "Agent"
+}
+
 export type AgentDetailApiResponse = {
   agent?: {
     agent_id: string
@@ -81,4 +93,6 @@ export type AgentDetailsContentProps = {
   prevAgentName: string | null
   relatedAgents: any[]
   agentsSource: "bundled" | "similar" | null
+  /** When "usecase", overview section uses use-case hero CSS (screenshot layer + rectangle + mask). */
+  overviewVariant?: "default" | "usecase"
 }
