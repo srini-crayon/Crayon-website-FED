@@ -164,6 +164,16 @@ function getPreviewUrlFromDemoPreviewString(str: string | undefined): string | u
   return videoUrl || urls[0]
 }
 
+/** True if the raw preview URL is a real media URL; false for placeholders like "na" so we don't show the video window */
+function isPreviewUrlValid(url: string | undefined): boolean {
+  if (!url || !url.trim()) return false
+  const u = url.trim().toLowerCase()
+  if (u === 'na' || u === 'n/a') return false
+  if (/\/na\/?$/i.test(u) || /\/n\/a\/?$/i.test(u)) return false
+  if (u.length < 8) return false
+  return true
+}
+
 /** Normalize preview URL: S3 and relative paths go through proxy so video/image loads correctly */
 function normalizePreviewUrl(url: string | undefined): string | undefined {
   if (!url || !url.trim()) return undefined
@@ -222,7 +232,17 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
   const [techSecurityTab, setTechSecurityTab] = useState<string>('')
   const [techSecurityExpandedTabs, setTechSecurityExpandedTabs] = useState<Set<string>>(new Set())
   const [selectedWorkflowStepIndex, setSelectedWorkflowStepIndex] = useState(0)
+  const [workflowPanelImageError, setWorkflowPanelImageError] = useState(false)
   const TECH_SECURITY_VISIBLE_ROWS = 5
+
+  // Skip clearly invalid image URLs (e.g. "na", placeholder paths) so fallback is used instead
+  const isWorkflowPanelUrlValid = (url: string): boolean => {
+    const u = url.trim().toLowerCase()
+    if (!u || u === 'na' || u === 'n/a') return false
+    if (/\/na\/?$/i.test(u) || /\/n\/a\/?$/i.test(u)) return false
+    if (u.length < 8) return false
+    return true
+  }
 
   // Sorted (alphabetically by name) image URLs from agent API demo_assets / demo_preview for How it works panel
   const workflowPanelImageUrls = useMemo((): string[] => {
@@ -231,7 +251,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
     if (Array.isArray(agentAssets)) {
       agentAssets.forEach((a) => {
         const url = getUrlFromAsset(a)
-        if (url && !isAssetVideo(a)) {
+        if (url && !isAssetVideo(a) && isWorkflowPanelUrlValid(url)) {
           const name = (a.demo_asset_name || url || '').trim()
           list.push({ name, url })
         }
@@ -240,7 +260,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
     const previewStr = data?.agent?.demo_preview?.trim()
     if (previewStr) {
       previewStr.split(',').map((u) => u.trim()).filter(Boolean).forEach((url) => {
-        if (!isUrlVideo(url) && !list.some((x) => x.url === url)) {
+        if (isWorkflowPanelUrlValid(url) && !isUrlVideo(url) && !list.some((x) => x.url === url)) {
           list.push({ name: url, url })
         }
       })
@@ -263,6 +283,11 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
   React.useEffect(() => {
     setSelectedWorkflowStepIndex((prev) => Math.min(prev, Math.max(0, workflowSteps.length - 1)))
   }, [workflowSteps.length])
+
+  // Reset image error when step or URL list changes so we retry loading
+  React.useEffect(() => {
+    setWorkflowPanelImageError(false)
+  }, [selectedWorkflowStepIndex, workflowPanelImageUrls.length])
 
   const content = (<>
     <div className="agent-details-page">
@@ -498,10 +523,10 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             demoPreviewStr
             || (agentAssets && agentAssets.length > 0)
           )
+          if (!hasPreview || !previewUrl || !isPreviewUrlValid(rawPreviewUrl)) return null
           const isVideo = isVideoPreviewUrl(rawPreviewUrl)
           const isYoutube = previewUrl ? isYoutubeUrl(previewUrl) : false
           const isVimeo = previewUrl ? isVimeoUrl(previewUrl) : false
-          if (!hasPreview || !previewUrl) return null
           return (
                 <div
                   ref={demoPreviewContainerRef}
@@ -914,13 +939,15 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                       minHeight: 0,
                       borderBottom: '1px solid #E5E5E5',
                       paddingBottom: '10px',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      background: isSelected ? 'rgba(0, 35, 246, 0.06)' : 'transparent',
-                      border: 'none',
-                      borderLeft: isSelected ? '3px solid #0023F6' : '3px solid transparent',
                       paddingLeft: isSelected ? '13px' : '16px',
                       marginLeft: 0,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      border: 'none',
+                      background: isSelected ? '#F8FAFC' : 'transparent',
+                      borderLeft: isSelected ? '3px solid #94A3B8' : '3px solid transparent',
+                      borderRadius: '0 0 0 6px',
+                      transition: 'background 0.2s ease, border-color 0.2s ease',
                     }}
                   >
                     <span
@@ -932,7 +959,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                         lineHeight: '16px',
                         letterSpacing: '0%',
                         verticalAlign: 'middle',
-                        color: '#737373',
+                        color: isSelected ? '#475569' : '#737373',
                         flexShrink: 0,
                       }}
                     >
@@ -942,13 +969,13 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                       <h3
                         style={{
                           fontFamily: 'Poppins, sans-serif',
-                          fontWeight: 500,
+                          fontWeight: isSelected ? 600 : 500,
                           fontStyle: 'normal',
                           fontSize: '18px',
                           lineHeight: '26px',
                           letterSpacing: '0%',
                           verticalAlign: 'middle',
-                          color: '#333333',
+                          color: isSelected ? '#1E293B' : '#333333',
                           margin: '0 0 4px 0',
                         }}
                       >
@@ -962,7 +989,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                           fontSize: '14px',
                           lineHeight: '22.75px',
                           letterSpacing: '0%',
-                          color: '#737373',
+                          color: isSelected ? '#64748B' : '#737373',
                           margin: 0,
                         }}
                       >
@@ -982,77 +1009,44 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 height: '640px',
                 borderRadius: '24px',
                 overflow: 'hidden',
-                background: workflowPanelImageUrls.length > 0 ? '#f5f5f5' : 'linear-gradient(180deg, #FFF8E7 0%, #E8F4F0 50%, #D6E8E4 100%)',
+                background: '#F8FAFC',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04)',
                 position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '32px',
+                padding: '40px',
               }}
             >
-              {workflowPanelImageUrls.length > 0 ? (
-                (() => {
+              {(() => {
+                const imageStyle: React.CSSProperties = {
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
+                }
+                if (workflowPanelImageUrls.length > 0 && !workflowPanelImageError) {
                   const imgIndex = selectedWorkflowStepIndex % workflowPanelImageUrls.length
                   const src = normalizePreviewUrl(workflowPanelImageUrls[imgIndex])
-                  return src ? (
+                  if (!src || !isWorkflowPanelUrlValid(workflowPanelImageUrls[imgIndex])) {
+                    return <img src="/img/agents/workflow-fallback.png" alt={`Workflow step ${selectedWorkflowStepIndex + 1}`} style={imageStyle} />
+                  }
+                  return (
                     <img
                       src={src}
                       alt={`Workflow step ${selectedWorkflowStepIndex + 1}`}
-                      style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        width: 'auto',
-                        height: 'auto',
-                        objectFit: 'contain',
-                        borderRadius: '8px',
-                      }}
+                      onError={() => setWorkflowPanelImageError(true)}
+                      style={imageStyle}
                     />
-                  ) : null
-                })()
-              ) : (
-                <svg width="100%" height="280" viewBox="0 0 400 280" fill="none" style={{ maxWidth: '380px' }}>
-                  {/* Envelope (left) */}
-                  <g transform="translate(48, 72)">
-                    <path
-                      d="M2 6 L12 14 L22 6 L22 20 L2 20 Z"
-                      fill="#B3E5FC"
-                      stroke="#81D4FA"
-                      strokeWidth="1.2"
-                      strokeLinejoin="round"
-                    />
-                  </g>
-                  {/* Document / card */}
-                  <rect x="140" y="70" width="80" height="50" rx="6" fill="white" stroke="#E0E0E0" strokeWidth="1" />
-                  <line x1="152" y1="84" x2="208" y2="84" stroke="#E0E0E0" strokeWidth="1" />
-                  <line x1="152" y1="92" x2="200" y2="92" stroke="#E0E0E0" strokeWidth="1" />
-                  <line x1="152" y1="100" x2="192" y2="100" stroke="#E0E0E0" strokeWidth="1" />
-                  {/* Purple circle */}
-                  <circle cx="200" cy="55" r="12" fill="#B39DDB" stroke="#9575CD" strokeWidth="1" />
-                  <circle cx="200" cy="55" r="4" fill="white" />
-                  {/* Flow line: envelope → pill */}
-                  <path
-                    d="M 85 115 Q 120 140 160 160 L 240 200 L 300 220"
-                    stroke="#1E3A8A"
-                    strokeWidth="2"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                  <polygon points="300,220 292,214 292,226" fill="#1E3A8A" />
-                  <circle cx="85" cy="115" r="4" fill="#1E3A8A" />
-                  {/* Asterisk-like node */}
-                  <g transform="translate(108, 128)">
-                    <path d="M0-6L0 6M-6 0L6 0M-4-4L4 4M-4 4L4-4" stroke="#9E9E9E" strokeWidth="1.2" strokeLinecap="round" />
-                  </g>
-                  {/* Pill shape (right) */}
-                  <rect x="280" y="195" width="80" height="32" rx="16" fill="url(#howItWorksPill)" />
-                  <defs>
-                    <linearGradient id="howItWorksPill" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#7E57C2" />
-                      <stop offset="100%" stopColor="#1E88E5" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              )}
+                  )
+                }
+                return <img src="/img/agents/workflow-fallback.png" alt="Workflow step 1" style={imageStyle} />
+              })()}
             </div>
           </div>
         </div>
@@ -1414,34 +1408,92 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                     <Link
                       key={agentId}
                       href={`/agents/${agentId}`}
+                      scroll
+                      className="group block relative rounded-xl overflow-hidden transition-shadow hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
                       style={{
-                        background: '#F5F5F5',
-                        borderRadius: '8px',
-                        padding: '20px 20px 24px',
-                        display: 'flex',
-                        flexDirection: 'column',
+                        width: '100%',
                         minHeight: '257px',
+                        background: '#F5F5F5',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)',
                         textDecoration: 'none',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13.3px', lineHeight: '14px', letterSpacing: '0.17px', color: '#000000DE' }}>
-                          {label}
-                        </span>
-                        <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
-                      </div>
-                      <div style={{ marginTop: 'auto' }}>
-                        <h3 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '22.5px', lineHeight: '32px', letterSpacing: '0.17px', color: '#000000DE', margin: '0 0 6px 0' }}>
-                          {name}
-                        </h3>
-                        {desc ? (
-                          <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '12px', lineHeight: '16px', color: '#000000DE', margin: '0 0 6px 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                            {desc}
-                          </p>
-                        ) : null}
-                        <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13.3px', lineHeight: '14px', color: '#000000DE', textTransform: 'uppercase' }}>
+                      {/* Gradient overlay on hover – same as agents library cards */}
+                      <div
+                        className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out pointer-events-none"
+                        style={{
+                          background: 'linear-gradient(132.48deg, #F7F7F7 60.17%, #FF757B 94.82%), linear-gradient(246.59deg, rgba(247, 247, 247, 0.6) 58.7%, rgba(255, 232, 232, 0.6) 99.81%)',
+                        }}
+                        aria-hidden
+                      />
+                      <div className="relative z-10 p-6 flex flex-col min-h-[257px]">
+                        <div className="flex justify-between items-start">
+                          <span
+                            style={{
+                              fontFamily: 'Inter, sans-serif',
+                              fontWeight: 400,
+                              fontStyle: 'normal',
+                              fontSize: '13.3px',
+                              lineHeight: '14px',
+                              letterSpacing: '0.17px',
+                              verticalAlign: 'middle',
+                              color: 'rgba(0, 0, 0, 0.87)',
+                            }}
+                          >
+                            {label}
+                          </span>
+                          <div className="flex items-center justify-center rounded-full flex-shrink-0" style={{ width: '36px', height: '36px' }}>
+                            <Image src="/img/agents/research-icon.png" alt="" width={28} height={28} className="object-contain" />
+                          </div>
+                        </div>
+                        <div className="flex-1 flex flex-col justify-end min-h-0 mt-3">
+                          <h3
+                            className="transition-colors duration-300 ease-out"
+                            style={{
+                              fontFamily: 'Poppins, sans-serif',
+                              fontWeight: 400,
+                              fontStyle: 'normal',
+                              fontSize: '24px',
+                              lineHeight: '32px',
+                              letterSpacing: '0.17px',
+                              color: 'rgba(0, 0, 0, 0.87)',
+                            }}
+                          >
+                            {name}
+                          </h3>
+                          {desc ? (
+                            <p
+                              className="mt-2 line-clamp-3 max-h-0 overflow-hidden opacity-0 group-hover:max-h-[100px] group-hover:opacity-100 transition-all duration-300 ease-out"
+                              style={{
+                                fontFamily: 'Inter, sans-serif',
+                                fontWeight: 400,
+                                fontStyle: 'normal',
+                                fontSize: '12px',
+                                lineHeight: '18px',
+                                letterSpacing: '0%',
+                                color: '#475467',
+                              }}
+                            >
+                              {desc}
+                            </p>
+                          ) : null}
+                        </div>
+                        <p
+                          className="mt-auto pt-4 uppercase flex-shrink-0"
+                          style={{
+                            fontFamily: 'Inter, sans-serif',
+                            fontWeight: 400,
+                            fontStyle: 'normal',
+                            fontSize: '10px',
+                            lineHeight: '15px',
+                            letterSpacing: '0.5px',
+                            verticalAlign: 'middle',
+                            textTransform: 'uppercase',
+                            color: 'rgba(0, 0, 0, 0.87)',
+                          }}
+                        >
                           BY CRAYON DATA
-                        </span>
+                        </p>
                       </div>
                     </Link>
                   )
