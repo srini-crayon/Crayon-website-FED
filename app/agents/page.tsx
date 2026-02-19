@@ -256,6 +256,8 @@ export default function AgentLibraryPage() {
   const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 9;
+  /** Agent cards grid shows only agents with these asset_type values (API: asset_type). */
+  const AGENT_CARDS_ALLOWED_ASSET_TYPES = ["Solution", "Agent", "Use case", "Use Case"];
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategoryTag, setSelectedCategoryTag] = useState<string[]>([]);
   const [selectedByValueTag, setSelectedByValueTag] = useState<string[]>([]);
@@ -272,19 +274,13 @@ export default function AgentLibraryPage() {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const browseCarouselRef = useRef<HTMLDivElement>(null);
   const [browseCarouselPage, setBrowseCarouselPage] = useState(0);
-  /** Only these agents are shown in the browse carousel; each card uses API data when available (id, title, description), else static fallback. */
+  /** Browse carousel: only these 5 cards in this order; API match by title for id/description; images and backgrounds unchanged from previous. */
   const BROWSE_CARDS_DATA: { id: string; title: string; description: string; image: string; background: string }[] = [
-    { id: "lea", title: "LEA Notice Assistant", description: "Legal entity and agreement management agent.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
-    { id: "account-opening", title: "Account Opening Automation", description: "Streamlined account opening and onboarding workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
-    { id: "npa", title: "NPA Valuation Assistant", description: "NPA valuation and portfolio management assistant.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
-    { id: "travel-ai", title: "Travel AI", description: "AI-powered travel assistant for bookings, itineraries, and recommendations.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "ai-marketplace", title: "AI Marketplace", description: "", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
     { id: "omp", title: "OMP (Offer Management Platform)", description: "Operations and process management agent for streamlined workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
-    { id: "test-data", title: "Test Data Management", description: "Generate and manage test data for QA and development.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
-    { id: "controls-agent", title: "Control Agents", description: "Governance and controls automation for compliance and risk.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
-    { id: "data-studio", title: "Data Studio", description: "Visual analytics and data exploration for business insights.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
     { id: "cxo-concierge", title: "CXO Concierge", description: "Executive-level assistant for strategy, reporting, and decision support.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
-    { id: "ap-automation", title: "Account Payable Automation", description: "Accounts payable automation and invoice processing.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
-    { id: "wealth-rm", title: "Wealth RM Assistant", description: "Wealth and relationship management for advisors and clients.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "data-studio", title: "Data Studio", description: "Visual analytics and data exploration for business insights.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "test-data", title: "Test Data Management", description: "Generate and manage test data for QA and development.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
   ];
   const BROWSE_CAROUSEL_PAGES = BROWSE_CARDS_DATA.length;
 
@@ -956,8 +952,13 @@ export default function AgentLibraryPage() {
       : agents;
 
     const filtered = applyManualFilters(baseList);
+    // Only show agents whose asset_type is Solution, Agent, or Use case (agent cards grid)
+    const byAssetType = filtered.filter((a) =>
+      AGENT_CARDS_ALLOWED_ASSET_TYPES.includes(a.assetType) ||
+      ((a as any).deploymentType && AGENT_CARDS_ALLOWED_ASSET_TYPES.includes((a as any).deploymentType))
+    );
     // Sort by agents_ordering (already sorted in fetchData, but re-sort after filtering to maintain order)
-    return filtered.sort((a, b) => {
+    return byAssetType.sort((a, b) => {
       const aOrder = a.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       const bOrder = b.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       return aOrder - bOrder;
@@ -1646,8 +1647,8 @@ export default function AgentLibraryPage() {
                     },
                     {
                       id: "insurance",
-                      title: "AI for Insurance",
-                      description: "Conversational AI assistant tailored for insurance, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      title: "AI for Other Industries",
+                      description: "Expanding AI capabilities for additional industries, enabling seamless customer interactions across chat, voice, and web with rapid deployment and enterprise-ready scalability.",
                       icon: Activity,
                       gradient: "linear-gradient(135deg, #86EFAC 0%, #15803D 100%)",
                       gradientFromCorner: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(21,128,61,0.06) 40%, transparent 70%)",
@@ -1657,8 +1658,8 @@ export default function AgentLibraryPage() {
                     },
                     {
                       id: "healthcare",
-                      title: "AI for Healthcare",
-                      description: "Conversational AI assistant tailored for healthcare, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      title: "AI for Other Industries",
+                      description: "Expanding AI capabilities for additional industries, enabling seamless customer interactions across chat, voice, and web with rapid deployment and enterprise-ready scalability.",
                       icon: HeartHandshake,
                       gradient: "linear-gradient(135deg, #F9A8D4 0%, #BE185D 100%)",
                       gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.12) 0%, rgba(190,24,93,0.06) 40%, transparent 70%)",
@@ -1666,39 +1667,9 @@ export default function AgentLibraryPage() {
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
                       comingSoon: true,
                     },
-                    {
-                      id: "retail",
-                      title: "AI for Retail",
-                      description: "Conversational AI assistant tailored for retail, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
-                      icon: ShoppingBag,
-                      gradient: "linear-gradient(135deg, #C4B5FD 0%, #6D28D9 100%)",
-                      gradientFromCorner: "linear-gradient(135deg, rgba(196,181,253,0.12) 0%, rgba(109,40,217,0.06) 40%, transparent 70%)",
-                      titleColor: "#6D28D9",
-                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F5F3FF 97.78%)",
-                      comingSoon: true,
-                    },
-                    {
-                      id: "education",
-                      title: "AI for Educations",
-                      description: "Conversational AI assistant tailored for education, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
-                      icon: GraduationCap,
-                      gradient: "linear-gradient(135deg, #F472B6 0%, #9D174D 100%)",
-                      gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.1) 0%, rgba(157,23,77,0.06) 40%, transparent 70%)",
-                      titleColor: "#9D174D",
-                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
-                      comingSoon: true,
-                    },
-                    {
-                      id: "government",
-                      title: "AI for Government",
-                      description: "Conversational AI assistant tailored for government, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
-                      icon: Zap,
-                      gradient: "linear-gradient(135deg, #93C5FD 0%, #1D4ED8 100%)",
-                      gradientFromCorner: "linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(29,78,216,0.06) 40%, transparent 70%)",
-                      titleColor: "#1D4ED8",
-                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #EFF6FF 97.78%)",
-                      comingSoon: true,
-                    },
+                    
+                    
+                    
                   ].map((item) => {
                     const Icon = item.icon;
                     const isComingSoon = item.comingSoon === true;

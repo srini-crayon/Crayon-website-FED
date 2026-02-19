@@ -3,7 +3,7 @@
 import React, { useRef, useState, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Maximize2 } from "lucide-react"
+import { Maximize2, ChevronRight } from "lucide-react"
 import ScrollToTop from "@/components/scroll-to-top"
 import { CurrentAgentSetter } from "../../../components/current-agent-setter"
 import type { AgentDetailsContentProps } from "./types"
@@ -1390,16 +1390,45 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 : `Agents and Models that combine to perform ${title || 'this solution'}`}
           </h2>
 
-          {/* ΓöÇΓöÇ 4. Cards Grid – data from bundled / similar agents API ΓöÇΓöÇ */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '16px',
-            }}
-          >
-            {relatedAgents.length > 0
-              ? relatedAgents.slice(0, 8).map((ra: { agent_id?: string; agent_name?: string; description?: string }) => {
+          {/* ΓöÇΓöÇ 4. Cards Grid – 2 rows; 4 cards in view (2×2), rest horizontally scrollable; scrollbar hidden, scroll hint on right ΓöÇΓöÇ */}
+          {(() => {
+            const agentCards = relatedAgents.length > 0 ? relatedAgents : []
+            const isScrollable = agentCards.length > 6
+            const cardWidth = 280
+            const gap = 16
+            const columns = Math.ceil(agentCards.length / 2) || 1
+            return (
+              <div style={{ position: isScrollable ? 'relative' : undefined }}>
+                <div
+                  className={isScrollable ? 'scrollbar-hide' : undefined}
+                  style={{
+                    overflowX: isScrollable ? 'auto' : 'visible',
+                    overflowY: 'hidden',
+                    marginLeft: isScrollable ? '-8px' : 0,
+                    marginRight: isScrollable ? '-8px' : 0,
+                    paddingLeft: isScrollable ? '8px' : 0,
+                    paddingRight: isScrollable ? '8px' : 0,
+                    paddingBottom: isScrollable ? '8px' : 0,
+                  }}
+                >
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: 'auto auto',
+                    ...(isScrollable
+                      ? {
+                          gridAutoFlow: 'column',
+                          gridAutoColumns: `${cardWidth}px`,
+                          minWidth: columns * cardWidth + (columns - 1) * gap,
+                        }
+                      : {
+                          gridTemplateColumns: 'repeat(3, 1fr)',
+                        }),
+                    gap: `${gap}px`,
+                  }}
+                >
+            {agentCards.length > 0
+              ? agentCards.map((ra: { agent_id?: string; agent_name?: string; description?: string }) => {
                   const agentId = ra.agent_id || ''
                   const name = ra.agent_name || 'Agent'
                   const desc = ra.description || ''
@@ -1521,7 +1550,37 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 ))
               )}
 
-          </div>
+                </div>
+              </div>
+                {isScrollable && (
+                  <div
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 0,
+                      bottom: 8,
+                      width: 64,
+                      pointerEvents: 'none',
+                      background: 'linear-gradient(to left, #FAFAFA 40%, rgba(250,250,250,0.6) 70%, transparent)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      paddingLeft: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        animation: 'agent-powering-scroll-hint 1.8s ease-in-out infinite',
+                      }}
+                    >
+                      <ChevronRight size={28} strokeWidth={2} style={{ color: 'rgba(0,0,0,0.4)' }} />
+                    </span>
+                  </div>
+                )}
+              </div>
+            )
+          })()}
         </div>
       </section>
       {/* Placeholder section for sub-nav "Use Cases" scroll target; content can be added later */}
