@@ -1,16 +1,13 @@
 import React from "react"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 import { ChevronLeft } from "lucide-react"
-import { fetchAgentDetail, getNextPrevAndRelated, readReadmeFile } from "./agent-detail-server"
-import { AgentDetailsContent } from "./AgentDetailsContent"
-import { getAgentDetailType } from "./types"
+import { fetchAgentDetail, getNextPrevAndRelated, readReadmeFile } from "../../[id]/agent-detail-server"
+import { AgentDetailsContent } from "../../[id]/AgentDetailsContent"
 
-export default async function AgentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function SolutionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const data = await fetchAgentDetail(id)
 
-  // If agent doesn't exist or is not approved, show error and redirect
   if (!data || !data.agent) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -25,23 +22,12 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
   }
 
   const agent = data.agent
-  const detailType = getAgentDetailType(agent?.asset_type)
-  // Standardized URL: redirect to path by agent_type (no template query)
-  if (detailType === "Solution") redirect(`/agents/solution/${id}`)
-  if (detailType === "Use case") redirect(`/agents/usecase/${id}`)
-
   const readmeContent = readReadmeFile()
-
   const title = agent?.agent_name || "Business Representative"
-  const description = agent?.description ||
+  const description =
+    agent?.description ||
     `Whether you're nurturing inbound leads, answering marketing inquiries, or booking meetings, this tool
                   streamlines engagement and ensures no opportunity slips through the cracks.`
-  const categories = data.capabilities?.map((c) => c.by_capability || "").filter(Boolean) || ["Marketing"]
-  const personas = agent?.by_persona ? [agent.by_persona] : ["Executives (CXO)"]
-  const valueProps = agent?.by_value ? [agent.by_value] : ["Productivity"]
-  const worksWith = data.deployments?.slice(0, 1).map((d) => d.service_name || "").filter(Boolean) || ["OpenAI GPT-4o"]
-
-  // Compute next agent id and names (server-side) to enable Next Agent navigation
   const nav = await getNextPrevAndRelated(id)
 
   return (
@@ -58,7 +44,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ i
       prevAgentName={nav.prevAgentName}
       relatedAgents={nav.relatedAgents}
       agentsSource={nav.agentsSource}
-      detailType="Agent"
+      detailType="Solution"
     />
   )
 }

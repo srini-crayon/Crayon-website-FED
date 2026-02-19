@@ -7,6 +7,7 @@ import { Maximize2, ChevronRight, ChevronLeft, Search, ChevronDown } from "lucid
 import ScrollToTop from "@/components/scroll-to-top"
 import { CurrentAgentSetter } from "../../../components/current-agent-setter"
 import type { AgentDetailsContentProps } from "./types"
+import { getAgentDetailHref } from "./types"
 
 /** Default How It Works steps when API has no workflow field (e.g. earnings analyst / agent_001 style). */
 const DEFAULT_WORKFLOW_STEPS = [
@@ -217,14 +218,13 @@ function getVimeoEmbedUrl(url: string): string {
 }
 
 export function SolutionDetailsBody(props: AgentDetailsContentProps) {
-  const { id, title, description, data, agent, relatedAgents = [], agentsSource, overviewVariant } = props
+  const { id, title, description, data, agent, relatedAgents = [], agentsSource, overviewVariant, customCapabilitiesSection } = props
   const demoPreviewContainerRef = useRef<HTMLDivElement>(null)
   const [techSecurityTab, setTechSecurityTab] = useState<string>('')
   const [techSecurityExpandedTabs, setTechSecurityExpandedTabs] = useState<Set<string>>(new Set())
   const [selectedWorkflowStepIndex, setSelectedWorkflowStepIndex] = useState(0)
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null)
   const [agentPoweringCategory, setAgentPoweringCategory] = useState<string>('All')
-  const [agentPoweringTag, setAgentPoweringTag] = useState<string | null>(null)
   const [agentPoweringSearch, setAgentPoweringSearch] = useState('')
   const [agentPoweringVisibleCount, setAgentPoweringVisibleCount] = useState(4)
   const [agentPoweringScrollOffset, setAgentPoweringScrollOffset] = useState(0)
@@ -312,8 +312,69 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
     return () => { cancelled = true }
   }, [agentPoweringModalCard?.agent_id, agentPoweringModalCard?.agent_name])
 
-  /** Agent-powering category tabs; tag pills are derived from API (agentPoweringTagsFromApi) */
-  const AGENT_POWERING_CATEGORIES = ['All', 'Banking', 'Retail', 'Healthcare', 'Manufacturing'] as const
+  /** Helper: parse industry string (comma-separated or single) into array of trimmed non-empty strings */
+  const parseIndustryRaw = (raw: string | undefined | null): string[] => {
+    if (raw == null || !String(raw).trim()) return []
+    return String(raw)
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  }
+
+  const INDUSTRY_LIKE_TAGS = ['Banking', 'Retail', 'Healthcare', 'Manufacturing', 'Telecom', 'Logistics', 'Travel', 'Insurance']
+
+  /** Full set of possible industries: from current agent + all related agents (API) + tag-derived list. Used only to assign each card a category. */
+  const agentPoweringFullIndustrySet = useMemo(() => {
+    const set = new Set<string>(INDUSTRY_LIKE_TAGS)
+    const current = (agent ?? data?.agent) as { by_industry?: string; applicable_industry?: string; industry?: string } | undefined
+    if (current) {
+      const raw = current.by_industry ?? current.applicable_industry ?? current.industry
+      parseIndustryRaw(raw).forEach((ind) => set.add(ind))
+    }
+    relatedAgents.forEach((ra: Record<string, unknown>) => {
+      const raw = (ra.by_industry ?? ra.applicable_industry ?? ra.industry) as string | undefined
+      parseIndustryRaw(raw).forEach((ind) => set.add(ind))
+    })
+    return set
+  }, [relatedAgents, agent, data?.agent])
+
+  /** Card list: one card per related agent; category from API industry or tag match. All related agents are included. */
+  const agentPoweringCardsSource = useMemo(() => {
+    if (relatedAgents.length === 0) return []
+    return relatedAgents.map((ra: Record<string, unknown> & { agent_id?: string; agent_name?: string; description?: string; tags?: string[] | string }) => {
+      const tagsArray = Array.isArray(ra.tags)
+        ? ra.tags
+        : typeof ra.tags === 'string'
+          ? (ra.tags as string).split(',').map((t: string) => t.trim()).filter(Boolean)
+          : []
+      const industryRaw = (ra.by_industry ?? ra.applicable_industry ?? ra.industry) as string | undefined
+      const industries = parseIndustryRaw(industryRaw)
+      const fromApi = industries.find((ind) => agentPoweringFullIndustrySet.has(ind))
+      const fromTag = fromApi
+        ? null
+        : [...agentPoweringFullIndustrySet].find((ind) =>
+            tagsArray.some((tag: string) => tag.toLowerCase().includes(ind.toLowerCase()))
+          )
+      const category = fromApi ?? fromTag ?? 'All'
+      return {
+        agent_id: ra.agent_id || '',
+        agent_name: ra.agent_name || 'Agent',
+        description: ra.description || '',
+        category,
+        tags: tagsArray.length > 0 ? tagsArray : ['AI Agent'],
+        isLink: true,
+      }
+    })
+  }, [relatedAgents, agentPoweringFullIndustrySet])
+
+  /** Tabs = "All" + only industries that have at least one agent (no empty tabs) */
+  const agentPoweringCategoriesFromApi = useMemo(() => {
+    const categoriesPresent = new Set(agentPoweringCardsSource.map((c) => c.category).filter((c) => c !== 'All'))
+    const list = Array.from(categoriesPresent).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+    return ['All', ...list]
+  }, [agentPoweringCardsSource])
+
+  const agentPoweringCategoriesSet = useMemo(() => new Set(agentPoweringCategoriesFromApi), [agentPoweringCategoriesFromApi])
 
   // Sorted (alphabetically by name) image URLs from agent API demo_assets / demo_preview for How it works panel
   const workflowPanelImageUrls = useMemo((): string[] => {
@@ -350,53 +411,16 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
     return DEFAULT_WORKFLOW_STEPS
   }, [agent, data?.agent])
 
-  // Agent-powering: card list from API (bundled or similar agents only); category/tags from API when available
-  const AGENT_POWERING_CATEGORIES_LIST = ['Banking', 'Retail', 'Healthcare', 'Manufacturing'] as const
-  const agentPoweringCardsSource = useMemo(() => {
-    if (relatedAgents.length === 0) return []
-    return relatedAgents.map((ra: { agent_id?: string; agent_name?: string; description?: string; tags?: string[] | string }) => {
-      const tagsArray = Array.isArray(ra.tags)
-        ? ra.tags
-        : typeof ra.tags === 'string'
-          ? ra.tags.split(',').map((t: string) => t.trim()).filter(Boolean)
-          : []
-      const category =
-        AGENT_POWERING_CATEGORIES_LIST.find((c) => tagsArray.some((t) => t.toLowerCase().includes(c.toLowerCase()))) ??
-        (tagsArray[0] || 'All')
-      return {
-        agent_id: ra.agent_id || '',
-        agent_name: ra.agent_name || 'Agent',
-        description: ra.description || '',
-        category: AGENT_POWERING_CATEGORIES_LIST.includes(category as typeof AGENT_POWERING_CATEGORIES_LIST[number]) ? category : 'All',
-        tags: tagsArray.length > 0 ? tagsArray : ['AI Agent'],
-        isLink: true,
-      }
-    })
-  }, [relatedAgents])
-
-  /** Unique tags from related agents (API), sorted, excluding "More..." and empty */
-  const agentPoweringTagsFromApi = useMemo(() => {
-    const set = new Set<string>()
-    agentPoweringCardsSource.forEach((card) => {
-      (card.tags || []).forEach((t) => {
-        const s = (t || '').trim()
-        if (s && s.toLowerCase() !== 'more...') set.add(s)
-      })
-    })
-    return Array.from(set).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-  }, [agentPoweringCardsSource])
-
   const agentPoweringFiltered = useMemo(() => {
     const q = agentPoweringSearch.trim().toLowerCase()
     return agentPoweringCardsSource.filter((card) => {
       if (agentPoweringCategory !== 'All' && card.category !== agentPoweringCategory) return false
-      if (agentPoweringTag != null && !card.tags.includes(agentPoweringTag)) return false
       const label = (card as { placeholder?: { label?: string; title?: string } }).placeholder?.label ?? ''
       const title = (card as { placeholder?: { label?: string; title?: string } }).placeholder?.title ?? ''
       if (q && !(card.agent_name?.toLowerCase().includes(q) || (card.description ?? '').toLowerCase().includes(q) || label.toLowerCase().includes(q) || title.toLowerCase().includes(q))) return false
       return true
     })
-  }, [agentPoweringCardsSource, agentPoweringCategory, agentPoweringTag, agentPoweringSearch])
+  }, [agentPoweringCardsSource, agentPoweringCategory, agentPoweringSearch])
 
   const agentPoweringSortedList = useMemo(() => {
     return agentPoweringSortOrder === 'a-z'
@@ -448,7 +472,7 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
   React.useEffect(() => {
     setAgentPoweringVisibleCount(AGENT_POWERING_CARDS_PER_ROW)
     if (agentPoweringScrollRef.current) agentPoweringScrollRef.current.scrollLeft = 0
-  }, [agentPoweringCategory, agentPoweringTag, agentPoweringSearch, agentPoweringSortOrder])
+  }, [agentPoweringCategory, agentPoweringSearch, agentPoweringSortOrder])
 
   // Close sort dropdown when clicking outside
   useEffect(() => {
@@ -500,108 +524,231 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
             background: '#FFFFFF',
             borderRadius: '42px',
             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+            display: 'flex',
+            flexDirection: 'column',
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Top gradient strip – blue → purple/magenta → lavender */}
+          {/* Hero-style gradient overlay – light sky blue → soft blue → lavender → white-blue (per design); extends till Discovery Scorecard text */}
           <div
             style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
               width: '100%',
-              height: '28px',
+              height: '340px',
               borderRadius: '42px 42px 0 0',
-              background: 'linear-gradient(90deg, #0023F6 0%, #8F2B8C 50%, #C4B5FD 100%)',
-              flexShrink: 0,
+              background: 'radial-gradient(ellipse 80% 100% at 50% 0%, #F0F8FF 0%, #D7EBFF 30%, #E6DCEF 55%, #F0FAFF 80%, transparent 100%)',
+              zIndex: 0,
+              pointerEvents: 'none',
             }}
             aria-hidden
           />
-          {/* Close button */}
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={() => setAgentPoweringModalCard(null)}
+          {/* Close button – sticky so it stays visible while scrolling modal content */}
+          <div
             style={{
-              position: 'absolute',
-              top: '24px',
-              right: '24px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '1px solid #E5E7EB',
-              background: '#FFFFFF',
-              cursor: 'pointer',
+              position: 'sticky',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 2,
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px',
-              color: '#374151',
-              zIndex: 1,
+              justifyContent: 'flex-end',
+              padding: '24px 24px 0 0',
+              flexShrink: 0,
+              pointerEvents: 'none',
             }}
           >
-            ×
-          </button>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setAgentPoweringModalCard(null)}
+              style={{
+                pointerEvents: 'auto',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                border: '1px solid #E5E7EB',
+                background: '#FFFFFF',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '20px',
+                color: '#374151',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              }}
+            >
+              ×
+            </button>
+          </div>
 
-          <div style={{ padding: '72px 86px 80px', position: 'relative' }}>
-            {/* Header – Sub-Agent | Bundled/Similar in [Clicked agent name only]; then agent name as title; then description */}
-            <div style={{ textAlign: 'center', marginBottom: '48px', maxWidth: '970px', marginLeft: 'auto', marginRight: 'auto' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '18px', flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500, fontSize: '16px', lineHeight: '24px', color: '#091917' }}>
-                  {agentsSource === 'similar'
-                    ? <>Sub-Agent | Similar to{' '}
-                      {(modalAgentFromApi?.agent_id || agentPoweringModalCard?.agent_id) && !/^placeholder-\d+$/i.test((agentPoweringModalCard?.agent_id || '').toString()) ? (
-                        <Link href={`/agents/${modalAgentFromApi?.agent_id || agentPoweringModalCard?.agent_id}`} style={{ color: '#0019FF', textDecoration: 'underline', fontWeight: 500 }}>
-                          {modalAgentFromApi?.agent_name || agentPoweringModalCard?.agent_name || 'Agent'}
-                        </Link>
-                      ) : (
-                        <span style={{ color: '#091917' }}>{modalAgentFromApi?.agent_name || agentPoweringModalCard?.agent_name || 'Agent'}</span>
-                      )}
-                    </>
-                    : <>Sub-Agent | Bundled in{' '}
-                      {(modalAgentFromApi?.agent_id || agentPoweringModalCard?.agent_id) && !/^placeholder-\d+$/i.test((agentPoweringModalCard?.agent_id || '').toString()) ? (
-                        <Link href={`/agents/${modalAgentFromApi?.agent_id || agentPoweringModalCard?.agent_id}`} style={{ color: '#0019FF', textDecoration: 'underline', fontWeight: 500 }}>
-                          {modalAgentFromApi?.agent_name || agentPoweringModalCard?.agent_name || 'Agent'}
-                        </Link>
-                      ) : (
-                        <span style={{ color: '#091917' }}>{modalAgentFromApi?.agent_name || agentPoweringModalCard?.agent_name || 'Agent'}</span>
-                      )}
-                    </>
-                  }
+          <div style={{ padding: '8px 86px 80px', position: 'relative', zIndex: 1 }}>
+            {/* Group 1410104308 – Header: Sub-Agent label, title (gradient), description */}
+            <div
+              style={{
+                position: 'relative',
+                width: '970px',
+                maxWidth: '100%',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginBottom: '48px',
+                textAlign: 'center',
+                boxSizing: 'border-box',
+              }}
+            >
+              {/* Sub-Agent | Bundled in [agent name] – agent name links to agent detail */}
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: '721px',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '8px',
+                  flexWrap: 'wrap',
+                  gap: '4px 8px',
+                }}
+              >
+                <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 500, fontSize: '16px', lineHeight: '24px', color: '#091917' }}>
+                  Sub-Agent
                 </span>
+                <span style={{ width: '1px', height: '16px', borderLeft: '1px dashed #60A5FA', flexShrink: 0 }} aria-hidden />
+                <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 500, fontSize: '16px', lineHeight: '24px', color: '#091917' }}>
+                  Bundled in
+                </span>
+                {(agentPoweringModalCard?.agent_id && agentPoweringModalCard?.agent_name) ? (
+                  <Link
+                    href={getAgentDetailHref(agentPoweringModalCard.agent_id, undefined)}
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontStyle: 'normal',
+                      fontWeight: 500,
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      color: '#1C69E3',
+                      textDecoration: 'none',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {agentPoweringModalCard.agent_name}
+                  </Link>
+                ) : (
+                  <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 500, fontSize: '16px', lineHeight: '24px', color: '#1C69E3' }}>
+                    {agentPoweringModalCard?.agent_name || 'Data Studio'}
+                  </span>
+                )}
               </div>
+              {/* Discovery Call Scorecard – main title with gradient (magenta → blue per design) */}
               <h2
                 id="agent-powering-modal-title"
                 style={{
-                  fontFamily: 'Poppins, sans-serif',
+                  fontFamily: "'Poppins', sans-serif",
+                  fontStyle: 'normal',
                   fontWeight: 500,
-                  fontSize: 'clamp(32px, 5vw, 60px)',
-                  lineHeight: 1.1,
+                  fontSize: '60px',
+                  lineHeight: '66px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   letterSpacing: '-1.5px',
-                  background: 'linear-gradient(90deg, #E300DE 0%, #0019FF 100%)',
+                  background: 'linear-gradient(90deg, #EC11BB 0%, #3C64FA 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
                   margin: '0 0 18px 0',
+                  width: '100%',
+                  maxWidth: '721px',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
                 }}
               >
                 Discovery Call Scorecard
               </h2>
-              <p style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400, fontSize: '16px', lineHeight: '160%', color: '#344054', margin: 0, textAlign: 'center' }}>
+              {/* Description – 970×78, Poppins 400 16px 160%, center, #344054 */}
+              <p
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontStyle: 'normal',
+                  fontWeight: 400,
+                  fontSize: '16px',
+                  lineHeight: '160%',
+                  textAlign: 'center',
+                  color: '#344054',
+                  margin: 0,
+                  width: '100%',
+                  maxWidth: '970px',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}
+              >
                 {(modalAgentFromApi?.description ?? agentPoweringModalCard?.description) || 'A customer-facing recommendation engine that analyzes demographics, transaction history, and existing card features to suggest the most relevant credit card. Designed to enhance acquisition conversion rates while aligning with user lifestyle and preferences.'}
               </p>
             </div>
 
-            {/* Capabilities – from API: detail capabilities array or agent.by_capability string */}
-            <div style={{ marginBottom: '48px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
+            {/* Group 1410104315 – Capabilities section (1128×364, centered) */}
+            <div style={{ width: '1128px', maxWidth: '100%', minHeight: '364px', margin: '0 auto 48px', position: 'relative' }}>
+              {/* Group 1410104309 – Frame 1410104250: divider + Capabilities + divider (178×16, gap 12px) */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  marginBottom: '24px',
+                }}
+              >
                 <span style={{ width: '32px', height: '1px', background: '#1F2937', flexShrink: 0 }} />
-                <span style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500, fontSize: '12px', lineHeight: '16px', letterSpacing: '1.2px', textTransform: 'uppercase', color: '#111827' }}>Capabilities</span>
+                <span
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontStyle: 'normal',
+                    fontWeight: 500,
+                    fontSize: '12px',
+                    lineHeight: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    letterSpacing: '1.2px',
+                    textTransform: 'uppercase',
+                    color: '#111827',
+                  }}
+                >
+                  Capabilities
+                </span>
                 <span style={{ width: '32px', height: '1px', background: '#1F2937', flexShrink: 0 }} />
               </div>
-              <p style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 300, fontSize: '24px', lineHeight: '40px', textAlign: 'center', margin: '0 auto 32px', maxWidth: '570px', background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              {/* Heading 2 – 570×80, Poppins 300 24px 40px, gradient #0023F6 → #008F59 */}
+              <p
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontStyle: 'normal',
+                  fontWeight: 300,
+                  fontSize: '24px',
+                  lineHeight: '40px',
+                  textAlign: 'center',
+                  margin: '0 auto 32px',
+                  maxWidth: '570px',
+                  display: 'block',
+                  background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
                 Enterprise AI scales when product and execution move together
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', maxWidth: '1128px', margin: '0 auto' }}>
+              {/* Group 1410104314 – three capability cards 360×230 each, #F9FAFB, 8px radius */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 360px)', gap: '24px', maxWidth: '1128px', margin: '0 auto', justifyContent: 'center', justifyItems: 'stretch' }}>
                 {((() => {
-                  const iconColors = ['#FF9231', '#722ED1', '#1C69E3']
+                  const mailIcon = <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 8l8 5 8-5M4 8v8a2 2 0 002 2h12a2 2 0 002-2V8M4 8l8-3 8 3" stroke="#FF9231" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  const statUpIcon = <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M10 14l4-4m0 0v3m0-3h-3" stroke="#722ED1" strokeWidth="1.5" strokeLinecap="round" /><rect x="5" y="5" width="14" height="14" rx="2" stroke="#722ED1" strokeWidth="1.5" /></svg>
+                  const capabilityIconsByIndex = [mailIcon, statUpIcon, mailIcon]
                   let caps: string[] = []
                   if (Array.isArray(modalAgentFromApi?.capabilities) && modalAgentFromApi.capabilities.length > 0) {
                     caps = modalAgentFromApi.capabilities.map((c) => (c.by_capability || '').trim()).filter(Boolean)
@@ -609,35 +756,132 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
                     const capStr = (modalAgentFromApi?.by_capability ?? '').trim()
                     caps = capStr ? capStr.split(',').map((c) => c.trim()).filter(Boolean) : []
                   }
-                  const fromApi = caps.slice(0, 3).map((title, idx) => ({ title, desc: 'Capability provided by this agent.', iconColor: iconColors[idx] ?? iconColors[0] }))
+                  const fromApi = caps.slice(0, 3).map((title) => ({ title, desc: 'Capability provided by this agent.' }))
                   const fallbacks = [
-                    { title: 'Document & Knowledge', desc: 'Intelligent document processing and knowledge extraction for enterprise workflows.', iconColor: '#1C69E3' },
-                    { title: 'Data Intelligence', desc: 'Analytics and insights from structured and unstructured data.', iconColor: '#722ED1' },
-                    { title: 'Workflow & Process', desc: 'Automation and orchestration of business processes.', iconColor: '#FF9231' },
+                    { title: 'Automated Email Intake', desc: 'Automatically capture and process NPA pool submissions from email with intelligent attachment parsing and data extraction' },
+                    { title: 'External Valuation', desc: 'Seamlessly coordinate with external valuation agencies, track progress, and consolidate third-party assessments' },
+                    { title: 'Automated Email Intake', desc: 'Automatically capture and process NPA pool submissions from email with intelligent attachment parsing and data extraction' },
                   ]
                   const displayItems = fromApi.length >= 3 ? fromApi : fromApi.length > 0 ? [...fromApi, ...fallbacks].slice(0, 3) : fallbacks
                   return displayItems.map((cap, idx) => (
-                    <div key={idx} style={{ background: '#F9FAFB', borderRadius: '8px', padding: '24px', minHeight: '230px', display: 'flex', flexDirection: 'column' }}>
-                      <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: cap.iconColor, marginBottom: '16px' }} />
-                      <h3 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500, fontSize: '16px', lineHeight: '26px', color: '#333333', margin: '0 0 8px 0' }}>{cap.title}</h3>
-                      <p style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '24px', color: '#4B4B4B', margin: 0 }}>{cap.desc}</p>
+                    <div
+                      key={idx}
+                      style={{
+                        width: '360px',
+                        minWidth: '360px',
+                        height: '230px',
+                        background: '#F9FAFB',
+                        borderRadius: '8px',
+                        padding: '24px 27px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        boxSizing: 'border-box',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <div style={{ marginBottom: '16px', flexShrink: 0, display: 'block' }}>
+                        {capabilityIconsByIndex[idx]}
+                      </div>
+                      <h3
+                        style={{
+                          fontFamily: "'Poppins', sans-serif",
+                          fontStyle: 'normal',
+                          fontWeight: 500,
+                          fontSize: '16px',
+                          lineHeight: '26px',
+                          color: '#333333',
+                          margin: '0 0 8px 0',
+                          textAlign: 'left',
+                        }}
+                      >
+                        {cap.title}
+                      </h3>
+                      <p
+                        style={{
+                          fontFamily: "'Poppins', sans-serif",
+                          fontStyle: 'normal',
+                          fontWeight: 400,
+                          fontSize: '14px',
+                          lineHeight: '24px',
+                          color: '#4B4B4B',
+                          margin: 0,
+                          textAlign: 'left',
+                        }}
+                      >
+                        {cap.desc}
+                      </p>
                     </div>
                   ))
                 })())}
               </div>
             </div>
 
-            {/* Key Benefits & Value Proposition – dynamic from API roi */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
+            {/* Key Benefits & Value Proposition – last section in modal (after Capabilities) */}
+            <div style={{ width: '924px', maxWidth: '100%', minHeight: '304px', margin: '48px auto 0', position: 'relative', boxSizing: 'border-box' }}>
+              {/* Group 1410104275 – divider + Key Benefits & Value Proposition + divider (336×16) */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  marginBottom: '24px',
+                }}
+              >
                 <span style={{ width: '32px', height: '1px', background: '#1F2937', flexShrink: 0 }} />
-                <span style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500, fontSize: '12px', lineHeight: '16px', letterSpacing: '1.2px', textTransform: 'uppercase', color: '#111827' }}>Key Benefits & Value Proposition</span>
+                <span
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontStyle: 'normal',
+                    fontWeight: 500,
+                    fontSize: '12px',
+                    lineHeight: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    letterSpacing: '1.2px',
+                    textTransform: 'uppercase',
+                    color: '#111827',
+                  }}
+                >
+                  Key Benefits & Value Proposition
+                </span>
                 <span style={{ width: '32px', height: '1px', background: '#1F2937', flexShrink: 0 }} />
               </div>
-              <p style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 300, fontSize: '24px', lineHeight: '40px', textAlign: 'center', margin: '0 auto 32px', maxWidth: '555px', background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              {/* Heading 2 – 555×40, Poppins 300 24px 40px, gradient #0023F6 → #008F59 */}
+              <p
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontStyle: 'normal',
+                  fontWeight: 300,
+                  fontSize: '24px',
+                  lineHeight: '40px',
+                  textAlign: 'center',
+                  margin: '0 auto 32px',
+                  maxWidth: '555px',
+                  display: 'block',
+                  background: 'linear-gradient(90deg, #0023F6 0%, #008F59 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
                 Enterprise AI scales when product and execution move together
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0', maxWidth: '924px', margin: '0 auto', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden' }}>
+              {/* Group 1410104316 – Article cards 280×192 each, white bg, border-left on 2nd/3rd */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 280px)',
+                  maxWidth: '924px',
+                  margin: '0 auto',
+                  justifyContent: 'center',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  boxSizing: 'border-box',
+                }}
+              >
                 {((() => {
                   const roiStr = modalAgentFromApi?.roi?.trim()
                   const benefits: { value: string; label: string; description: string; color: string }[] = []
@@ -666,31 +910,44 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
                   const looksLikeNumber = (v: string) => /^[\d.]+%?x?$/i.test((v || '').trim())
                   return benefits.map((benefit, idx) => {
                     const hasNumber = looksLikeNumber(benefit.value)
+                    const articleStyle: React.CSSProperties = {
+                      boxSizing: 'border-box',
+                      width: '280px',
+                      minWidth: '280px',
+                      height: '192px',
+                      padding: '24px 27px',
+                      background: '#FFFFFF',
+                      borderLeft: idx === 0 ? 'none' : '1px solid #E5E7EB',
+                      position: 'relative',
+                      textAlign: 'left',
+                    }
                     if (hasNumber) {
                       return (
-                        <div key={idx} style={{ boxSizing: 'border-box', padding: '32px 27px', background: '#FFFFFF', borderLeft: idx === 0 ? 'none' : '1px solid #E5E7EB', minHeight: '192px' }}>
-                          <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(115, 115, 115, 0.4)', marginBottom: '24px' }} />
-                          <div style={{ fontFamily: 'Geist, var(--font-geist-sans), sans-serif', fontWeight: 300, fontSize: '32px', lineHeight: '100%', color: benefit.color, marginBottom: '24px' }}>{benefit.value}</div>
-                          <div style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: '14px', lineHeight: '24px', color: benefit.color, marginBottom: benefit.description ? '8px' : 0 }}>{benefit.label}</div>
+                        <div key={idx} style={articleStyle}>
+                          {/* Overlay – 4×4 dot */}
+                          <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(115, 115, 115, 0.4)', marginBottom: '16px' }} />
+                          {/* Value – Geist 300 32px 100% */}
+                          <div style={{ fontFamily: "'Geist', var(--font-geist-sans), sans-serif", fontStyle: 'normal', fontWeight: 300, fontSize: '32px', lineHeight: '100%', display: 'flex', alignItems: 'center', color: benefit.color, marginBottom: '16px', textAlign: 'left' }}>{benefit.value}</div>
+                          {/* Title – same as Capabilities: Poppins 600 16px 26px */}
+                          <div style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 600, fontSize: '16px', lineHeight: '26px', color: benefit.color, marginBottom: benefit.description ? '8px' : 0, textAlign: 'left' }}>{benefit.label}</div>
                           {benefit.description ? (
-                            <div style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400, fontSize: '13px', lineHeight: '20px', color: '#344054' }}>{benefit.description}</div>
+                            <div style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 400, fontSize: '14px', lineHeight: '24px', color: '#4B4B4B', textAlign: 'left' }}>{benefit.description}</div>
                           ) : null}
                         </div>
                       )
                     }
-                    // No number: always show "Benefit" above the text (coloured), description below (normal black)
-                    // API may send "Description - Benefit" (value=Benefit, label=Description) or "Benefit - Description" (value=Description, label=Benefit)
                     const isBenefitFirstFormat = /^Benefit$/i.test((benefit.label || '').trim())
                     const benefitLabel = 'Benefit'
                     const descriptionText = isBenefitFirstFormat
                       ? (benefit.value?.trim() || '')
                       : (benefit.description?.trim() || benefit.label?.trim() || '')
                     return (
-                      <div key={idx} style={{ boxSizing: 'border-box', padding: '32px 27px', background: '#FFFFFF', borderLeft: idx === 0 ? 'none' : '1px solid #E5E7EB', minHeight: '192px' }}>
-                        <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(115, 115, 115, 0.4)', marginBottom: '24px' }} />
-                        <div style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: '14px', lineHeight: '24px', color: benefit.color, marginBottom: descriptionText ? '8px' : 0 }}>{benefitLabel}</div>
+                      <div key={idx} style={articleStyle}>
+                        <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(115, 115, 115, 0.4)', marginBottom: '16px' }} />
+                        {/* Title – same as Capabilities: Poppins 600 16px 26px */}
+                        <div style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 600, fontSize: '16px', lineHeight: '26px', color: benefit.color, marginBottom: descriptionText ? '8px' : 0, textAlign: 'left' }}>{benefitLabel}</div>
                         {descriptionText ? (
-                          <div style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400, fontSize: '13px', lineHeight: '20px', color: '#0A0A0A' }}>{descriptionText}</div>
+                          <div style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 400, fontSize: '14px', lineHeight: '24px', color: '#4B4B4B', textAlign: 'left' }}>{descriptionText}</div>
                         ) : null}
                       </div>
                     )
@@ -730,11 +987,28 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
             width: '1512px',
             maxWidth: '100%',
             height: '982px',
-            backgroundImage: 'url(/assets/theme-dots.png)',
+            backgroundImage: 'url(/assets/hero-dots-bg.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             zIndex: 0,
+          }}
+          aria-hidden
+        />
+        {/* Gradient overlay – light red for usecase, yellow otherwise; same structure as UseCaseDetailsBody */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            width: '100%',
+            height: '480px',
+            background: overviewVariant === 'usecase'
+              ? 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(255, 200, 200, 0.9) 0%, rgba(255, 180, 180, 0.55) 30%, rgba(255, 160, 160, 0.25) 55%, transparent 100%)'
+              : 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(243, 231, 179, 0.9) 0%, rgba(246, 237, 200, 0.55) 30%, rgba(239, 230, 176, 0.25) 55%, transparent 100%)',
+            zIndex: 0,
+            pointerEvents: 'none',
           }}
           aria-hidden
         />
@@ -1146,7 +1420,9 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
       {/* Capabilities – Rectangle 34624664 gradient + Group 1410104279 */}
       <section id="capabilities" className="relative py-16 px-4 md:px-8" style={{ overflowX: 'hidden', minHeight: '600px', background: 'linear-gradient(180deg, #FEFEFF 0%, #F5F5F5 49.52%, #FFFFFF 100%)' }}>
         <div className="w-full mx-auto" style={{ maxWidth: '1280px', minHeight: '510px' }}>
-          {overviewVariant === 'usecase' ? (
+          {overviewVariant === 'usecase' && customCapabilitiesSection != null ? (
+            customCapabilitiesSection
+          ) : overviewVariant === 'usecase' ? (
             /* Use-case layout: two columns – left label+heading, right capability list with click-to-expand */
             (() => {
               const featuresStr = (agent?.features && String(agent.features).trim() && agent.features !== 'na') ? String(agent.features).replace(/\\n/g, '\n') : ''
@@ -2016,9 +2292,9 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
             </h2>
           </div>
 
-          {/* Category tabs – All, Banking, Retail, Healthcare, Manufacturing (working) */}
+          {/* Category tabs – All + industries from API (by_industry) */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '18px', maxWidth: '1325px' }}>
-            {AGENT_POWERING_CATEGORIES.map((cat) => {
+            {agentPoweringCategoriesFromApi.map((cat) => {
               const active = agentPoweringCategory === cat
               return (
                 <button
@@ -2179,42 +2455,6 @@ export function SolutionDetailsBody(props: AgentDetailsContentProps) {
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Tags from API (unique from related agents), excluding "More..." */}
-          <div style={{ width: '100%', maxWidth: '1325px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '24px', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-            {agentPoweringTagsFromApi.map((tag) => {
-              const active = agentPoweringTag === tag
-              return (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => setAgentPoweringTag(active ? null : tag)}
-                  style={{
-                    boxSizing: 'border-box',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: '11px 18px',
-                    gap: '10px',
-                    height: '42px',
-                    background: active ? '#1F1F1F' : '#FFFFFF',
-                    border: '1px solid #EAECF0',
-                    borderRadius: '999px',
-                    fontFamily: 'Inter, sans-serif',
-                    fontStyle: 'normal',
-                    fontWeight: 500,
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    color: active ? '#FFFFFF' : '#344054',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {tag}
-                </button>
-              )
-            })}
           </div>
 
           {/* Line 619 – divider 1319px */}
