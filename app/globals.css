@@ -1284,14 +1284,27 @@ nextjs-portal {
   left: 100%;
 }
 
-/* Hide scrollbar for onboarding modal */
+/* Hide scrollbar for onboarding modal and agent powering scroll */
 .scrollbar-hide {
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
   /* Chrome, Safari, Opera */
+}
+
+/* Agent powering section: scroll hint animation (right-side chevron) */
+@keyframes agent-powering-scroll-hint {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: 1;
+  }
 }
 
 /* Header sub-nav: smooth scroll and focus for accessibility */

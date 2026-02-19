@@ -1647,7 +1647,7 @@ export default function AgentLibraryPage() {
                     },
                     {
                       id: "insurance",
-                      title: "Ai for Other Industries",
+                      title: "AI for Other Industries",
                       description: "Expanding AI capabilities for additional industries, enabling seamless customer interactions across chat, voice, and web with rapid deployment and enterprise-ready scalability.",
                       icon: Activity,
                       gradient: "linear-gradient(135deg, #86EFAC 0%, #15803D 100%)",
@@ -1658,7 +1658,7 @@ export default function AgentLibraryPage() {
                     },
                     {
                       id: "healthcare",
-                      title: "Ai for Other Industries",
+                      title: "AI for Other Industries",
                       description: "Expanding AI capabilities for additional industries, enabling seamless customer interactions across chat, voice, and web with rapid deployment and enterprise-ready scalability.",
                       icon: HeartHandshake,
                       gradient: "linear-gradient(135deg, #F9A8D4 0%, #BE185D 100%)",
