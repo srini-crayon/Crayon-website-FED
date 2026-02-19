@@ -2099,8 +2099,7 @@ export default function AgentLibraryPage() {
                       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                         {paginatedAgents.map((agent, index) => {
                           const isFirstCard = index === 0 && currentPage === 1;
-                          const categoryLabel = agent.assetType === "Solution" ? "Agentic AI Solution" : agent.assetType === "Use case" || (agent as any).deploymentType === "Use case" ? "Agentic AI Use case" : "AI Agent";
-                          const isUseCase = categoryLabel === "Agentic AI Use case";
+                          const categoryLabel = agent.assetType || (agent as any).deploymentType || "Agent";
                           return (
                             <Link
                               key={agent.id}
