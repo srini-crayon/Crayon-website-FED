@@ -1,41 +1,189 @@
-/* Just ask input: no outline, border, or box-shadow; padding so bottom isn't clipped */
-.just-ask-input-wrapper {
-  padding: 2px;
-  margin: -2px;
-  box-sizing: content-box;
-  overflow: visible;
-}
-.just-ask-input-wrapper,
-.just-ask-input-wrapper:focus,
-.just-ask-input-wrapper:focus-within {
-  outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-.just-ask-input-wrapper input.just-ask-input,
-.just-ask-input-wrapper input.just-ask-input:focus,
-.just-ask-input-wrapper input.just-ask-input:focus-visible,
-.just-ask-input-wrapper input.just-ask-input:hover,
-input.just-ask-input {
-  outline: none !important;
-  outline-offset: 0 !important;
-  box-shadow: none !important;
-  border: none !important;
-  -webkit-appearance: none !important;
-  appearance: none !important;
+/* ============================================
+   AI for Banking — Tangram Agents theme
+   ============================================ */
+
+:root {
+  /* Ink — match Tangram agents */
+  --banking-ink: #091917;
+  --banking-ink-muted: #374151;
+  --banking-ink-subtle: #6B7280;
+  --banking-ink-body: #1C1C1C;
+  /* Surfaces & borders — agents use #F8F8F8, #EAECF0, #E5E7EB */
+  --banking-border: #EAECF0;
+  --banking-border-strong: #D1D5DB;
+  --banking-surface: #FFFFFF;
+  --banking-surface-alt: #F8F8F8;
+  --banking-surface-elevated: #FFFFFF;
+  /* Accent — agents use #1E3A8A for selected pill, #007BFF for links */
+  --banking-accent: #007BFF;
+  --banking-accent-hover: #0066CC;
+  --banking-accent-pill: #1E3A8A;
+  --banking-accent-muted: rgba(0, 123, 255, 0.08);
+  --banking-accent-soft: rgba(0, 123, 255, 0.12);
+  /* Hero gradient background — agents hero */
+  --banking-hero-bg: linear-gradient(180deg, #B8E2F0 0%, #D0ECF5 18%, #E5F5FA 35%, #FFFFFF 55%, #FFFFFF 100%);
+  /* Title gradients — agents */
+  --banking-gradient-hero: linear-gradient(90deg, #091917 0%, #2E7F75 100%);
+  --banking-gradient-heading: linear-gradient(90deg, #0023F6 0%, #008F59 100%);
+  /* Shadows */
+  --banking-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --banking-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --banking-shadow-md: 0 6px 12px -2px rgba(0, 0, 0, 0.06), 0 3px 6px -3px rgba(0, 0, 0, 0.04);
+  --banking-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --banking-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  /* Radius — agents use 8px for search, 999px for pills */
+  --banking-radius: 8px;
+  --banking-radius-lg: 12px;
+  --banking-radius-xl: 16px;
+  --banking-radius-2xl: 24px;
+  --banking-content-max: 1280px;
+  --banking-content-padding-x: 1.5rem;
+  --banking-content-padding-x-lg: 2rem;
+  --banking-section-padding-y: clamp(3rem, 6vw, 4.5rem);
+  --banking-section-padding-y-sm: clamp(2rem, 4vw, 3rem);
+  /* Type — Poppins for headings (agents), Inter for body */
+  --banking-font-sans: "Inter", system-ui, sans-serif;
+  --banking-font-display: "Poppins", system-ui, sans-serif;
+  --banking-text-hero: 1.75rem;
+  --banking-text-h2: 1.75rem;
+  --banking-text-h3: 1.125rem;
+  --banking-text-body: 1rem;
+  --banking-text-body-sm: 0.9375rem;
+  --banking-text-caption: 0.8125rem;
+  --banking-text-eyebrow: 0.6875rem;
+  --banking-leading-tight: 1.25;
+  --banking-leading-snug: 1.375;
+  --banking-leading-normal: 1.5;
+  --banking-leading-relaxed: 1.625;
 }
 
-/* Search bar: focus ring on wrapper (inset) so no outline is ever clipped when zoomed */
+/* ============================================
+   Page-wide scroll-triggered animations
+   ============================================ */
+@keyframes industry-banking-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes industry-banking-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Breadcrumb */
+.industry-banking-section-breadcrumb.fade-in-visible {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hero — stagger children */
+.industry-banking-hero-section.fade-in-visible .industry-banking-hero-stagger-item {
+  animation: industry-banking-fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+.industry-banking-hero-section.fade-in-visible .industry-banking-hero-stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.industry-banking-hero-section.fade-in-visible .industry-banking-hero-stagger-item:nth-child(2) { animation-delay: 0.12s; }
+.industry-banking-hero-section.fade-in-visible .industry-banking-hero-stagger-item:nth-child(3) { animation-delay: 0.19s; }
+.industry-banking-hero-section.fade-in-visible .industry-banking-hero-stagger-item:nth-child(4) { animation-delay: 0.26s; }
+.industry-banking-hero-section.fade-in-visible .industry-banking-hero-stagger-item:nth-child(5) { animation-delay: 0.33s; }
+
+/* AI Mega Trends */
+#ai-mega-trends.fade-in-visible {
+  animation: industry-banking-fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* AI Mega Trends — animate content when switching tabs */
+#ai-mega-trends .trends-tab-panel {
+  opacity: 0;
+  animation: industry-banking-fade-in-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Partnership — stagger header + panel */
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head:nth-child(1) { animation-delay: 0.06s; }
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head:nth-child(2) { animation-delay: 0.14s; }
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head:nth-child(3) { animation-delay: 0.22s; }
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head:nth-child(4) { animation-delay: 0.3s; }
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head:nth-child(5) { animation-delay: 0.38s; }
+.industry-banking-partnership-section.fade-in-visible .industry-banking-stagger-head:nth-child(6) { animation-delay: 0.46s; }
+
+/* Partnership — animate panel when switching tabs (and when section first in view) */
+.industry-banking-partnership-panel[hidden] {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: none;
+  pointer-events: none;
+}
+.industry-banking-partnership-panel:not([hidden]) {
+  animation: industry-banking-fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Featured Agents — stagger header */
+#featured-agents.fade-in-visible .industry-banking-stagger-head {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+#featured-agents.fade-in-visible .industry-banking-stagger-head:nth-child(1) { animation-delay: 0.06s; }
+#featured-agents.fade-in-visible .industry-banking-stagger-head:nth-child(2) { animation-delay: 0.14s; }
+#featured-agents.fade-in-visible .industry-banking-stagger-head:nth-child(3) { animation-delay: 0.22s; }
+#featured-agents.fade-in-visible .industry-banking-stagger-head:nth-child(4) { animation-delay: 0.3s; }
+#featured-agents.fade-in-visible .industry-banking-featured-card {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+#featured-agents.fade-in-visible .industry-banking-featured-card:nth-child(1) { animation-delay: 0.2s; }
+#featured-agents.fade-in-visible .industry-banking-featured-card:nth-child(2) { animation-delay: 0.28s; }
+#featured-agents.fade-in-visible .industry-banking-featured-card:nth-child(3) { animation-delay: 0.36s; }
+#featured-agents.fade-in-visible .industry-banking-featured-card:nth-child(4) { animation-delay: 0.44s; }
+#featured-agents.fade-in-visible .industry-banking-featured-card:nth-child(5) { animation-delay: 0.52s; }
+#featured-agents.fade-in-visible .industry-banking-featured-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Search Agents */
+.fade-in-visible .industry-banking-animate-in {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  opacity: 0;
+}
+
+/* Agent cards — stagger grid items + CTA */
+#agent-cards.fade-in-visible .agent-card-stagger {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(1) { animation-delay: 0.05s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(2) { animation-delay: 0.1s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(3) { animation-delay: 0.15s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(4) { animation-delay: 0.2s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(5) { animation-delay: 0.25s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(6) { animation-delay: 0.3s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(7) { animation-delay: 0.35s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(8) { animation-delay: 0.4s; }
+#agent-cards.fade-in-visible .agent-card-stagger:nth-child(9) { animation-delay: 0.45s; }
+#agent-cards.fade-in-visible .industry-banking-cta-in {
+  animation: industry-banking-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+  opacity: 0;
+}
+
+/* Search bar — Tangram agents style (rounded-lg, #F8F8F8) */
 .industry-banking-search {
   isolation: isolate;
-  /* Slight padding so focus ring never touches clip edge when zoomed */
-  padding: 2px;
-  margin: -2px;
-  box-sizing: content-box;
+  border: 1px solid var(--banking-border);
+  border-radius: var(--banking-radius);
+  background: var(--banking-surface-alt);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.industry-banking-search:hover {
+  border-color: var(--banking-border-strong);
 }
 .industry-banking-search:focus-within {
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
-  border-radius: 34px; /* 32px inner + 2px padding */
+  border-color: var(--banking-accent);
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
 }
 .industry-banking-search input {
   outline: none !important;
@@ -49,22 +197,691 @@ input.just-ask-input {
   box-shadow: none !important;
 }
 
-/* Extend stagger animation for industry banking card grid (12 cards) */
-.industry-banking-cards .stagger-item:nth-child(7) {
-  transition-delay: 0.15s;
+/* Section breadcrumb – sits just below header; extra top padding + sticky offset so it’s never covered by header border/shadow */
+.industry-banking-section-breadcrumb {
+  position: sticky;
+  top: 53px; /* just below main header row (52px) so header border/shadow doesn’t overlap */
+  z-index: 45;
+  background: var(--banking-surface);
+  overflow: visible;
+  isolation: isolate;
+  box-shadow: 0 1px 0 var(--banking-border);
+  padding-top: 30px; /* gap below header so breadcrumb content isn’t cut off */
 }
-.industry-banking-cards .stagger-item:nth-child(8) {
-  transition-delay: 0.2s;
+.industry-banking-section-breadcrumb-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--banking-border) 5%, var(--banking-border) 95%, transparent 100%);
+  flex-shrink: 0;
 }
-.industry-banking-cards .stagger-item:nth-child(9) {
-  transition-delay: 0.25s;
+.industry-banking-section-breadcrumb .industry-banking-section-breadcrumb-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 14px 0;
+  width: 100%;
+  font-family: var(--banking-font-sans);
 }
-.industry-banking-cards .stagger-item:nth-child(10) {
-  transition-delay: 0.3s;
+.industry-banking-section-breadcrumb .industry-banking-section-breadcrumb-inner a,
+.industry-banking-section-breadcrumb .industry-banking-section-breadcrumb-inner button {
+  font-size: var(--banking-text-body-sm);
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
-.industry-banking-cards .stagger-item:nth-child(11) {
-  transition-delay: 0.35s;
+.industry-banking-section-breadcrumb .industry-breadcrumb-icon-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: var(--banking-radius);
+  border: 1px solid var(--banking-border);
+  background: var(--banking-surface-alt);
+  color: var(--banking-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.industry-banking-cards .stagger-item:nth-child(12) {
-  transition-delay: 0.4s;
+.industry-banking-section-breadcrumb .industry-breadcrumb-icon-btn:hover {
+  background: var(--banking-border);
+  border-color: var(--banking-border-strong);
+  box-shadow: var(--banking-shadow-sm);
+}
+
+/* Section wrappers & rhythm */
+.industry-banking-section-wrap {
+  position: relative;
+  padding-left: var(--banking-content-padding-x);
+  padding-right: var(--banking-content-padding-x);
+  padding-top: var(--banking-section-padding-y);
+  padding-bottom: var(--banking-section-padding-y);
+}
+@media (min-width: 1024px) {
+  .industry-banking-section-wrap {
+    padding-left: var(--banking-content-padding-x-lg);
+    padding-right: var(--banking-content-padding-x-lg);
+  }
+}
+.industry-banking-section-wrap::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--banking-border);
+  opacity: 0.6;
+}
+.industry-banking-section-wrap.section-bg-alt {
+  background: #FFFFFF;
+}
+.industry-banking-section-wrap.industry-banking-hero-section::before {
+  display: none;
+}
+.industry-banking-section-inner {
+  max-width: var(--banking-content-max);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+/* Center-aligned sections (Overview, AI Mega Trends, Partnership) */
+.industry-banking-section-center .industry-banking-section-inner {
+  text-align: center;
+}
+.industry-banking-section-center .industry-banking-hero-title {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.industry-banking-section-center .industry-banking-hero-desc {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.industry-banking-section-center .industry-banking-section-title {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.industry-banking-section-center .industry-banking-section-subtitle {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.industry-banking-section-center .industry-banking-tabs {
+  justify-content: center;
+}
+.industry-banking-section-center-panel {
+  max-width: 1074px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Page wrapper — white (Tangram agents: only hero has gradient) */
+.industry-banking-page-wrap {
+  background: #FFFFFF;
+}
+
+/* Hero/Overview — fills first fold, comfortable spacing */
+.industry-banking-hero-section {
+  background: linear-gradient(180deg, #B8E2F0 0%, #D0ECF5 18%, #E5F5FA 35%, #FFFFFF 55%, #FFFFFF 100%);
+  min-height: calc(100svh - 52px - 100px); /* viewport minus header minus breadcrumb */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: var(--banking-section-padding-y);
+  padding-bottom: var(--banking-section-padding-y);
+}
+
+/* Section eyebrow */
+.industry-banking-eyebrow {
+  font-family: var(--banking-font-sans);
+  font-size: var(--banking-text-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--banking-accent);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* Hero / page title — Poppins, gradient, largest */
+.industry-banking-hero-title {
+  font-family: var(--banking-font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  line-height: 1.25;
+  letter-spacing: 0;
+  max-width: 720px;
+  background: var(--banking-gradient-hero);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+/* Hero subtitle (h2) — smaller than h1 */
+.industry-banking-hero-subtitle {
+  font-family: var(--banking-font-display);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  line-height: 1.35;
+  letter-spacing: 0;
+  max-width: 720px;
+  color: var(--banking-ink);
+}
+.industry-banking-section-center .industry-banking-hero-subtitle {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Hero description — smaller than h2 */
+.industry-banking-hero-desc {
+  font-family: var(--banking-font-sans);
+  font-size: clamp(0.875rem, 1.5vw, 0.9375rem);
+  line-height: 1.65;
+  color: var(--banking-ink-body);
+  max-width: 100%;
+}
+
+/* Section headings — gradient like agents "All Agents" */
+.industry-banking-section-title {
+  font-family: var(--banking-font-display);
+  font-weight: 300;
+  font-size: var(--banking-text-h2);
+  line-height: 1.4;
+  letter-spacing: 0;
+  margin-bottom: 0.5rem;
+  background: var(--banking-gradient-heading);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.industry-banking-section-subtitle {
+  font-family: var(--banking-font-sans);
+  font-size: var(--banking-text-body-sm);
+  line-height: 1.6;
+  color: var(--banking-ink);
+  max-width: 640px;
+  margin-bottom: 2rem;
+}
+
+/* Tabs — premium */
+.industry-banking-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.industry-banking-tab {
+  font-family: var(--banking-font-sans);
+  font-weight: 500;
+  font-size: var(--banking-text-body-sm);
+  line-height: 1.4;
+  color: var(--banking-ink-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--banking-radius);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+.industry-banking-tab:hover {
+  color: var(--banking-ink);
+  background: var(--banking-surface-alt);
+}
+.industry-banking-tab:focus-visible {
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
+  border-color: var(--banking-accent);
+}
+.industry-banking-tab[data-active="true"] {
+  color: var(--banking-accent);
+  background: var(--banking-accent-muted);
+  border-color: var(--banking-accent);
+}
+
+/* AI Mega Trends — Tangram-style cards (rounded-2xl, visual block + icon + body) */
+.industry-banking-mega-grid {
+  max-width: 100%;
+}
+.industry-banking-mega-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem; /* rounded-2xl */
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+  background: var(--banking-surface);
+  padding: 0;
+  gap: 0;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease;
+  overflow: hidden;
+  font-family: var(--banking-font-sans);
+}
+.industry-banking-mega-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+.industry-banking-mega-card-padding {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.industry-banking-mega-card-visual {
+  position: relative;
+  height: 12rem; /* h-48 */
+  border-radius: 0.75rem; /* rounded-xl */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.industry-banking-mega-card-visual-text {
+  font-size: 0.875rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--banking-ink);
+  text-align: center;
+  white-space: pre-line;
+}
+.industry-banking-mega-card-body {
+  padding: 1.25rem; /* p-5 */
+}
+.industry-banking-mega-card-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.industry-banking-mega-card-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: var(--banking-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.industry-banking-mega-card-icon-svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.industry-banking-mega-card-content {
+  flex: 1;
+  min-width: 0;
+}
+.industry-banking-mega-card-title {
+  font-weight: 600;
+  font-size: var(--banking-text-h3);
+  line-height: var(--banking-leading-snug);
+  color: var(--banking-ink);
+  margin: 0 0 0.25rem 0;
+}
+.industry-banking-mega-card-desc {
+  font-size: var(--banking-text-caption);
+  line-height: 1.5;
+  color: var(--banking-ink-subtle);
+  margin: 0;
+}
+
+/* Mega-trend / content cards (legacy — e.g. partnership or other sections) */
+.industry-banking-card {
+  font-family: var(--banking-font-sans);
+  padding: 1.5rem 1.5rem;
+  border-radius: var(--banking-radius-lg);
+  border: 1px solid var(--banking-border);
+  background: var(--banking-surface);
+  box-shadow: var(--banking-shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  min-height: 140px;
+}
+.industry-banking-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--banking-shadow-md);
+  border-color: var(--banking-border-strong);
+}
+.industry-banking-card-title {
+  font-weight: 600;
+  font-size: var(--banking-text-h3);
+  line-height: var(--banking-leading-snug);
+  color: var(--banking-ink);
+  margin-bottom: 0.5rem;
+}
+.industry-banking-card-desc {
+  font-size: var(--banking-text-caption);
+  line-height: 1.5;
+  color: var(--banking-ink-subtle);
+  margin: 0;
+}
+
+/* Partnership section */
+.industry-banking-partnership-section {
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 12%, transparent 88%, rgba(248, 250, 252, 0.5) 100%);
+}
+.industry-banking-partnership-section .industry-banking-section-inner {
+  max-width: 1100px;
+}
+.industry-banking-partnership-tabs-wrap {
+  margin-bottom: 0;
+}
+.industry-banking-partnership-tabs-wrap button:focus-visible {
+  outline: 2px solid var(--banking-accent);
+  outline-offset: 2px;
+}
+.industry-banking-partnership-section .industry-banking-partnership-panel {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Partnership phase panel — single card, bullet cards inside */
+.industry-banking-partnership-panel {
+  font-family: var(--banking-font-sans);
+  border-radius: var(--banking-radius-xl);
+  background: var(--banking-surface);
+}
+.industry-banking-partnership-panel-inner {
+  display: block;
+}
+.industry-banking-partnership-body {
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: var(--banking-radius-xl);
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .industry-banking-partnership-body {
+    padding: 2rem 2.25rem;
+  }
+}
+.industry-banking-partnership-timeframe {
+  font-size: var(--banking-text-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--banking-ink-subtle);
+  margin-bottom: 0.375rem;
+  text-align: center;
+}
+.industry-banking-partnership-phase-title {
+  font-weight: 700;
+  font-size: var(--banking-text-h3);
+  line-height: 1.35;
+  margin-bottom: 1rem;
+  color: var(--banking-ink);
+  text-align: center;
+}
+.industry-banking-partnership-headline {
+  font-size: var(--banking-text-body-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--banking-ink);
+  margin: 0 0 1.5rem;
+  text-align: center;
+}
+.industry-banking-partnership-project-boxes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 0;
+}
+@media (min-width: 640px) {
+  .industry-banking-partnership-project-boxes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.industry-banking-partnership-project-box {
+  padding: 2rem 1.5rem;
+  background: var(--banking-surface);
+  border: 1px solid var(--banking-border);
+  border-radius: var(--banking-radius-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 120px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.industry-banking-partnership-project-box-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.industry-banking-partnership-project-box-label {
+  font-size: var(--banking-text-caption);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--banking-ink);
+}
+.industry-banking-partnership-project-box:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.industry-banking-partnership-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.875rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+@media (min-width: 640px) {
+  .industry-banking-partnership-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .industry-banking-partnership-cards {
+    gap: 1rem;
+  }
+}
+.industry-banking-partnership-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--banking-surface);
+  border-radius: var(--banking-radius-lg);
+  border: 1px solid var(--banking-border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.industry-banking-partnership-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.industry-banking-partnership-card-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.25rem;
+}
+.industry-banking-partnership-card-text {
+  font-size: var(--banking-text-caption);
+  line-height: 1.5;
+  color: var(--banking-ink);
+  margin: 0;
+}
+.industry-banking-partnership-card-sublist {
+  margin: 0.375rem 0 0;
+  padding-left: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--banking-ink-muted);
+}
+.industry-banking-partnership-card-sublist li {
+  margin-bottom: 0.25rem;
+}
+.industry-banking-partnership-card-sublist li:last-child {
+  margin-bottom: 0;
+}
+
+/* Agent grid cards */
+.industry-banking-cards-wrapper {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Search Agents cards — match tangram-ai-agents (agents page) style */
+.industry-banking-cards .industry-banking-agent-card {
+  border-radius: 16px;
+  border: none;
+  transition: box-shadow 0.3s ease-out, opacity 0.3s ease-out;
+  outline: none;
+}
+.industry-banking-cards .industry-banking-agent-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.industry-banking-cards .industry-banking-agent-card:focus-visible {
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
+}
+
+/* Featured carousel — prevent hover trim, align cards */
+.industry-banking-featured-carousel-wrap {
+  overflow: visible;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-top: -12px;
+  margin-bottom: -12px;
+}
+.industry-banking-featured-carousel {
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 20px 4px 24px 4px;
+  margin: -20px -4px -24px -4px;
+  align-items: flex-start;
+  scroll-padding-inline: 4px;
+}
+.industry-banking-featured-carousel::-webkit-scrollbar {
+  display: none;
+}
+/* Featured carousel cards — match tangram-ai-agents browse carousel: hover zoom + clickable */
+.industry-banking-featured-card {
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.industry-banking-featured-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.industry-banking-featured-card:hover .browse-card-arrow {
+  transform: translate(2px, -2px);
+}
+.industry-banking-featured-card .browse-card-arrow {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+}
+.industry-banking-featured-card-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+  align-items: flex-start;
+  min-width: 0;
+}
+.industry-banking-featured-card-img {
+  flex-shrink: 0;
+}
+
+/* Carousel nav buttons */
+.industry-banking-carousel-btn {
+  font-family: var(--banking-font-sans);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+.industry-banking-carousel-btn:hover:not(:disabled) {
+  background: var(--banking-surface-alt) !important;
+  border-color: var(--banking-border-strong) !important;
+  color: var(--banking-ink) !important;
+}
+.industry-banking-carousel-btn:focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
+  border-color: var(--banking-accent) !important;
+}
+
+/* Primary CTA */
+.industry-banking-btn-primary {
+  font-family: var(--banking-font-sans);
+  font-weight: 500;
+  font-size: var(--banking-text-body-sm);
+  line-height: 1.4;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--banking-radius);
+  background: var(--banking-accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  box-shadow: var(--banking-shadow-sm);
+}
+.industry-banking-btn-primary:hover {
+  background: var(--banking-accent-hover);
+}
+.industry-banking-btn-primary:active {
+  transform: scale(0.98);
+}
+.industry-banking-btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
+}
+
+/* Secondary button */
+.industry-banking-btn-secondary {
+  font-family: var(--banking-font-sans);
+  font-weight: 500;
+  font-size: var(--banking-text-body-sm);
+  line-height: 1.4;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--banking-radius);
+  background: var(--banking-surface);
+  color: var(--banking-ink);
+  border: 1px solid var(--banking-border);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+.industry-banking-btn-secondary:hover {
+  border-color: var(--banking-border-strong);
+  background: var(--banking-surface-alt);
+}
+.industry-banking-btn-secondary:focus-visible {
+  border-color: var(--banking-accent);
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
+}
+
+/* Filter pills — Tangram agents (rounded-full, #EAECF0, selected #1E3A8A) */
+.industry-banking-pill {
+  font-family: var(--banking-font-display);
+  font-size: var(--banking-text-body-sm);
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid var(--banking-border);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+.industry-banking-pill:hover {
+  border-color: var(--banking-border-strong);
+  background: var(--banking-surface-alt);
+}
+.industry-banking-pill:focus-visible {
+  box-shadow: 0 0 0 2px var(--banking-accent-muted);
+  border-color: var(--banking-accent);
+}
+.industry-banking-pill[data-active="true"] {
+  background: var(--banking-accent-pill) !important;
+  border-color: var(--banking-accent-pill) !important;
+  color: #fff !important;
+}
+.industry-banking-pill[data-active="true"]:hover {
+  background: #16316d !important;
+  border-color: #16316d !important;
 }
