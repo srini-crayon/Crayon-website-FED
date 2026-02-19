@@ -1390,16 +1390,43 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 : `Agents and Models that combine to perform ${title || 'this solution'}`}
           </h2>
 
-          {/* ΓöÇΓöÇ 4. Cards Grid – data from bundled / similar agents API ΓöÇΓöÇ */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '16px',
-            }}
-          >
-            {relatedAgents.length > 0
-              ? relatedAgents.slice(0, 8).map((ra: { agent_id?: string; agent_name?: string; description?: string }) => {
+          {/* ΓöÇΓöÇ 4. Cards Grid – 2 rows; 4 cards in view (2×2), rest horizontally scrollable ΓöÇΓöÇ */}
+          {(() => {
+            const agentCards = relatedAgents.length > 0 ? relatedAgents : []
+            const isScrollable = agentCards.length > 4
+            const cardWidth = 280
+            const gap = 16
+            const columns = Math.ceil(agentCards.length / 2) || 1
+            return (
+              <div
+                style={{
+                  overflowX: isScrollable ? 'auto' : 'visible',
+                  overflowY: 'hidden',
+                  marginLeft: isScrollable ? '-8px' : 0,
+                  marginRight: isScrollable ? '-8px' : 0,
+                  paddingLeft: isScrollable ? '8px' : 0,
+                  paddingRight: isScrollable ? '8px' : 0,
+                  paddingBottom: isScrollable ? '8px' : 0,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: 'auto auto',
+                    ...(isScrollable
+                      ? {
+                          gridAutoFlow: 'column',
+                          gridAutoColumns: `${cardWidth}px`,
+                          minWidth: columns * cardWidth + (columns - 1) * gap,
+                        }
+                      : {
+                          gridTemplateColumns: 'repeat(2, 1fr)',
+                        }),
+                    gap: `${gap}px`,
+                  }}
+                >
+            {agentCards.length > 0
+              ? agentCards.map((ra: { agent_id?: string; agent_name?: string; description?: string }) => {
                   const agentId = ra.agent_id || ''
                   const name = ra.agent_name || 'Agent'
                   const desc = ra.description || ''
@@ -1521,7 +1548,10 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                 ))
               )}
 
-          </div>
+                </div>
+              </div>
+            )
+          })()}
         </div>
       </section>
       {/* Placeholder section for sub-nav "Use Cases" scroll target; content can be added later */}

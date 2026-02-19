@@ -256,6 +256,8 @@ export default function AgentLibraryPage() {
   const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 9;
+  /** Agent cards grid shows only agents with these asset_type values (API: asset_type). */
+  const AGENT_CARDS_ALLOWED_ASSET_TYPES = ["Solution", "Agent", "Use case", "Use Case"];
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategoryTag, setSelectedCategoryTag] = useState<string[]>([]);
   const [selectedByValueTag, setSelectedByValueTag] = useState<string[]>([]);
@@ -272,19 +274,13 @@ export default function AgentLibraryPage() {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const browseCarouselRef = useRef<HTMLDivElement>(null);
   const [browseCarouselPage, setBrowseCarouselPage] = useState(0);
-  /** Only these agents are shown in the browse carousel; each card uses API data when available (id, title, description), else static fallback. */
+  /** Browse carousel: only these 5 cards in this order; API match by title for id/description; images and backgrounds unchanged from previous. */
   const BROWSE_CARDS_DATA: { id: string; title: string; description: string; image: string; background: string }[] = [
-    { id: "lea", title: "LEA Notice Assistant", description: "Legal entity and agreement management agent.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
-    { id: "account-opening", title: "Account Opening Automation", description: "Streamlined account opening and onboarding workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
-    { id: "npa", title: "NPA Valuation Assistant", description: "NPA valuation and portfolio management assistant.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
-    { id: "travel-ai", title: "Travel AI", description: "AI-powered travel assistant for bookings, itineraries, and recommendations.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
+    { id: "ai-marketplace", title: "AI Marketplace", description: "", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
     { id: "omp", title: "OMP (Offer Management Platform)", description: "Operations and process management agent for streamlined workflows.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
-    { id: "test-data", title: "Test Data Management", description: "Generate and manage test data for QA and development.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
-    { id: "controls-agent", title: "Control Agents", description: "Governance and controls automation for compliance and risk.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
-    { id: "data-studio", title: "Data Studio", description: "Visual analytics and data exploration for business insights.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
     { id: "cxo-concierge", title: "CXO Concierge", description: "Executive-level assistant for strategy, reporting, and decision support.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
-    { id: "ap-automation", title: "Account Payable Automation", description: "Accounts payable automation and invoice processing.", image: "/img/carousel-card-support.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #00B155 94.52%), linear-gradient(77.09deg, rgba(0, 0, 0, 0) 5.57%, rgba(36, 4, 31, 0.4) 98.1%)" },
-    { id: "wealth-rm", title: "Wealth RM Assistant", description: "Wealth and relationship management for advisors and clients.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "data-studio", title: "Data Studio", description: "Visual analytics and data exploration for business insights.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #062D19 7.68%, #007C98 94.52%)" },
+    { id: "test-data", title: "Test Data Management", description: "Generate and manage test data for QA and development.", image: "/img/carousel-card-campaign.png", background: "linear-gradient(84.65deg, #10062D 7.68%, #007C98 94.52%)" },
   ];
   const BROWSE_CAROUSEL_PAGES = BROWSE_CARDS_DATA.length;
 
@@ -956,8 +952,13 @@ export default function AgentLibraryPage() {
       : agents;
 
     const filtered = applyManualFilters(baseList);
+    // Only show agents whose asset_type is Solution, Agent, or Use case (agent cards grid)
+    const byAssetType = filtered.filter((a) =>
+      AGENT_CARDS_ALLOWED_ASSET_TYPES.includes(a.assetType) ||
+      ((a as any).deploymentType && AGENT_CARDS_ALLOWED_ASSET_TYPES.includes((a as any).deploymentType))
+    );
     // Sort by agents_ordering (already sorted in fetchData, but re-sort after filtering to maintain order)
-    return filtered.sort((a, b) => {
+    return byAssetType.sort((a, b) => {
       const aOrder = a.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       const bOrder = b.agents_ordering ?? Number.MAX_SAFE_INTEGER;
       return aOrder - bOrder;
