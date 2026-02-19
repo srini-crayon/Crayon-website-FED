@@ -1646,8 +1646,8 @@ export default function AgentLibraryPage() {
                     },
                     {
                       id: "insurance",
-                      title: "AI for Insurance",
-                      description: "Conversational AI assistant tailored for insurance, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      title: "Ai for Other Industries",
+                      description: "Expanding AI capabilities for additional industries, enabling seamless customer interactions across chat, voice, and web with rapid deployment and enterprise-ready scalability.",
                       icon: Activity,
                       gradient: "linear-gradient(135deg, #86EFAC 0%, #15803D 100%)",
                       gradientFromCorner: "linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(21,128,61,0.06) 40%, transparent 70%)",
@@ -1657,8 +1657,8 @@ export default function AgentLibraryPage() {
                     },
                     {
                       id: "healthcare",
-                      title: "AI for Healthcare",
-                      description: "Conversational AI assistant tailored for healthcare, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
+                      title: "Ai for Other Industries",
+                      description: "Expanding AI capabilities for additional industries, enabling seamless customer interactions across chat, voice, and web with rapid deployment and enterprise-ready scalability.",
                       icon: HeartHandshake,
                       gradient: "linear-gradient(135deg, #F9A8D4 0%, #BE185D 100%)",
                       gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.12) 0%, rgba(190,24,93,0.06) 40%, transparent 70%)",
@@ -1666,39 +1666,9 @@ export default function AgentLibraryPage() {
                       cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
                       comingSoon: true,
                     },
-                    {
-                      id: "retail",
-                      title: "AI for Retail",
-                      description: "Conversational AI assistant tailored for retail, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
-                      icon: ShoppingBag,
-                      gradient: "linear-gradient(135deg, #C4B5FD 0%, #6D28D9 100%)",
-                      gradientFromCorner: "linear-gradient(135deg, rgba(196,181,253,0.12) 0%, rgba(109,40,217,0.06) 40%, transparent 70%)",
-                      titleColor: "#6D28D9",
-                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #F5F3FF 97.78%)",
-                      comingSoon: true,
-                    },
-                    {
-                      id: "education",
-                      title: "AI for Educations",
-                      description: "Conversational AI assistant tailored for education, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
-                      icon: GraduationCap,
-                      gradient: "linear-gradient(135deg, #F472B6 0%, #9D174D 100%)",
-                      gradientFromCorner: "linear-gradient(135deg, rgba(244,114,182,0.1) 0%, rgba(157,23,77,0.06) 40%, transparent 70%)",
-                      titleColor: "#9D174D",
-                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #FDF2F8 97.78%)",
-                      comingSoon: true,
-                    },
-                    {
-                      id: "government",
-                      title: "AI for Government",
-                      description: "Conversational AI assistant tailored for government, enabling seamless customer interactions through chat, voice and web with rapid deployment.",
-                      icon: Zap,
-                      gradient: "linear-gradient(135deg, #93C5FD 0%, #1D4ED8 100%)",
-                      gradientFromCorner: "linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(29,78,216,0.06) 40%, transparent 70%)",
-                      titleColor: "#1D4ED8",
-                      cardBackground: "linear-gradient(287.29deg, #F8F8F8 62.43%, #EFF6FF 97.78%)",
-                      comingSoon: true,
-                    },
+                    
+                    
+                    
                   ].map((item) => {
                     const Icon = item.icon;
                     const isComingSoon = item.comingSoon === true;
