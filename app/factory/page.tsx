@@ -71,8 +71,8 @@ export default function FactoryPage() {
         onConfirm={handleSlotConfirm}
       />
       <div className="flex flex-col bg-white" style={{ fontFamily: "Poppins, sans-serif" }}>
-        {/* Hero - Gradient layer; equal gap above and below content block */}
-        <main className="relative min-h-[520px] flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24">
+        {/* Hero — top py-9; bottom padding half (18px) under description */}
+        <main className="relative min-h-[520px] flex flex-col items-center justify-center px-4 sm:px-6 pt-9 pb-[18px]">
           {/* Gradient: position absolute; left 0; top 0; full width, 520px height */}
           <div
             className="absolute left-0 top-0 w-full pointer-events-none"
@@ -133,8 +133,8 @@ export default function FactoryPage() {
           </div>
         </main>
 
-        {/* 1. Capabilities — gradient fills section (no white band or strip) */}
-        <section className="relative w-full min-h-[700px] py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
+        {/* 1. Capabilities — 72px gap between sections */}
+        <section className="relative w-full min-h-[700px] py-9 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
           <div
             className="absolute inset-0 w-full pointer-events-none"
             style={{
@@ -217,10 +217,10 @@ export default function FactoryPage() {
               ))}
             </div>
             {/* Container: 690×65; 64px divider; closing line 448px */}
-            <div className="mt-12 flex flex-col items-center gap-4" style={{ maxWidth: 690 }}>
+            <div className="mt-16 flex flex-col items-center gap-4" style={{ maxWidth: 690 }}>
               <span className="h-px" style={{ width: 64, background: "rgba(226, 232, 240, 0.8)" }} aria-hidden />
               <p
-                className="text-center"
+                className="text-center mb-6"
                 style={{
                   fontFamily: "Poppins, sans-serif",
                   fontWeight: 500,
@@ -236,8 +236,8 @@ export default function FactoryPage() {
           </div>
         </section>
 
-        {/* 2. Differentiation — Group 1410104306: Rectangle 34624647 gradient bg; 1244.81×476; dividers #1F2937; heading gradient; cards 297.7×183 */}
-        <section className="relative py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center min-h-[700px]">
+        {/* 2. Differentiation — 72px gap between sections */}
+        <section className="relative py-9 px-4 sm:px-6 flex flex-col items-center min-h-[700px]">
           {/* Rectangle 34624647: gradient background */}
           <div
             className="absolute left-0 top-0 w-full pointer-events-none"
@@ -250,7 +250,7 @@ export default function FactoryPage() {
             aria-hidden
           />
           <div className="relative w-full mx-auto" style={{ maxWidth: 1244.81 }}>
-            <div className="text-center mb-12 mx-auto" style={{ maxWidth: 769 }}>
+            <div className="text-center mb-12 mx-auto mt-6" style={{ maxWidth: 769 }}>
               <div className="flex items-center justify-center gap-2 mb-5">
                 <span className="h-px flex-shrink-0" style={{ width: 32, background: "#1F2937" }} aria-hidden />
                 <p
@@ -354,7 +354,7 @@ export default function FactoryPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-12 flex flex-col items-center gap-4" style={{ maxWidth: 690, marginLeft: "auto", marginRight: "auto" }}>
+            <div className="mt-16 flex flex-col items-center gap-4" style={{ maxWidth: 690, marginLeft: "auto", marginRight: "auto" }}>
               <span className="h-px" style={{ width: 64, background: "rgba(226, 232, 240, 0.8)" }} aria-hidden />
               <p
                 className="text-center"
@@ -372,11 +372,11 @@ export default function FactoryPage() {
           </div>
         </section>
 
-        {/* 3. The Result — Group 1410104303: 1284×449.5; Group 1410104304 header 409×105.5; cards row 1284×180; bar 3×16 at 41,41 */}
-        <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white flex flex-col items-center">
+        {/* 3. The Result — 72px gap */}
+        <section className="py-9 px-4 sm:px-6 bg-white flex flex-col items-center">
           <div className="w-full mx-auto flex flex-col items-center" style={{ maxWidth: 1284, minHeight: 449.5 }}>
-            {/* Group 1410104304: 409×105.5 — label + heading */}
-            <div className="text-center mb-10 mx-auto" style={{ maxWidth: 409, minHeight: 105.5 }}>
+            {/* Group 1410104304 — label + heading (wider so heading stays on one line) */}
+            <div className="text-center mb-10 mx-auto" style={{ maxWidth: 640, minHeight: 105.5 }}>
               <div className="flex items-center justify-center gap-2 mb-5">
                 <span className="h-px flex-shrink-0" style={{ width: 32, background: "#0A0A0A" }} aria-hidden />
                 <p
@@ -395,7 +395,7 @@ export default function FactoryPage() {
                 <span className="h-px flex-shrink-0" style={{ width: 32, background: "#0A0A0A" }} aria-hidden />
               </div>
               <h2
-                className="text-center flex items-center justify-center bg-clip-text text-transparent"
+                className="text-center flex items-center justify-center bg-clip-text text-transparent whitespace-nowrap mt-6"
                 style={{
                   fontFamily: "Geist, var(--font-geist-sans), sans-serif",
                   fontWeight: 300,
