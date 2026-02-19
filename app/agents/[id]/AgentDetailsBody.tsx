@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef, useState, useMemo } from "react"
+import React, { useRef, useState, useMemo, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Maximize2, ChevronRight } from "lucide-react"
@@ -231,9 +231,30 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
   const demoPreviewContainerRef = useRef<HTMLDivElement>(null)
   const [techSecurityTab, setTechSecurityTab] = useState<string>('')
   const [techSecurityExpandedTabs, setTechSecurityExpandedTabs] = useState<Set<string>>(new Set())
+  const [techSecurityListExpanded, setTechSecurityListExpanded] = useState(false)
+  const [techSecurityContentOverflow, setTechSecurityContentOverflow] = useState(false)
+  const techSecurityColumnRef = useRef<HTMLDivElement>(null)
+  const techSecurityContentRef = useRef<HTMLDivElement>(null)
+  const techSecurityImageRef = useRef<HTMLDivElement>(null)
   const [selectedWorkflowStepIndex, setSelectedWorkflowStepIndex] = useState(0)
   const [workflowPanelImageError, setWorkflowPanelImageError] = useState(false)
   const TECH_SECURITY_VISIBLE_ROWS = 5
+  const TECH_SECURITY_BOX_HEIGHT = 510
+  const TECH_SECURITY_BUTTON_AREA = 52
+
+  useEffect(() => {
+    if (techSecurityListExpanded) {
+      setTechSecurityContentOverflow(false)
+      return
+    }
+    const t = setTimeout(() => {
+      const content = techSecurityContentRef.current
+      if (!content) return
+      const maxContentHeight = TECH_SECURITY_BOX_HEIGHT - TECH_SECURITY_BUTTON_AREA
+      setTechSecurityContentOverflow(content.scrollHeight > maxContentHeight)
+    }, 0)
+    return () => clearTimeout(t)
+  }, [techSecurityListExpanded, techSecurityTab])
 
   // Skip clearly invalid image URLs (e.g. "na", placeholder paths) so fallback is used instead
   const isWorkflowPanelUrlValid = (url: string): boolean => {
@@ -1679,7 +1700,8 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
               deployments.forEach((d: DepItem) => {
                 const groupKey = getProviderGroup(d)
                 const title = resolveTitleFromCapability(d)
-                const parts = [d.service_provider, d.service_name, d.deployment, d.cloud_region].filter(Boolean).map((s) => String(s).trim())
+                const rawParts = [d.service_name, d.deployment, d.cloud_region].filter(Boolean).map((s) => String(s).trim())
+                const parts = rawParts.filter((p) => p.toLowerCase() !== 'na')
                 const desc = parts.length > 0 ? parts.join(' · ') : '—'
                 if (!groups.has(groupKey)) groups.set(groupKey, [])
                 groups.get(groupKey)!.push({ title, desc })
@@ -1706,8 +1728,17 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
             const activeTab = tabKeys.includes(techSecurityTab) ? techSecurityTab : (tabKeys[0] ?? '')
             const activeRows = activeTab ? (groups.get(activeTab) ?? []) : []
             const isExpanded = activeTab ? techSecurityExpandedTabs.has(activeTab) : false
-            const displayedRows = isExpanded ? activeRows : activeRows.slice(0, TECH_SECURITY_VISIBLE_ROWS)
-            const hasMore = activeRows.length > TECH_SECURITY_VISIBLE_ROWS
+            // Group by title so same title shows once with all its desc (fields) listed
+            const titleToDescs = new Map<string, string[]>()
+            activeRows.forEach((row) => {
+              const t = row.title.trim() || '—'
+              if (!titleToDescs.has(t)) titleToDescs.set(t, [])
+              const d = row.desc.trim() || '—'
+              if (d && !titleToDescs.get(t)!.includes(d)) titleToDescs.get(t)!.push(d)
+            })
+            const groupedByTitle = Array.from(titleToDescs.entries()).map(([title, descs]) => ({ title, descs }))
+            const displayedGroups = isExpanded ? groupedByTitle : groupedByTitle.slice(0, TECH_SECURITY_VISIBLE_ROWS)
+            const hasMore = groupedByTitle.length > TECH_SECURITY_VISIBLE_ROWS
             const rowStyle = { display: 'flex' as const, alignItems: 'flex-start' as const, gap: '20px', padding: '20px 0', borderBottom: '1px solid #F2F4F7' }
             const lastRowStyle = { ...rowStyle, borderBottom: 'none' }
             const numberStyle = { fontFamily: 'Poppins, sans-serif', fontSize: '12px', fontWeight: 500, color: '#D0D5DD', minWidth: '24px', lineHeight: '20px', paddingTop: '2px' }
@@ -1752,6 +1783,7 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                   </div>
                 )}
                 <div
+                  ref={techSecurityImageRef}
                   style={{
                     display: 'flex',
                     alignItems: 'flex-start',
@@ -1763,16 +1795,39 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                     margin: '0 auto',
                   }}
                 >
-                  <div style={{ flex: '0 0 55%', maxWidth: '55%' }}>
-                  <div>
-                    {displayedRows.map((row, idx) => (
-                      <div key={idx} style={idx < displayedRows.length - 1 ? rowStyle : lastRowStyle}>
+                  <div
+                    ref={techSecurityColumnRef}
+                    style={{
+                      flex: '0 0 55%',
+                      maxWidth: '55%',
+                      height: techSecurityListExpanded ? 'auto' : TECH_SECURITY_BOX_HEIGHT,
+                      maxHeight: techSecurityListExpanded ? 'none' : TECH_SECURITY_BOX_HEIGHT,
+                      overflow: techSecurityListExpanded ? 'visible' : 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
+                  <div
+                    ref={techSecurityContentRef}
+                    style={{
+                      flex: techSecurityListExpanded ? 'none' : 1,
+                      minHeight: techSecurityListExpanded ? undefined : 0,
+                      maxHeight: techSecurityListExpanded ? undefined : TECH_SECURITY_BOX_HEIGHT - TECH_SECURITY_BUTTON_AREA,
+                      overflow: techSecurityListExpanded ? 'visible' : 'hidden',
+                    }}
+                  >
+                    {displayedGroups.map((group, idx) => (
+                      <div key={group.title + idx} style={idx < displayedGroups.length - 1 ? rowStyle : lastRowStyle}>
                         <span style={numberStyle}>{String(idx + 1).padStart(2, '0')}</span>
                         <div>
                           <div style={titleRowStyle}>
-                            {row.title}
+                            {group.title}
                           </div>
-                          <div style={descStyle}>{row.desc}</div>
+                          {group.descs.map((desc, i) => (
+                            <div key={i} style={i < group.descs.length - 1 ? { ...descStyle, marginBottom: '4px' } : descStyle}>
+                              {desc}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}
@@ -1803,7 +1858,53 @@ export function AgentDetailsBody(props: AgentDetailsContentProps) {
                             transition: 'color 0.2s, background 0.2s, border-color 0.2s',
                           }}
                         >
-                          {isExpanded ? 'View less' : `View more (${activeRows.length - TECH_SECURITY_VISIBLE_ROWS} more)`}
+                          {isExpanded ? 'View less' : `View more (${groupedByTitle.length - TECH_SECURITY_VISIBLE_ROWS} more)`}
+                        </button>
+                      </div>
+                    )}
+                    {techSecurityContentOverflow && !techSecurityListExpanded && (
+                      <div style={{ paddingTop: '12px', flexShrink: 0 }}>
+                        <button
+                          type="button"
+                          onClick={() => setTechSecurityListExpanded(true)}
+                          style={{
+                            fontFamily: 'Poppins, sans-serif',
+                            fontWeight: 500,
+                            fontSize: '14px',
+                            lineHeight: '20px',
+                            color: '#0023F6',
+                            background: 'transparent',
+                            border: '1px solid #0023F6',
+                            borderRadius: '8px',
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            transition: 'color 0.2s, background 0.2s, border-color 0.2s',
+                          }}
+                        >
+                          View more
+                        </button>
+                      </div>
+                    )}
+                    {techSecurityListExpanded && (
+                      <div style={{ paddingTop: '12px', flexShrink: 0 }}>
+                        <button
+                          type="button"
+                          onClick={() => setTechSecurityListExpanded(false)}
+                          style={{
+                            fontFamily: 'Poppins, sans-serif',
+                            fontWeight: 500,
+                            fontSize: '14px',
+                            lineHeight: '20px',
+                            color: '#0023F6',
+                            background: 'transparent',
+                            border: '1px solid #0023F6',
+                            borderRadius: '8px',
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            transition: 'color 0.2s, background 0.2s, border-color 0.2s',
+                          }}
+                        >
+                          View less
                         </button>
                       </div>
                     )}
