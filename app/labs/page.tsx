@@ -54,8 +54,8 @@ export default function LabsPage() {
         onConfirm={handleSlotConfirm}
       />
       <div className="flex flex-col bg-white" style={{ fontFamily: "Poppins, sans-serif" }}>
-        {/* Hero — same gap to first section as Factory (py-16 sm:py-24 → What Labs Does) */}
-        <main className="relative min-h-[520px] flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24">
+        {/* Hero — 72px gap to next section (3×24px) */}
+        <main className="relative min-h-[520px] flex flex-col items-center justify-center px-4 sm:px-6 py-9">
           <div
             className="absolute left-0 top-0 w-full pointer-events-none"
             style={{
@@ -140,8 +140,8 @@ export default function LabsPage() {
           </div>
         </main>
 
-        {/* 1. What Labs Does — gradient section + bullets + tagline; bottom gap matches How It Works → The Outcome */}
-        <section className="relative w-full min-h-[700px] pt-16 sm:pt-20 pb-24 sm:pb-28 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
+        {/* 1. What Labs Does — 72px gap between sections */}
+        <section className="relative w-full min-h-[700px] py-9 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
           <div
             className="absolute inset-0 w-full pointer-events-none"
             style={{
@@ -274,8 +274,8 @@ export default function LabsPage() {
           </div>
         </section>
 
-        {/* 2. How It Works — pale blue gradient; Group 1410104281: 1092×156, 4 items 180px; 72×72 circle gradient 135deg */}
-        <section className="relative py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center min-h-[700px]">
+        {/* 2. How It Works — 72px gap; no min-height to avoid empty space below */}
+        <section className="relative py-9 px-4 sm:px-6 flex flex-col items-center">
           <div
             className="absolute left-0 top-0 w-full pointer-events-none"
             style={{
@@ -367,8 +367,8 @@ export default function LabsPage() {
           </div>
         </section>
 
-        {/* 3. The Outcome — moved up by ~4 lines */}
-        <section className="-mt-24 py-16 sm:py-20 px-4 sm:px-6 bg-white flex flex-col items-center">
+        {/* 3. The Outcome — 72px gap */}
+        <section className="py-9 px-4 sm:px-6 bg-white flex flex-col items-center">
           <div className="w-full mx-auto flex flex-col items-center" style={{ maxWidth: 1284, minHeight: 449.5 }}>
             {/* Group 1410104304 — label + heading; wider so heading wraps to 2 lines */}
             <div className="text-center mb-10 mx-auto" style={{ maxWidth: 560, minHeight: 105.5 }}>

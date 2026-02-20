@@ -55,8 +55,8 @@ export default function FoundryPage() {
         onConfirm={handleSlotConfirm}
       />
       <div className="flex flex-col bg-white" style={{ fontFamily: "Poppins, sans-serif" }}>
-        {/* Hero — same gap to first section as Factory (py-16 sm:py-24 → Capabilities) */}
-        <main className="relative min-h-[520px] flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24">
+        {/* Hero — top py-9; bottom padding half (18px) for consistent gap to What Foundry Does */}
+        <main className="relative min-h-[520px] flex flex-col items-center justify-center px-4 sm:px-6 pt-9 pb-[18px]">
           {/* Gradient: same height as Factory hero */}
           <div
             className="absolute left-0 top-0 w-full pointer-events-none"
@@ -113,8 +113,8 @@ export default function FoundryPage() {
           </div>
         </main>
 
-        {/* 1. What Foundry Does — gradient section (gradient fills section, same gap as Factory) */}
-        <section className="relative w-full min-h-[700px] py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
+        {/* 1. What Foundry Does — 72px gap between sections */}
+        <section className="relative w-full min-h-[700px] py-9 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
           <div
             className="absolute inset-0 w-full pointer-events-none"
             style={{
@@ -248,8 +248,8 @@ export default function FoundryPage() {
           </div>
         </section>
 
-        {/* 2. Focus Areas — pale blue gradient; Group 1410104281: 1092×156, 5 items 180px; 72×72 circle gradient 135deg */}
-        <section className="relative py-16 sm:py-20 px-4 sm:px-6 flex flex-col items-center min-h-[700px]">
+        {/* 2. Focus Areas — 72px gap; no min-height to avoid empty space below */}
+        <section className="relative py-9 px-4 sm:px-6 flex flex-col items-center">
           <div
             className="absolute left-0 top-0 w-full pointer-events-none"
             style={{
@@ -341,8 +341,8 @@ export default function FoundryPage() {
           </div>
         </section>
 
-        {/* 3. The Outcome — moved up by ~4 lines */}
-        <section className="-mt-24 py-16 sm:py-20 px-4 sm:px-6 bg-white flex flex-col items-center">
+        {/* 3. The Outcome — 72px gap */}
+        <section className="py-9 px-4 sm:px-6 bg-white flex flex-col items-center">
           <div className="w-full mx-auto flex flex-col items-center" style={{ maxWidth: 1284, minHeight: 449.5 }}>
             {/* Group 1410104304 / 1410104302: 409×105.5 — label (Geist Mono 11px, dividers 32px #0A0A0A) + heading (Geist 300 36px 40px gradient) */}
             <div className="text-center mb-10 mx-auto" style={{ maxWidth: 409, minHeight: 105.5 }}>
