@@ -1,3 +1,31 @@
+import type { ReactNode } from "react"
+
+/** Normalized detail template type from API asset_type */
+export type AgentDetailType = "Agent" | "Solution" | "Use case"
+
+/** Map API asset_type to template type; default "Agent" */
+export function getAgentDetailType(assetType: string | undefined): AgentDetailType {
+  if (!assetType || !String(assetType).trim()) return "Agent"
+  const v = String(assetType).trim().toLowerCase()
+  if (v === "solution") return "Solution"
+  if (v === "use case" || v === "usecase") return "Use case"
+  return "Agent"
+}
+
+/** URL path segment for agent detail; null = default agent route (no segment). */
+export function getAgentDetailPathSegment(assetType: string | undefined): "solution" | "usecase" | null {
+  const t = getAgentDetailType(assetType)
+  if (t === "Solution") return "solution"
+  if (t === "Use case") return "usecase"
+  return null
+}
+
+/** Standardized detail URL from agent id and API asset_type (no query params). */
+export function getAgentDetailHref(id: string, assetType: string | undefined): string {
+  const segment = getAgentDetailPathSegment(assetType)
+  return segment ? `/agents/${segment}/${id}` : `/agents/${id}`
+}
+
 export type AgentDetailApiResponse = {
   agent?: {
     agent_id: string
@@ -81,4 +109,10 @@ export type AgentDetailsContentProps = {
   prevAgentName: string | null
   relatedAgents: any[]
   agentsSource: "bundled" | "similar" | null
+  /** Which detail view to show; derived from API agent_type / URL segment (no query param). */
+  detailType: AgentDetailType
+  /** When "usecase", overview section uses use-case hero CSS (screenshot layer + rectangle + mask). */
+  overviewVariant?: "default" | "usecase"
+  /** Optional custom capabilities section (e.g. hover-only) for use-case variant. When set, replaces default use-case capabilities block. */
+  customCapabilitiesSection?: ReactNode
 }

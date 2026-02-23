@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import { getAgentDetailHref } from "@/app/agents/[id]/types"
 import { Card, CardContent } from "./ui/card"
 import { useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
@@ -80,9 +81,11 @@ export function AgentCard({ id, title, description, tags, assetType, demoPreview
     }
   }, [tags])
 
+  const detailHref = getAgentDetailHref(id, assetType)
+
   return (
     <>
-      <Link href={`/agents/${id}`} scroll>
+      <Link href={detailHref} scroll>
         <Card
           className="agent-card-enhanced flex flex-col overflow-hidden bg-white p-0 w-full !border-0 cursor-pointer"
           style={{

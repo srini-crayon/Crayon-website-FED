@@ -12,6 +12,7 @@ import { createPortal } from "react-dom";
 
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { getAgentDetailHref } from "./[id]/types";
 import { useChatStore } from "../../lib/store/chat.store";
 import { useWishlistsStore } from "../../lib/store/wishlists.store";
 import { useAuthStore } from "../../lib/store/auth.store";
@@ -1357,6 +1358,8 @@ export default function AgentLibraryPage() {
                     description: fromApi.description,
                     image: staticCard.image,
                     background: staticCard.background,
+                    assetType: fromApi.assetType,
+                    deploymentType: (fromApi as any).deploymentType,
                   };
                 }
                 // Ensure every card has a valid agent id from API for correct detail page redirect
@@ -1369,6 +1372,8 @@ export default function AgentLibraryPage() {
                     description: fallbackAgent.description,
                     image: staticCard.image,
                     background: staticCard.background,
+                    assetType: fallbackAgent.assetType,
+                    deploymentType: (fallbackAgent as any).deploymentType,
                   };
                 }
                 return { ...staticCard };
@@ -1462,7 +1467,7 @@ export default function AgentLibraryPage() {
                             }}
                           >
                             <Link
-                              href={`/agents/${card.id}`}
+                              href={getAgentDetailHref(card.id, (card as any).assetType)}
                               className="block p-6 h-full min-h-0 flex flex-col"
                               style={{ textDecoration: "none" }}
                             >
@@ -2103,7 +2108,7 @@ export default function AgentLibraryPage() {
                           return (
                             <Link
                               key={agent.id}
-                              href={`/agents/${agent.id}`}
+                              href={getAgentDetailHref(agent.id, agent.assetType)}
                               scroll
                               className="group block relative rounded-xl overflow-hidden transition-shadow hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400"
                               style={{
